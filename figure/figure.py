@@ -15,6 +15,7 @@ Most methods streamline matplotlib.pyplot operations, while
 from typing import Tuple, cast, Optional, Union, List, Dict
 from matplotlib import pyplot, transforms
 from numpy import ndarray, arctan2, mean, pi, cos, sin, ptp
+from matplotlib.axes import Axes
 from warnings import warn
 from uuid import uuid4
 # endregion
@@ -23,6 +24,7 @@ from uuid import uuid4
 def hex_to_rgb(hex_value : str) -> Tuple[float, float, float]:
 
     # Validate
+    assert isinstance(hex_value, str)
     assert len(hex_value) == 6
     assert all(character.isdigit() or 65 <= ord(character.upper()) <= 70 for character in hex_value)
 
@@ -44,6 +46,7 @@ def hex_to_rgb(hex_value : str) -> Tuple[float, float, float]:
 def hex_to_rgba(hex_value : str) -> Tuple[float, float, float, float]:
 
     # Validate
+    assert isinstance(hex_value, str)
     assert len(hex_value) == 8
     assert all(character.isdigit() or 65 <= ord(character.upper()) <= 70 for character in hex_value)
 
@@ -141,8 +144,21 @@ class Figure(object):
         assert any(isinstance(size, valid_type) for valid_type in [list, tuple])
         assert len(size) == 2
         assert all(any(isinstance(dimension, valid_type) for valid_type in [int, float]) for dimension in size)
+        assert all(dimension > 0.0 for dimension in size)
         self.__size = size
         if hasattr(self, 'figure'): self.figure.set_size_inches(size, forward = True)
+
+    @property
+    def inverted(self) -> bool:
+        return self.__inverted
+
+    @inverted.setter
+    def inverted(
+        self,
+        inverted : bool
+    ) -> None:
+        assert isinstance(inverted, bool)
+        self.__inverted = inverted
 
     @property
     def figure_color(self) -> Tuple[float, float, float]:
@@ -163,18 +179,6 @@ class Figure(object):
             figure_color = hex_to_rgb(figure_color)
         self.__figure_color = figure_color
         if hasattr(self, 'figure'): self.figure.set_facecolor(figure_color)
-
-    @property
-    def inverted(self) -> bool:
-        return self.__inverted
-
-    @inverted.setter
-    def inverted(
-        self,
-        inverted : bool
-    ) -> None:
-        assert isinstance(inverted, bool)
-        self.__inverted = inverted
 
     @property
     def nominal_positions(self) -> Dict[Union[int, str], Tuple[float, ...]]:
@@ -290,7 +294,7 @@ class Figure(object):
             z_tick_labels : Optional[Union[ndarray, List[Union[int, float, str]], Tuple[Union[int, float, str], ...]]] = None,
             share_x_with : Optional[Union[int, str]] = None,
             share_y_with : Optional[Union[int, str]] = None
-    ) -> pyplot.axes:
+    ) -> Axes:
         """
         Add a panel (matplotlib.pyplot.axes) object to the figure with optional
         arguments within the figure.  Position gives left, top, width and height.
@@ -308,19 +312,30 @@ class Figure(object):
         if position is None: position = (0.0, 0.0, 1.0, 1.0) # whole figure area
         assert any(isinstance(position, valid_type) for valid_type in [list, tuple])
         if isinstance(position, list): position = tuple(position)
+        assert len(position) == 4
+        assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in position)
+        assert all(value > 0.0 for value in position[2:])
+        if not all(isinstance(value, float) for value in position):
+            position = tuple(
+                float(value)
+                for value in position
+            )
         if panel_color is None:
             if not self.inverted:
                 panel_color = (1.0, 1.0, 1.0, 0.0) # transparent (in case of shared axes)
             else:
                 panel_color = (0.0, 0.0, 0.0, 0.0)
         assert any(isinstance(panel_color, valid_type) for valid_type in [list, tuple, str])
-        if not isinstance(panel_color, str): # Treat as RGB(A) tri-val in the interval [0, 1]
+        if not isinstance(panel_color, str): # Treat as RGB(A) tri/quad-val in the interval [0, 1]
             assert 3 <= len(panel_color) <= 4
             assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in panel_color)
             assert all(0.0 <= value <= 1.0 for value in panel_color)
             if isinstance(panel_color, list): panel_color = tuple(panel_color)
-        else: # Treat as hexadecimal 24-bit RGB string
-            panel_color = hex_to_rgb(panel_color)
+        else: # Treat as hexadecimal string
+            if len(panel_color) == 6:
+                panel_color = hex_to_rgb(panel_color)
+            else:
+                panel_color = hex_to_rgba(panel_color)
         if three_dimensional is not None:
             assert isinstance(three_dimensional, bool)
         else:
@@ -515,6 +530,7 @@ class Figure(object):
         self.panels[name].remove()
         self.panels.pop(name, None)
         self.__nominal_positions.pop(name, None)
+        return True
         # endregion
 
     # endregion
@@ -524,7 +540,7 @@ class Figure(object):
             self,
             name : Union[int, str],
             position : Union[List[Union[int, float]], Tuple[Union[int, float], ...]]
-    ) -> pyplot.axes:
+    ) -> Axes:
         """
         Change the position of an existing panel (can't use .setter with the
         dictionary nominal_positions)
@@ -537,12 +553,12 @@ class Figure(object):
         assert any(isinstance(position, valid_type) for valid_type in [list, tuple])
         if isinstance(position, list): position = tuple(position)
         assert len(position) == 4
-        assert all(any(isinstance(coordinate, valid_type) for valid_type in [int, float]) for coordinate in position)
-        assert all(0.0 <= coordinate <= 1.0 for coordinate in position)
-        if not all(isinstance(coordinate, float) for coordinate in position):
+        assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in position)
+        assert all(value > 0.0 for value in position[2:])
+        if not all(isinstance(value, float) for value in position):
             position = tuple(
-                float(coordinate)
-                for coordinate in position
+                float(value)
+                for value in position
             )
         # endregion
 
@@ -559,7 +575,7 @@ class Figure(object):
         name : Union[int, str],
         vertical_sign : Optional[int] = None, # +1 (default) or -1 for increasing up or down, respectively
         left_axis : Optional[str] = None # '-x', '+x', '-y' or '+y' (sign is for values moving left to right)
-    ) -> pyplot.axes:
+    ) -> Axes:
         """
         Change the orientation of an existing 3D (verified) panel.
         Z will always be the vertical axis - set whether it is increasing upward
@@ -572,7 +588,7 @@ class Figure(object):
         assert any(isinstance(name, valid_type) for valid_type in [int, str])
         if isinstance(name, str): assert len(name) > 0
         assert name in self.panels
-        assert hasattr(self.panels[name], 'w_zaxis')
+        assert hasattr(self.panels[name], 'zaxis')
         if vertical_sign is not None:
             assert isinstance(vertical_sign, int)
             assert vertical_sign == -1 or vertical_sign == 1
@@ -616,7 +632,7 @@ class Figure(object):
             self,
             name : Union[int, str],
             panel_color : Union[List[Union[int, float]], Tuple[Union[int, float], ...], str]
-    ) -> pyplot.axes:
+    ) -> Axes:
         """
         Change the background color of an existing panel (can't use .setter with
         the dictionary panel_colors)
@@ -662,23 +678,23 @@ class Figure(object):
         z_pane_color : Optional[Union[List[Union[int, float]], Tuple[Union[int, float], ...], str]] = None, # (0, 0, 0, 0) (default)
         z_grid_line : Optional[str] = None, # '-' (default), '--', '-.', ':', ''
         z_grid_color : Optional[Union[List[Union[int, float]], Tuple[Union[int, float], ...], str]] = None # (0.9, 0.9, 0.9) (default)
-    ):
+    ) -> None:
         """Adjusts 3D panel pane colors and grid line properties by axis"""
 
         # region Validate Arguments
         assert any(isinstance(name, valid_type) for valid_type in [int, str])
         if isinstance(name, str): assert len(name) > 0
         assert name in self.panels
-        assert hasattr(self.panels[name], 'w_zaxis')
+        assert hasattr(self.panels[name], 'zaxis')
         if x_pane_color is not None:
             assert any(isinstance(x_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(x_pane_color, str): # Treat as RGBA quad-val in the interval [0, 1]
-                assert len(x_pane_color) == 4
+            if not isinstance(x_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
+                assert len(x_pane_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in x_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in x_pane_color)
                 if isinstance(x_pane_color, list): x_pane_color = tuple(x_pane_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
-                x_pane_color = hex_to_rgba(x_pane_color)
+            else: # Treat as hexadecimal 24-bit RGB string
+                x_pane_color = hex_to_rgb(x_pane_color)
         else:
             x_pane_color = (0.0, 0.0, 0.0, 0.0)
         if x_grid_line is None: x_grid_line = '-'
@@ -686,24 +702,24 @@ class Figure(object):
         assert x_grid_line in ['-', '--', '-.', ':', '']
         if x_grid_color is not None:
             assert any(isinstance(x_grid_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(x_grid_color, str): # Treat as RGBA quad-val in the interval [0, 1]
+            if not isinstance(x_grid_color, str): # Treat as RGB tri-val in the interval [0, 1]
                 assert len(x_grid_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in x_grid_color)
                 assert all(0.0 <= value <= 1.0 for value in x_grid_color)
                 if isinstance(x_grid_color, list): x_grid_color = tuple(x_grid_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
+            else: # Treat as hexadecimal 24-bit RGB string
                 x_grid_color = hex_to_rgb(x_grid_color)
         else:
             x_grid_color = (0.9, 0.9, 0.9)
         if y_pane_color is not None:
             assert any(isinstance(y_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(y_pane_color, str): # Treat as RGBA quad-val in the interval [0, 1]
-                assert len(y_pane_color) == 4
+            if not isinstance(y_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
+                assert len(y_pane_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in y_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in y_pane_color)
                 if isinstance(y_pane_color, list): y_pane_color = tuple(y_pane_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
-                y_pane_color = hex_to_rgba(y_pane_color)
+            else: # Treat as hexadecimal 24-bit RGB string
+                y_pane_color = hex_to_rgb(y_pane_color)
         else:
             y_pane_color = (0.0, 0.0, 0.0, 0.0)
         if y_grid_line is None: y_grid_line = '-'
@@ -711,24 +727,24 @@ class Figure(object):
         assert y_grid_line in ['-', '--', '-.', ':', '']
         if y_grid_color is not None:
             assert any(isinstance(y_grid_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(y_grid_color, str): # Treat as RGBA quad-val in the interval [0, 1]
+            if not isinstance(y_grid_color, str): # Treat as RGB tri-val in the interval [0, 1]
                 assert len(y_grid_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in y_grid_color)
                 assert all(0.0 <= value <= 1.0 for value in y_grid_color)
                 if isinstance(y_grid_color, list): y_grid_color = tuple(y_grid_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
+            else: # Treat as hexadecimal 24-bit RGB string
                 y_grid_color = hex_to_rgb(y_grid_color)
         else:
             y_grid_color = (0.9, 0.9, 0.9)
         if z_pane_color is not None:
             assert any(isinstance(z_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(z_pane_color, str): # Treat as RGBA quad-val in the interval [0, 1]
-                assert len(z_pane_color) == 4
+            if not isinstance(z_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
+                assert len(z_pane_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in z_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in z_pane_color)
                 if isinstance(z_pane_color, list): z_pane_color = tuple(z_pane_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
-                z_pane_color = hex_to_rgba(z_pane_color)
+            else: # Treat as hexadecimal 24-bit RGB string
+                z_pane_color = hex_to_rgb(z_pane_color)
         else:
             z_pane_color = (0.0, 0.0, 0.0, 0.0)
         if z_grid_line is None: z_grid_line = '-'
@@ -736,12 +752,12 @@ class Figure(object):
         assert z_grid_line in ['-', '--', '-.', ':', '']
         if z_grid_color is not None:
             assert any(isinstance(z_grid_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(z_grid_color, str): # Treat as RGBA quad-val in the interval [0, 1]
+            if not isinstance(z_grid_color, str): # Treat as RGB tri-val in the interval [0, 1]
                 assert len(z_grid_color) == 3
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in z_grid_color)
                 assert all(0.0 <= value <= 1.0 for value in z_grid_color)
                 if isinstance(z_grid_color, list): z_grid_color = tuple(z_grid_color)
-            else: # Treat as hexadecimal 32-bit RGBA string
+            else: # Treat as hexadecimal 24-bit RGB string
                 z_grid_color = hex_to_rgb(z_grid_color)
         else:
             z_grid_color = (0.9, 0.9, 0.9)
@@ -764,7 +780,7 @@ class Figure(object):
     # region Annotate Coordinates
     def annotate_coordinates(
             self,
-            panel_name : Union[int, str],
+            name : Union[int, str],
             coordinates : Union[
                 List[Union[List[Union[int, float]], Tuple[Union[int, float], ...]]],
                 Tuple[Union[List[Union[int, float]], Tuple[Union[int, float], ...]], ...]
@@ -793,9 +809,9 @@ class Figure(object):
         """
 
         # region Validate Arguments
-        assert any(isinstance(panel_name, valid_type) for valid_type in [int, str])
-        if isinstance(panel_name, str): assert len(panel_name) > 0
-        assert panel_name in self.panels
+        assert any(isinstance(name, valid_type) for valid_type in [int, str])
+        if isinstance(name, str): assert len(name) > 0
+        assert name in self.panels
         assert any(isinstance(coordinates, valid_type) for valid_type in [list, tuple])
         assert all(
             any(isinstance(coordinate, valid_type) for valid_type in [list, tuple])
@@ -808,6 +824,7 @@ class Figure(object):
         )
         if coordinate_labels is not None:
             assert any(isinstance(coordinate_labels, valid_type) for valid_type in [list, tuple])
+            assert len(coordinate_labels) == len(coordinates)
             assert all(
                 any(isinstance(coordinate_label, valid_type) for valid_type in [int, float, str])
                 for coordinate_label in coordinate_labels
@@ -833,6 +850,7 @@ class Figure(object):
         if font_color is None:
             font_color = self.grey_level(0.0)
         else:
+            assert any(isinstance(font_color, valid_type) for valid_type in [list, tuple, str])
             if not isinstance(font_color, str):
                 if isinstance(font_color, list): font_color = tuple(font_color)
                 assert len(font_color) == 3
@@ -848,6 +866,7 @@ class Figure(object):
         if tick_color is None:
             tick_color = self.grey_level(0.0)
         else:
+            assert any(isinstance(tick_color, valid_type) for valid_type in [list, tuple, str])
             if not isinstance(tick_color, str):
                 if isinstance(tick_color, list): tick_color = tuple(tick_color)
                 assert len(tick_color) == 3
@@ -862,7 +881,6 @@ class Figure(object):
                 tick_color = hex_to_rgb(tick_color)
         if z_order is None: z_order = 100
         assert isinstance(z_order, int)
-        assert z_order >= 0
         # endregion
 
         # Determine Center-of-Mass
@@ -875,12 +893,12 @@ class Figure(object):
 
             # Determine Angles
             angle_1 = arctan2(
-                (coordinate_triplet[0][1] - coordinate_triplet[1][1]) / ptp(self.panels[panel_name].get_ylim()),
-                (coordinate_triplet[0][0] - coordinate_triplet[1][0]) / ptp(self.panels[panel_name].get_xlim())
+                (coordinate_triplet[0][1] - coordinate_triplet[1][1]) / ptp(self.panels[name].get_ylim()),
+                (coordinate_triplet[0][0] - coordinate_triplet[1][0]) / ptp(self.panels[name].get_xlim())
             )
             angle_2 = arctan2(
-                (coordinate_triplet[2][1] - coordinate_triplet[1][1]) / ptp(self.panels[panel_name].get_ylim()),
-                (coordinate_triplet[2][0] - coordinate_triplet[1][0]) / ptp(self.panels[panel_name].get_xlim())
+                (coordinate_triplet[2][1] - coordinate_triplet[1][1]) / ptp(self.panels[name].get_ylim()),
+                (coordinate_triplet[2][0] - coordinate_triplet[1][0]) / ptp(self.panels[name].get_xlim())
             )
 
             # Set Angle to Use
@@ -896,8 +914,8 @@ class Figure(object):
             # If Contour is Locally Near-Flat Here
             if abs((angle_1 + 2 * pi) - (angle_2 + 2 * pi)) > (7 / 8) * pi:
                 inward_angle = arctan2(
-                    (center[1] - coordinate_triplet[1][1]) / ptp(self.panels[panel_name].get_ylim()),
-                    (center[0] - coordinate_triplet[1][0]) / ptp(self.panels[panel_name].get_xlim())
+                    (center[1] - coordinate_triplet[1][1]) / ptp(self.panels[name].get_ylim()),
+                    (center[0] - coordinate_triplet[1][0]) / ptp(self.panels[name].get_xlim())
                 )
                 difference_angle = (use_angle + 2 * pi) - (inward_angle + 2 * pi)
                 if difference_angle < pi: difference_angle += 2 * pi
@@ -912,11 +930,11 @@ class Figure(object):
                 (
                     coordinate_triplet[1][0]
                     + distance_proportion
-                    * ptp(self.panels[panel_name].get_xlim())
+                    * ptp(self.panels[name].get_xlim())
                     * cos(use_angle),
                     coordinate_triplet[1][1]
                     + distance_proportion
-                    * ptp(self.panels[panel_name].get_ylim())
+                    * ptp(self.panels[name].get_ylim())
                     * sin(use_angle)
                 )
             )
@@ -937,11 +955,11 @@ class Figure(object):
                 (
                     coordinate_pair[1][0]
                     + distance_proportion
-                    * ptp(self.panels[panel_name].get_xlim())
+                    * ptp(self.panels[name].get_xlim())
                     * cos(use_angle),
                     coordinate_pair[1][1]
                     + distance_proportion
-                    * ptp(self.panels[panel_name].get_ylim())
+                    * ptp(self.panels[name].get_ylim())
                     * sin(use_angle)
                 )
             )
@@ -988,7 +1006,7 @@ class Figure(object):
                 if len(coordinates) == 1: # Lone coordinate (place above)
                     position = (
                         coordinate[0],
-                        coordinate[1] + distance_proportion * ptp(self.panels[panel_name].get_ylim())
+                        coordinate[1] + distance_proportion * ptp(self.panels[name].get_ylim())
                     )
                     angle = pi / 2.0
                 elif not all(coordinate[value_index] == coordinates[-1][value_index] for value_index in range(2)):
@@ -1019,7 +1037,7 @@ class Figure(object):
             # endregion
 
             if position is not None and angle is not None:
-                self.panels[panel_name].annotate(
+                self.panels[name].annotate(
                     text = (
                         determine_string(coordinate)
                         if coordinate_labels is None
@@ -1050,7 +1068,7 @@ class Figure(object):
                     zorder = z_order
                 )
                 if show_ticks:
-                    self.panels[panel_name].plot(
+                    self.panels[name].plot(
                         [coordinate[0], coordinate[0] + 0.75 * (position[0] - coordinate[0])],
                         [coordinate[1], coordinate[1] + 0.75 * (position[1] - coordinate[1])],
                         color = tick_color,
@@ -1226,11 +1244,13 @@ class Figure(object):
         # region Validate Arguments
         if path is None: path = '.'
         assert isinstance(path, str)
+        assert len(path) > 0
         if name is None: name = self.name
         assert isinstance(name, str)
         assert len(name) > 0
         if extension is None: extension = 'svg'
-        assert isinstance(extension, str) and len(extension) > 0
+        assert isinstance(extension, str)
+        assert len(extension) > 0
         # endregion
 
         # region Sanitize
