@@ -10,11 +10,3 @@ in the size of titles and axes annotations (labels, ticks).
 Additional functions are provided for streamlining common manipulations.  A
 function for text annotation of a series of plotted values is also included.
 """
-
-# Shortcuts
-from figure.figure import Figure
-
-# All
-__all__ = [
-    'Figure'
-]
