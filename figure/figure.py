@@ -688,15 +688,18 @@ class Figure(object):
         assert hasattr(self.panels[name], 'zaxis')
         if x_pane_color is not None:
             assert any(isinstance(x_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(x_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
-                assert len(x_pane_color) == 3
+            if not isinstance(x_pane_color, str): # Treat as RGB(A) tri/quad-val in the interval [0, 1]
+                assert 3 <= len(x_pane_color) <= 4
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in x_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in x_pane_color)
                 if isinstance(x_pane_color, list): x_pane_color = tuple(x_pane_color)
-            else: # Treat as hexadecimal 24-bit RGB string
-                x_pane_color = hex_to_rgb(x_pane_color)
+            else: # Treat as hexadecimal string
+                if len(x_pane_color) == 6:
+                    x_pane_color = hex_to_rgb(x_pane_color)
+                else:
+                    x_pane_color = hex_to_rgba(x_pane_color)
         else:
-            x_pane_color = (0.0, 0.0, 0.0, 0.0)
+            x_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if x_grid_line is None: x_grid_line = '-'
         assert isinstance(x_grid_line, str)
         assert x_grid_line in ['-', '--', '-.', ':', '']
@@ -713,15 +716,18 @@ class Figure(object):
             x_grid_color = (0.9, 0.9, 0.9)
         if y_pane_color is not None:
             assert any(isinstance(y_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(y_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
-                assert len(y_pane_color) == 3
+            if not isinstance(y_pane_color, str): # Treat as RGB(A) tri/quad-val in the interval [0, 1]
+                assert 3 <= len(y_pane_color) <= 4
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in y_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in y_pane_color)
                 if isinstance(y_pane_color, list): y_pane_color = tuple(y_pane_color)
-            else: # Treat as hexadecimal 24-bit RGB string
-                y_pane_color = hex_to_rgb(y_pane_color)
+            else: # Treat as hexadecimal string
+                if len(y_pane_color) == 6:
+                    y_pane_color = hex_to_rgb(y_pane_color)
+                else:
+                    y_pane_color = hex_to_rgba(y_pane_color)
         else:
-            y_pane_color = (0.0, 0.0, 0.0, 0.0)
+            y_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if y_grid_line is None: y_grid_line = '-'
         assert isinstance(y_grid_line, str)
         assert y_grid_line in ['-', '--', '-.', ':', '']
@@ -738,15 +744,18 @@ class Figure(object):
             y_grid_color = (0.9, 0.9, 0.9)
         if z_pane_color is not None:
             assert any(isinstance(z_pane_color, valid_type) for valid_type in [list, tuple, str])
-            if not isinstance(z_pane_color, str): # Treat as RGB tri-val in the interval [0, 1]
-                assert len(z_pane_color) == 3
+            if not isinstance(z_pane_color, str): # Treat as RGB(A) tri/quad-val in the interval [0, 1]
+                assert 3 <= len(z_pane_color) <= 4
                 assert all(any(isinstance(value, valid_type) for valid_type in [int, float]) for value in z_pane_color)
                 assert all(0.0 <= value <= 1.0 for value in z_pane_color)
                 if isinstance(z_pane_color, list): z_pane_color = tuple(z_pane_color)
-            else: # Treat as hexadecimal 24-bit RGB string
-                z_pane_color = hex_to_rgb(z_pane_color)
+            else: # Treat as hexadecimal string
+                if len(z_pane_color) == 6:
+                    z_pane_color = hex_to_rgb(z_pane_color)
+                else:
+                    z_pane_color = hex_to_rgba(z_pane_color)
         else:
-            z_pane_color = (0.0, 0.0, 0.0, 0.0)
+            z_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if z_grid_line is None: z_grid_line = '-'
         assert isinstance(z_grid_line, str)
         assert z_grid_line in ['-', '--', '-.', ':', '']
@@ -1288,205 +1297,200 @@ class Figure(object):
 
 # endregion
 
-# region (test script)
+# region Demonstration
 if __name__ == '__main__':
+    """
+    Generates two images - one normal and one inverted - using the same script.
+    Demonstrates creating both 2D and 3D panels and altering their appearance
+    and the annotation of coordinates (in 2D).
+    """
 
-    from matplotlib import ticker
+    extension = 'svg' # alter as desired (tested with png, svg, pdf, and jpg)
 
-    # Initialize
-    test_figure = Figure(
-        name = 'My Figure',
-        size = (16, 9),
-        figure_color = 'a0a0a0'
-    )
+    # Loop - Once for Normal and Once for Inverted
+    for inverted in [False, True]:
 
-    # Change Figure Properties
-    test_figure.name = 'Renamed Figure'
-    test_figure.size = [8.0, 4.5]
-    test_figure.figure_color = 'FFa0a0'
-
-    # Add Panels
-    main_panel = test_figure.add_panel(
-        name = 'main',
-        y_label = 'To Share',
-        position = [0.1, 0.1, 0.4, 0.8],
-        panel_color = 'a0a0FF',
-        y_margin = 0.2
-    )
-    shared_panel = test_figure.add_panel(
-        name = 'shared_y',
-        title = 'Shared Y',
-        y_label = 'from Main',
-        x_lim = (-1, 1.5),
-        x_ticks = [-0.75, 0.0, 0.75],
-        x_tick_labels = ('A', 'B', 'C'),
-        position = (0.5, 0.55, 0.4, 0.45),
-        panel_color = (1.0, 0.8, 0.0),
-        share_y_with = 'main'
-    )
-    three_panel = test_figure.add_panel(
-        name = 'three',
-        title = 'Three-Dimensional',
-        position = (0, 0, 0.6, 0.5),
-        three_dimensional = True,
-        x_label = 'X',
-        y_label = 'Y',
-        z_label = 'Z',
-        x_lim = (0, 1),
-        y_lim = (0, 1),
-        z_lim = (0, 1),
-        x_ticks = [0, 0.25, 0.5, 0.75, 1],
-        y_ticks = [0, 0.25, 0.5, 0.75, 1],
-        z_ticks = [0, 0.25, 0.5, 0.75, 1],
-        panel_color = test_figure.figure_color
-    )
-
-    # Change Panel Properties
-    test_figure.change_panel_position(
-        name = 'main',
-        position = (0.05, 0.55, 0.3, 0.45)
-    )
-    test_figure.change_panel_color(
-        name = 'main',
-        panel_color = (0.0, 1.0, 0.8)
-    )
-    test_figure.change_panel_orientation(
-        'three',
-        vertical_sign = 1,
-        left_axis = '+Y'
-    )
-    test_figure.change_panes(
-        'three',
-        x_pane_color = (1, 0, 0, 1),
-        y_pane_color = (0, 1, 0, 1),
-        z_pane_color = (0, 0, 1, 1),
-        x_grid_line = '--',
-        y_grid_line = '--',
-        z_grid_line = '--',
-        x_grid_color = (1, 0, 0),
-        y_grid_color = (0, 1, 0),
-        z_grid_color = (0, 0, 1)
-    )
-
-    # Plot
-    main_panel.axhline(
-        y = 2.0,
-        linewidth = 2,
-        color = (0.5, 0.0, 0.75),
-        zorder = 0
-    )
-    test_legend_handles = list()
-    test_legend_handles.append(
-        main_panel.plot(
-            [-1.0, 3.14159],
-            [4.0, -2.0],
-            linestyle = '--',
-            marker = 'o',
-            markersize = 5,
-            zorder = 1
-        )[0]
-    )
-    test_legend_handles.append(
-        main_panel.plot(
-            [-0.5, 2.5],
-            [0.0, 2.0],
-            linestyle = '-',
-            marker = 'o',
-            markersize = 5,
-            zorder = 1
-        )[0]
-    )
-    main_panel.legend(
-        test_legend_handles,
-        ['dashed', 'solid']
-    )
-
-    # Plot and Annotate (-1, 1.5)
-    shared_panel.plot(
-        -0.75,
-        3,
-        marker = 'o',
-        markersize = 5,
-        markerfacecolor = (0, 0, 0),
-        markeredgecolor = 'none',
-        zorder = 1
-    )
-    test_figure.annotate_coordinates(
-        panel_name = 'shared_y',
-        coordinates = [(-0.75, 3)],
-        show_x = False,
-        font_size = 6,
-        z_order = 2
-    )
-    shared_panel.plot(
-        [-0.7, -0.4],
-        [1, 2],
-        color = (0, 0, 0),
-        zorder = 1
-    )
-    test_figure.annotate_coordinates(
-        panel_name = 'shared_y',
-        coordinates = [(-0.7, 1), (-0.4, 2)],
-        distance_proportion = 0.025,
-        font_size = 6,
-        z_order = 2
-    )
-    shared_panel.plot(
-        [-0.5, 0, 0.5],
-        [-0.5, -1.5, -0.5],
-        color = (0, 0, 0),
-        zorder = 1
-    )
-    test_figure.annotate_coordinates(
-        panel_name = 'shared_y',
-        coordinates = [(-0.5, -0.5), (0, -1.5), (0.5, -0.5)],
-        distance_proportion = 0.025,
-        font_size = 6,
-        z_order = 2
-    )
-    shared_panel.plot(
-        [0.1, 0.25, 0.75, 0.9, 0.1],
-        [3.5, 1, 0.5, 3, 3.5],
-        color = (0, 0, 0),
-        zorder = 1
-    )
-    test_figure.annotate_coordinates(
-        panel_name = 'shared_y',
-        coordinates = [(0.1, 3.5), (0.25, 1), (0.75, 0.5), (0.9, 3), (0.1, 3.5)],
-        coordinate_labels = ['i', 'j', 'k', 'l', 'm'],
-        distance_proportion = 0.025,
-        show_ticks = True,
-        font_size = 6,
-        z_order = 2
-    )
-
-    # Fonts
-    test_figure.set_fonts(
-        titles = 16,
-        labels = 14,
-        ticks = 6,
-        legends = 8,
-        color = '0070FF'
-    )
-
-    # Update Positions
-    test_figure.update()
-    from datetime import datetime, timedelta
-    now = datetime.now().replace(
-        minute = 0,
-        second = 0,
-        microsecond = 0
-    )
-    main_panel.xaxis.set_major_locator(ticker.FixedLocator(main_panel.get_xticks())) # Use FixedLocator to avoid warning on subsequent line
-    main_panel.get_xaxis().set_ticklabels(
-        list(
-            (now + timedelta(hours = 1 * tick)).strftime('%H:%M')
-            for tick in main_panel.get_xticks()
+        # Initialize Figure
+        demo_figure = Figure(
+            name = 'Demonstration Figure{0}'.format(
+                ' (Inverted)' if inverted else ''
+            ), # Used by default as file name when saving
+            size = (16, 9), # Inches
+            inverted = inverted
         )
-    )
+        demo_figure.set_fonts(
+            titles = 12,
+            labels = 10,
+            ticks = 8,
+            legends = 12 # Used for annotations by default
+        )
 
-    # Finish
-    test_figure.save()
-    test_figure.close()
+        # Create Panels (subplots)
+        shared_back_panel = demo_figure.add_panel(
+            name = 'shared_back',
+            title = '', # So as not to appear behind shared_front
+            position = (0, 0.5, 0.5, 0.5), # (left, bottom, width, height)
+            panel_color = demo_figure.grey_level(0.8),
+            x_label = '', # So as not to appear behind shared_front
+            y_label = 'Shared Back Panel Y'
+        )
+        shared_front_panel = demo_figure.add_panel(
+            name = 'shared_front',
+            title = 'Shared X Panels',
+            position = demo_figure.nominal_positions['shared_back'],
+            panel_color = (0, 0, 0, 0), # transparent
+            x_label = 'Shared X Axis',
+            y_label = 'Shared Front Panel Y'
+        )
+        shared_front_panel.sharex(shared_back_panel)
+        shared_front_panel.yaxis.set_label_position('right')
+        shared_front_panel.yaxis.tick_right()
+        annotated_coordinates_panel = demo_figure.add_panel(
+            name = 'annotated_coordinates',
+            title = 'Annotated Coordinates',
+            position = (0, 0, 0.5, 0.5),
+            x_label = 'horizontal',
+            y_label = 'vertical'
+        )
+        three_dimensional_panel = demo_figure.add_panel(
+            name = 'three_dimensional',
+            title = '3D',
+            position = (0.5, 0, 0.45, 1), # 3D subplots do not stay within their nominal bounds properly, depending on orientation
+            three_dimensional = True,
+            x_label = 'X',
+            y_label = 'Y',
+            z_label = 'Z'
+        )
+
+        # Change 3D Panel Properties
+        demo_figure.change_panel_orientation(
+            name=  'three_dimensional',
+            vertical_sign = +1,
+            left_axis = '+x'
+        )
+        demo_figure.change_panes(
+            name = 'three_dimensional',
+            x_pane_color = (0, 0, 0, 0), # transparent
+            x_grid_line = '-',
+            x_grid_color = demo_figure.grey_level(0.25),
+            y_pane_color = (0, 0, 0, 0), # transparent
+            y_grid_line = '--',
+            y_grid_color = demo_figure.grey_level(0.5),
+            z_pane_color = (0, 0, 0, 0), # transparent
+            z_grid_line = ':',
+            z_grid_color = demo_figure.grey_level(0.75)
+        )
+
+        # Plotting on Shared Panels
+        """
+        Note that, as both panels have been left to auto-scale on their own,
+        both the red and blue series will have the same vertical extent, filling
+        their available vertical space with the default margin of 0.1 (10%).
+        Since the horizontal axis is shared, it accomodates both series.
+        """
+        shared_back_panel.plot(
+            [-1, 0.5], # x values
+            [0.25, 1.5], # y values
+            linewidth = 2,
+            color = 'red'
+        )
+        shared_front_panel.plot(
+            [-0.75, 2],
+            [1.25, 0.125],
+            linewidth = 2,
+            color = 'blue'
+        )
+
+        # Plotting with Annotated Coordinates
+        # Single Point (Y coordinate annotated)
+        annotated_coordinates_panel.plot(
+            -0.75,
+            3,
+            marker = 'o',
+            markersize = 5,
+            markerfacecolor = demo_figure.grey_level(0),
+            markeredgecolor = 'none',
+            zorder = 1
+        )
+        demo_figure.annotate_coordinates(
+            name = 'annotated_coordinates',
+            coordinates = [(-0.75, 3)],
+            show_x = False,
+            z_order = 2
+        )
+        # Line Segment
+        annotated_coordinates_panel.plot(
+            [-0.7, -0.4],
+            [1, 2],
+            color = demo_figure.grey_level(0.125),
+            zorder = 1
+        )
+        demo_figure.annotate_coordinates(
+            name = 'annotated_coordinates',
+            coordinates = [(-0.7, 1), (-0.4, 2)],
+            distance_proportion = 0.025,
+            z_order = 2
+        )
+        # Bent Line (includes intermediate point)
+        annotated_coordinates_panel.plot(
+            [-0.5, 0, 0.5],
+            [-0.5, -1.5, -0.5],
+            color = demo_figure.grey_level(0.25),
+            zorder = 1
+        )
+        demo_figure.annotate_coordinates(
+            name = 'annotated_coordinates',
+            coordinates = [(-0.5, -0.5), (0, -1.5), (0.5, -0.5)],
+            distance_proportion = 0.025,
+            z_order = 2
+        )
+        # Closed Polygon
+        annotated_coordinates_panel.plot(
+            [0.1, 0.25, 0.75, 0.9, 0.1],
+            [3.5, 1, 0.5, 3, 3.5],
+            color = demo_figure.grey_level(0.5),
+            zorder = 1
+        )
+        demo_figure.annotate_coordinates(
+            name = 'annotated_coordinates',
+            coordinates = [(0.1, 3.5), (0.25, 1), (0.75, 0.5), (0.9, 3), (0.1, 3.5)],
+            coordinate_labels = ['i', 'j', 'k', 'l', 'm'],
+            distance_proportion = 0.025,
+            show_ticks = True,
+            z_order = 2
+        )
+
+        # Plotting in 3D (series taken from matplotlib demo)
+        from numpy import linspace
+        theta = linspace(-4 * pi, 4 * pi, 128)
+        z = linspace(-2, 2, len(theta))
+        r = z ** 2 + 1
+        x = r * sin(theta)
+        y = r * cos(theta)
+        three_dimensional_panel.plot(
+            x,
+            y,
+            z,
+            linewidth = 2,
+            color = demo_figure.grey_level(0.125)
+        )
+
+        # Update (Positions) and Final Modifications
+        demo_figure.update() # Primarily aligning subplots/panels
+        # (.update() applies one font color to all decorations)
+        shared_back_panel.yaxis.label.set_color('red')
+        shared_back_panel.tick_params(
+            axis = 'y',
+            colors = 'red'
+        )
+        shared_front_panel.yaxis.label.set_color('blue')
+        shared_front_panel.tick_params(
+            axis = 'y',
+            colors = 'blue'
+        )
+
+        # Save and Close
+        demo_figure.save(extension = extension)
+        demo_figure.close()
 
 # endregion
