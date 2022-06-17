@@ -74,9 +74,7 @@ with open(
             key : float(value)
             for key, value in row.items()
         }
-        for row in DictReader(
-            read_file
-        )
+        for row in DictReader(read_file)
     )
 with open(
     'data/mean_observer_settings.csv',
@@ -87,9 +85,7 @@ with open(
             key : float(value)
             for key, value in row.items()
         }
-        for row in DictReader(
-            read_file
-        )
+        for row in DictReader(read_file)
     )
 mean_maxima = {
     color_name : max(

@@ -1,0 +1,4 @@
+Tabulated means downloaded from:
+http://www.cvrl.org/cones.htm
+Under "10-deg fundamentals based on the Stiles & Burch 10-deg CMFs" using 
+Energy (linear) Units, 1nm Stepsize and csv Format
