@@ -5,24 +5,28 @@ Burch (1959) expeirment.
 Tabulated data are taken from the Color & Vision Reserach Laboratory website
 (http://www.cvrl.org/)
 
-Figure Caption:
-Raw (faded) and mean (bold) settings of red, green, and blue primary light
-intensitites relative to test light intensity.  Test light wave-numbers are
+Figure Captions:
+1 - Raw (faded) and mean (bold) settings of red, green, and blue primary light
+intensities relative to test light intensity.  Test light wave-numbers are
 indicated by black dots along the bottom - note that the red, green, and blue
-primaries (at 15,500, 19,000, and 22,500 cm^-1, respecitvely) are indicated by
+primaries (at 15,500, 19,000, and 22,500 cm^-1, respectively) are indicated by
 open circles.  Lack of variation in individual settings at the primary wave-
 numbers indicate that settings were not recorded for these lights (the match is
 presumed, however real settings would show some variability due to observer
 error).  Negative intensity settings indicate that the primary light was added
 to the test side of the bipartite stimulus instead of the match side.  Setting
-intensitites drop towards zero at the extermes, indicating that the test lights
+intensities drop towards zero at the extremes, indicating that the test lights
 at these extremes were perceived to be much dimmer than those towards the middle
 of the visible spectrum - note also that sampling is more sparse towards the
 extremes.
+2 - Raw (faded) and mean (bold) settings converted to experiment chromaticity
+coordinates (r, g).  Select test wave-numbers are annotated along the mean
+series.  Individual variability is magnified by this transformation,
+particularly in the region between 20,000 and 21,000 cm^-1.
 """
 
-# Project folder
-from sys import path; path.append('../') # To access figure module
+# Project folder (to access other modules from project or sub-folder)
+from sys import path; path.append('.'); path.append('../')
 
 # region Settings
 INVERTED = False
@@ -97,6 +101,8 @@ mean_maxima = {
     for color_name in COLOR_NAMES
 }
 # endregion
+
+# region Figure 1 - Experimental Settings vs. Wave-Number
 
 # region Initialize Figure
 figure = Figure(
@@ -198,8 +204,14 @@ for wave_number_index in range(len(mean_data)):
             for index in range(3)
         )
         series_handle = foreground_panel.plot(
-            [mean_data[wave_number_index - 1]['Wave-Number'], mean_data[wave_number_index]['Wave-Number']],
-            [mean_data[wave_number_index - 1][color_name], mean_data[wave_number_index][color_name]],
+            list(
+                mean_data[index]['Wave-Number']
+                for index in [wave_number_index - 1, wave_number_index]
+            ),
+            list(
+                mean_data[index][color_name]
+                for index in [wave_number_index - 1, wave_number_index]
+            ),
             linewidth = 2,
             linestyle = line_style,
             color = list(
@@ -276,4 +288,167 @@ figure.save(
     name = figure.name,
     extension = EXTENSION
 )
+# endregion
+
+# endregion
+
+# region Figure 2 - Experimental Settings Converted to Chromaticity
+
+# region Initialize Figure
+figure = Figure(
+    name = 'Color Matching Expeirment Chromaticity{0}'.format(
+        ' (inverted)' if INVERTED else ''
+    ),
+    size = 2 * [SIZE[1]], # Square
+    inverted = INVERTED
+)
+figure.set_fonts(**FONT_SIZES)
+panel = figure.add_panel(
+    name = 'main',
+    title = 'Stiles & Burch (1959) Color Matching Experiment Chromaticity',
+    x_label = r'$r=\frac{R}{R+G+B}$',
+    x_lim = (-6, 1.5),
+    x_ticks = arange(-5, 1.1, 1),
+    y_label = r'$g=\frac{G}{R+G+B}$',
+    y_lim = (-1.5, 6),
+    y_ticks = arange(0, 5.1, 1)
+)
+panel.set_aspect(
+    aspect = 'equal', # Make horizontal and vertical axes the same scale
+    adjustable = 'box' # Change the plot area aspect ratio to achieve this
+)
+# endregion
+
+# region Reference
+panel.axhline(
+    y = 0,
+    linewidth = 2,
+    color = figure.grey_level(0.5),
+    zorder = 0
+)
+panel.axvline(
+    x = 0,
+    linewidth = 2,
+    color = figure.grey_level(0.5),
+    zorder = 0
+)
+for (x, y, r, g, b) in [ # Primary markers
+    (1, 0, 1, 0, 0),
+    (0, 1, 0, 1, 0),
+    (0, 0, 0, 0, 1)
+]:
+    panel.plot(
+        x,
+        y,
+        linestyle = 'none',
+        marker = 'o',
+        markersize = 8,
+        markerfacecolor = 'none',
+        markeredgecolor = (r, g, b),
+        markeredgewidth = 2,
+        zorder = 3
+    )
+# endregion
+
+# region Plot Individual Data
+observer_count = int((len(individual_data[0].keys()) - 1) / 3)
+for observer_index in range(observer_count):
+    panel.plot(
+        list(
+            datum['{0:02}-Red'.format(observer_index + 1)]
+            / (
+                datum['{0:02}-Red'.format(observer_index + 1)]
+                + datum['{0:02}-Green'.format(observer_index + 1)]
+                + datum['{0:02}-Blue'.format(observer_index + 1)]
+            )
+            for datum in individual_data
+        ),
+        list(
+            datum['{0:02}-Green'.format(observer_index + 1)]
+            / (
+                datum['{0:02}-Red'.format(observer_index + 1)]
+                + datum['{0:02}-Green'.format(observer_index + 1)]
+                + datum['{0:02}-Blue'.format(observer_index + 1)]
+            )
+            for datum in individual_data
+        ),
+        linewidth = 0.5,
+        color = figure.grey_level(0.9),
+        zorder = 1
+    )
+# endregion
+
+# region Plot Mean Data
+for wave_number_index in range(len(mean_data)):
+    if wave_number_index == 0: continue
+    if any(
+        mean_data[index]['Wave-Number'] in COLOR_WAVE_NUMBERS
+        for index in [wave_number_index - 1, wave_number_index]
+    ):
+        line_style = ':'
+    else:
+        line_style = '-'
+    panel.plot(
+        list(
+            mean_data[index]['Red']
+            / (
+                mean_data[index]['Red']
+                + mean_data[index]['Green']
+                + mean_data[index]['Blue']
+            )
+            for index in [wave_number_index - 1, wave_number_index]
+        ),
+        list(
+            mean_data[index]['Green']
+            / (
+                mean_data[index]['Red']
+                + mean_data[index]['Green']
+                + mean_data[index]['Blue']
+            )
+            for index in [wave_number_index - 1, wave_number_index]
+        ),
+        linewidth = 2,
+        linestyle = line_style,
+        color = figure.grey_level(0),
+        zorder = 2
+    )
+# endregion
+
+# region Annotate Target Wave-Numbers
+figure.annotate_coordinates(
+    name = 'main',
+    coordinates = list(
+        (
+            mean_datum['Red'] / (mean_datum['Red'] + mean_datum['Green'] + mean_datum['Blue']),
+            mean_datum['Green'] / (mean_datum['Red'] + mean_datum['Green'] + mean_datum['Blue'])
+        )
+        for mean_datum in mean_data
+    ),
+    coordinate_labels = list(
+        '{0:,}'.format(int(mean_datum['Wave-Number']))
+        if int(mean_datum['Wave-Number']) not in [
+            25000, 24500, 23500, 23000, 22000, # Too squished near blue
+            17750, 17250, 16750, 16500, 16250, 16000, 15000 # Too squished near red
+        ]
+        else ''
+        for mean_datum in mean_data
+    ),
+    omit_endpoints = True, # by default they stick out
+    distance_proportion = 0.01,
+    show_ticks = True,
+    font_size = figure.font_sizes['legends'],
+    font_color = figure.grey_level(0),
+    z_order = 4
+)
+# endregion
+
+# region Save Figure
+figure.update()
+figure.save(
+    path = 'images',
+    name = figure.name,
+    extension = EXTENSION
+)
+# endregion
+
 # endregion
