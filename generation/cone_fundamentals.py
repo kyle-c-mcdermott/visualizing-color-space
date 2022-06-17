@@ -2,9 +2,6 @@
 Plot Unscaled and Scaled Cone Fundamentals and the Color Matching Experiment
 Settings from which they are derived.
 
-Tabulated data are taken from the Color & Vision Reserach Laboratory website
-(http://www.cvrl.org/)
-
 Figure Captions:
 3 - Mean experiment settings (faded, dashed) transformed into unscaled cone
 fundamentals (bold, solid).  Open circles indicate the wave-numbers of the
@@ -27,7 +24,7 @@ nm for the long-, medium-, and short-wavelength sensitive cones, respectively.
 from sys import path; path.append('.'); path.append('../')
 
 # region Settings
-INVERTED = True
+INVERTED = False
 SIZE = (16, 9)
 FONT_SIZES = {
     'titles' : 16,
@@ -331,9 +328,7 @@ for cone_index, cone_name in enumerate(CONE_NAMES):
 wavelength_panel.legend(
     legend_handles,
     list(
-        '{0}-Wavelength-Sensitive Cone Fundamental'.format(
-            cone_name
-        )
+        '{0}-Wavelength-Sensitive Cone Fundamental'.format(cone_name)
         for cone_name in CONE_NAMES
     ),
     loc = 'right',

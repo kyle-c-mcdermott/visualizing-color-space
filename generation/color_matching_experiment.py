@@ -2,9 +2,6 @@
 Plot the individual and mean color matching settings from observers in Stiles &
 Burch (1959) expeirment.
 
-Tabulated data are taken from the Color & Vision Reserach Laboratory website
-(http://www.cvrl.org/)
-
 Figure Captions:
 1 - Raw (faded) and mean (bold) settings of red, green, and blue primary light
 intensities relative to test light intensity.  Test light wave-numbers are

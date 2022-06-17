@@ -1,0 +1,4 @@
+Tabulated means downloaded from:
+http://www.cvrl.org/ciexyzpr.htm
+Under "10-deg XYZ CMFs transformed from the CIE (2006) 10-deg LMS cone fundamentals"
+using 1 nm Stepsize and csv Format

@@ -13,10 +13,6 @@ Laboratory website (http://www.cvrl.org/)
 # Project folder (to access other modules from project or sub-folder)
 from sys import path; path.append('.'); path.append('../')
 
-# region Settings
-
-# endregion
-
 # region Imports
 from os import walk, chdir, getcwd
 from os.path import dirname
@@ -25,8 +21,6 @@ from csv import DictWriter, DictReader
 from numpy import nanmean, around, std, matmul, arange
 from scipy.interpolate import interp1d
 from numpy.linalg import inv
-
-from pprint import pprint
 # endregion
 
 # region (Ensure Correct Working Directory)
@@ -43,9 +37,9 @@ while True:
 # region Constants
 COLOR_NAMES = ['Red', 'Green', 'Blue']
 CONE_NAMES = ['Long', 'Medium', 'Short']
-
+FUNCTION_NAMES = ['X', 'Y', 'Z']
 """
-10-Degree Cone Fundamentals Conversion Coefficients Detailed here:
+10-Degree Cone Fundamentals Conversion Coefficients detailed here:
 http://www.cvrl.org/database/text/cones/ss10.htm
 S_G/S_B is taken from Stockman, Sharpe & Fach (1999)
 PDF avaiable here:
@@ -60,6 +54,22 @@ RGB_TO_UNSCALED_LMS = [
     [2.846201, 11.092490, 1.000000], # L_R/L_B, L_G/L_B, L_B/L_B (= 1.0)
     [0.168926, 8.265895, 1.000000], # M_R/M_B, M_G/M_B, M_B/M_B (= 1.0)
     [0.000000, 0.010600, 1.000000] # S_R/S_B (= 0.0), S_G/S_B, S_B/S_B (= 1.0)
+]
+
+"""
+10-Degree Color Matching Function Conversion Coefficients detailed here:
+http://www.cvrl.org/database/text/cienewxyz/cie2012xyz10.htm
+Y_L and Y_M taken from Sharpe et al (2011)
+PDF available here:
+http://www.cvrl.org/people/Stockman/pubs/2011%20Vstar%20correction%20SSJJ.pdf
+Z_S simply scales the s-cone cone fundamental to have the same integral (1.0) as
+the Y color matching function; said coefficient is in Stockman, Sharpe & Fach (1999)
+The X coefficients are credited to Jan Henrik Wold but there is no citation given.
+"""
+LMS_TO_XYZ = [
+    [1.93986443, -1.34664359, 0.43044935], # X_L, X_M, X_S
+    [0.69283932, 0.34967567, 0.00000000], # Y_L, Y_M, Y_S
+    [0.00000000, 0.00000000, 2.14687945] # Z_L, Z_M, Z_S
 ]
 
 # endregion
@@ -372,9 +382,11 @@ for cone_index, cone_name in enumerate(CONE_NAMES):
 print('\nLinear Transform Coefficients Scaled LMS to RGB:')
 for color_index, color_name in enumerate(COLOR_NAMES):
     print(
-        '{0}_L: {1:0.6f}, {0}_M: {2:0.6f}, {0}_S: {3:0.6f}'.format(
+        '{0}_L: {1}, {0}_M: {2}, {0}_S: {3}'.format(
             color_name[0],
-            *scaled_lms_to_rgb[color_index]
+            str(around(scaled_lms_to_rgb[color_index][0], 6)).rjust(9),
+            str(around(scaled_lms_to_rgb[color_index][1], 6)).rjust(9),
+            str(around(scaled_lms_to_rgb[color_index][2], 6)).rjust(9)
         )
     )
 with open(
@@ -394,6 +406,104 @@ with open(
                 for color_index, color_name in enumerate(COLOR_NAMES)
             }
             for row in rgb_to_scaled_lms
+        )
+    )
+# endregion
+
+# region Transform Normalized Cone Fundamentals into Color Matching Functions and Save
+color_matching_functions = list(
+    {
+        'Wavelength' : datum['Wavelength'],
+        **{
+            FUNCTION_NAMES[value_index] : value
+            for value_index, value in enumerate(
+                matmul(
+                    LMS_TO_XYZ,
+                    list(
+                        datum[cone_name]
+                        for cone_name in CONE_NAMES
+                    )
+                )
+            )
+        }
+    }
+    for datum in cone_fundamentals
+)
+with open(
+    'data/color_matching_functions.csv',
+    'w',
+    newline = ''
+) as write_file:
+    writer = DictWriter(
+        write_file,
+        fieldnames = color_matching_functions[0].keys()
+    )
+    writer.writeheader()
+    writer.writerows(color_matching_functions)
+# endregion
+
+# region Verify Color Matching Functions
+"""
+Tabulated means downloaded from:
+http://www.cvrl.org/ciexyzpr.htm
+Under "10-deg XYZ CMFs transformed from the CIE (2006) 10-deg LMS cone fundamentals"
+using 1 nm Stepsize and csv Format
+"""
+with open(
+    'cvrl/lin2012xyz10e_1_7sf.csv',
+    'r'
+) as read_file:
+    verification_color_matching_functions = list( # Will leave out extra extrapolated rows
+        {
+            'Wavelength' : int(row['Wavelength']),
+            'X' : float(row['X']),
+            'Y' : float(row['Y']),
+            'Z' : float(row['Z'])
+        }
+        for row in DictReader(
+            read_file,
+            fieldnames = ['Wavelength', 'X', 'Y', 'Z']
+        )
+        if int(row['Wavelength']) in list(datum['Wavelength'] for datum in color_matching_functions)
+    )
+errors = list(
+    abs(
+        around(datum[function_name], 6)
+        - verification_color_matching_functions[datum_index][function_name]
+    )
+    for datum_index, datum in enumerate(color_matching_functions)
+    for function_name in FUNCTION_NAMES
+)
+print('\nColor Matching Functions Verification:')
+print('Mean Error: {0:0.4f}'.format(nanmean(errors)).rjust(32))
+print('Max Error: {0:0.4f}'.format(max(errors)).rjust(32))
+print('Error Standard Deviation: {0:0.4f}'.format(std(errors)))
+"""
+Discrepancies here mirror those in the cone fundamentals, no added error
+apparent in this step
+"""
+# endregion
+
+# region Print Forward and Backward Linear Transformations
+print('\nLinear Transform Coefficients LMS to XYZ:')
+for function_index, function_name in enumerate(FUNCTION_NAMES):
+    print(
+        '{0}_L: {1}, {0}_M: {2}, {0}_S: {3}'.format(
+            function_name,
+            str(around(LMS_TO_XYZ[function_index][0], 8)).rjust(11),
+            str(around(LMS_TO_XYZ[function_index][1], 8)).rjust(11),
+            str(around(LMS_TO_XYZ[function_index][2], 8)).rjust(11)
+        )
+    )
+xyz_to_lms = inv(LMS_TO_XYZ)
+print('\nLinear Transform Coefficients XYZ to LMS:')
+for cone_index, cone_name in enumerate(CONE_NAMES):
+    print(
+        '{0}_X: {1}, {0}_Y: {2}, {0}_Z: {3}'.format(
+            cone_name[0],
+            str(around(xyz_to_lms[cone_index][0], 8)).rjust(11),
+            str(around(xyz_to_lms[cone_index][1], 8)).rjust(11),
+            str(around(xyz_to_lms[cone_index][2], 8)).rjust(11)
         )
     )
 # endregion
