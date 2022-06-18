@@ -1,0 +1,6 @@
+CIE Illuminant D65 Spectrum found on Older CIE Standards page:
+http://www.cvrl.org/cie.htm
+E/W button at the bottom of the page under CIE Illuminant D65
+(no citation given)
+Note: from the appearance the values tabulated here appear to be interpolated
+linearly from a more sparsely sampled source.

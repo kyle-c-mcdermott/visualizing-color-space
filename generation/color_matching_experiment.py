@@ -22,8 +22,28 @@ series.  Individual variability is magnified by this transformation,
 particularly in the region between 20,000 and 21,000 cm^-1.
 """
 
-# Project folder (to access other modules from project or sub-folder)
-from sys import path; path.append('.'); path.append('../')
+# region (Ensuring Access to Directories and Modules)
+"""
+If the script is not run from the project folder (highest level in repository),
+but instead (presumably) from the folder containing this script, the current
+working directory is moved up until a known sub-folder name is visible.
+"""
+from os import walk, chdir, getcwd
+from os.path import dirname
+folders = list()
+while True:
+    for root, dirs, files in walk('.'):
+        folders += list(name for name in dirs)
+    if 'generation' not in folders:
+        chdir(dirname(getcwd())) # Move up one
+    else:
+        break
+"""
+Adding the (now updated) current working directory to the path so that imports
+from the repository will work.
+"""
+from sys import path; path.append('.')
+# endregion
 
 # region Settings
 INVERTED = False
@@ -38,8 +58,6 @@ EXTENSION = 'svg'
 # endregion
 
 # region Imports
-from os import walk, chdir, getcwd
-from os.path import dirname
 from csv import DictReader
 from figure.figure import Figure
 from numpy import arange
@@ -48,17 +66,6 @@ from numpy import arange
 # region Constants
 COLOR_NAMES = ['Red', 'Green', 'Blue']
 COLOR_WAVE_NUMBERS = [15500, 19000, 22500]
-# endregion
-
-# region (Ensure Correct Working Directory)
-folders = list()
-while True:
-    for root, dirs, files in walk('.'):
-        folders += list(name for name in dirs)
-    if 'cvrl' not in folders:
-        chdir(dirname(getcwd())) # Move up one
-    else:
-        break
 # endregion
 
 # region Load in Data

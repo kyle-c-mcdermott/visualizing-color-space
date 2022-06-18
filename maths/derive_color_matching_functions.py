@@ -10,28 +10,35 @@ Tabulated data and coefficients are taken from the Color & Vision Research
 Laboratory website (http://www.cvrl.org/)
 """
 
-# Project folder (to access other modules from project or sub-folder)
-from sys import path; path.append('.'); path.append('../')
-
-# region Imports
+# region (Ensuring Access to Directories and Modules)
+"""
+If the script is not run from the project folder (highest level in repository),
+but instead (presumably) from the folder containing this script, the current
+working directory is moved up until a known sub-folder name is visible.
+"""
 from os import walk, chdir, getcwd
 from os.path import dirname
+folders = list()
+while True:
+    for root, dirs, files in walk('.'):
+        folders += list(name for name in dirs)
+    if 'maths' not in folders:
+        chdir(dirname(getcwd())) # Move up one
+    else:
+        break
+"""
+Adding the (now updated) current working directory to the path so that imports
+from the repository will work.
+"""
+from sys import path; path.append('.')
+# endregion
+
+# region Imports
 from pandas import read_excel
 from csv import DictWriter, DictReader
 from numpy import nanmean, around, std, matmul, arange
 from scipy.interpolate import interp1d
 from numpy.linalg import inv
-# endregion
-
-# region (Ensure Correct Working Directory)
-folders = list()
-while True:
-    for root, dirs, files in walk('.'):
-        folders += list(name for name in dirs)
-    if 'cvrl' not in folders:
-        chdir(dirname(getcwd())) # Move up one
-    else:
-        break
 # endregion
 
 # region Constants
@@ -322,7 +329,7 @@ with open(
 
 # region Verify Cone Fundamentals
 """
-Tabulated means downloaded from:
+Tabulated cone fundamentals downloaded from:
 http://www.cvrl.org/cones.htm
 Under "10-deg fundamentals based on the Stiles & Burch 10-deg CMFs" using
 Energy (linear) Units, 1nm Stepsize and csv Format
@@ -444,7 +451,7 @@ with open(
 
 # region Verify Color Matching Functions
 """
-Tabulated means downloaded from:
+Tabulated color matching functions downloaded from:
 http://www.cvrl.org/ciexyzpr.htm
 Under "10-deg XYZ CMFs transformed from the CIE (2006) 10-deg LMS cone fundamentals"
 using 1 nm Stepsize and csv Format
