@@ -1,0 +1,4 @@
+Tabulated spectrum locus coordinates for CIE 170-2 2-degree donloaded from:
+http://www.cvrl.org/ciexyzpr.htm
+Under 2-deg coordinates from 2-deg XYZ CMFs
+using 1 nm Stepsize and csv Format

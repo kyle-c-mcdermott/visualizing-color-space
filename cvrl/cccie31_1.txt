@@ -1,0 +1,5 @@
+Tabulated spectrum locus coordinates for CIE 1931 2-degree downloaded from:
+http://www.cvrl.org/cie.htm
+Under Chromaticity Coordinates, CIE 1931 2-deg xyz chromaticity coordinates
+using the second button "/W" with a solid (instead of dashed) line indicating
+higher sampling resolution (1 nm)
