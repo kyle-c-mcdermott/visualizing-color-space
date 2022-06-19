@@ -71,6 +71,7 @@ FILL_COLORS = (
 from csv import DictReader
 from figure.figure import Figure
 from numpy import arange, linspace, transpose, ptp
+from maths.chromaticity_from_spectrum import chromaticity_from_spectrum
 # endregion
 
 # region Constants
@@ -195,13 +196,15 @@ products = {
     )
     for function_name in FUNCTION_NAMES
 }
-integrals = {
-    function_name : sum(function_products) # Wavelength step size is 1, so height = area at each step
-    for function_name, function_products in products.items()
-}
-d65_chromaticity = (
-    integrals['X'] / (integrals['X'] + integrals['Y'] + integrals['Z']),
-    integrals['Y'] / (integrals['X'] + integrals['Y'] + integrals['Z'])
+d65_chromaticity = chromaticity_from_spectrum(
+    list(
+        (
+            datum['Wavelength'],
+            datum['Energy']
+        )
+        for datum in d65_spectrum
+    ),
+    standard = '170_2_10_deg'
 )
 # endregion
 
@@ -312,7 +315,7 @@ for function_index, function_name in enumerate(FUNCTION_NAMES):
         zorder = 2
     )
 chromaticity_panel.plot(
-    *d65_chromaticity,
+    *d65_chromaticity[1],
     linestyle = 'none',
     marker = 'o',
     markersize = 8,
@@ -326,7 +329,7 @@ chromaticity_panel.plot(
 x_panel.annotate(
     text = '{0}{1:0.0f}'.format(
         r'$X=\int \bar{R}(\lambda)\bar{X}(\lambda)d\lambda\approx$',
-        integrals['X']
+        d65_chromaticity[0][0]
     ),
     xy = (
         x_panel.get_xlim()[1] - 0.1 * ptp(x_panel.get_xlim()),
@@ -342,7 +345,7 @@ x_panel.annotate(
 y_panel.annotate(
     text = '{0}{1:0.0f}'.format(
         r'$Y=\int \bar{R}(\lambda)\bar{Y}(\lambda)d\lambda\approx$',
-        integrals['Y']
+        d65_chromaticity[0][1]
     ),
     xy = (
         y_panel.get_xlim()[1] - 0.1 * ptp(y_panel.get_xlim()),
@@ -358,7 +361,7 @@ y_panel.annotate(
 z_panel.annotate(
     text = '{0}{1:0.0f}'.format(
         r'$Z=\int \bar{R}(\lambda)\bar{Z}(\lambda)d\lambda\approx$',
-        integrals['Z']
+        d65_chromaticity[0][2]
     ),
     xy = (
         z_panel.get_xlim()[1] - 0.1 * ptp(z_panel.get_xlim()),
@@ -374,8 +377,8 @@ z_panel.annotate(
 chromaticity_panel.annotate(
     text = 'D65',
     xy = (
-        d65_chromaticity[0] + 0.01,
-        d65_chromaticity[1] + 0.01
+        d65_chromaticity[1][0] + 0.01,
+        d65_chromaticity[1][1] + 0.01
     ),
     xycoords = 'data',
     horizontalalignment = 'left',
@@ -387,9 +390,9 @@ chromaticity_panel.annotate(
 chromaticity_panel.annotate(
     text = '{0}{1:0.4f}\n\n{2}{3:0.4f}'.format(
         r'$x=\frac{X}{X+Y+Z}\approx$',
-        d65_chromaticity[0],
+        d65_chromaticity[1][0],
         r'$y=\frac{Y}{X+Y+Z}\approx$',
-        d65_chromaticity[1]
+        d65_chromaticity[1][1]
     ),
     xy = (
         chromaticity_panel.get_xlim()[1] - 0.1 * ptp(chromaticity_panel.get_xlim()),

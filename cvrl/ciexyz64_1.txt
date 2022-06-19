@@ -1,0 +1,4 @@
+Tabulated color matching functions for CIE 1964 10-degree downloaded from:
+http://www.cvrl.org/cie.htm
+Under "Colour matching functions", "CIE 1964 10-deg, XYZ CMFs" using the second,
+"/W" (solid line indiciating fine resolution as opposed to dotted line) button
