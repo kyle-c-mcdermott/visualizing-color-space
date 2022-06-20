@@ -1,8 +1,11 @@
 """
-Functions converting from sRGB to CIE 1931 2-Degree tristimulus values and back.
-Additional helper functions going from sRGB to chromoluminance and back for
-convenience.
-Method and coefficients taken from:
+Functions converting from display RGB to CIE 1931 2-Degree tristimulus values
+and back.  Additional helper functions allow conversions to and from CIE 1931
+2-Degree chromoluminance as well.  Linear transform coefficients for sRGB are
+used by default (applying accompanying gamma correction), but custom linear
+transformation coefficients can be passed (gamma correction will be treated as
+undefined and skipped with custom coefficients).
+Default sRGB coefficients and gamma correction taken from:
 https://en.wikipedia.org/wiki/SRGB#Transformation
 """
 
@@ -31,8 +34,8 @@ from sys import path; path.append('.')
 
 # region Imports
 from numpy.linalg import inv
-from typing import Union, Tuple
-from numpy import matmul, clip
+from typing import Union, Optional, List, Tuple
+from numpy import ndarray, matmul, clip
 from warnings import warn
 # endregion
 
@@ -65,10 +68,17 @@ XYZ_TO_SRGB = inv(SRGB_TO_XYZ) # Used to minimize rounding error going back and 
 # endregion
 
 # region Function - Convert sRGB to CIE 1931 2-Degree Tristimulus Values
-def srgb_to_tristimulus(
+def rgb_to_tristimulus(
     red : Union[int, float],
     green : Union[int, float],
-    blue : Union[int, float]
+    blue : Union[int, float],
+    coefficients : Optional[
+        Union[
+            List[Union[List[float], Tuple[float, float, float]]],
+            Tuple[Union[List[float], Tuple[float, float, float]]],
+            ndarray
+        ]
+    ] = None
 ) -> Tuple[float, float, float]: # (X, Y, Z)
 
     # region Validate Arguments
@@ -78,6 +88,15 @@ def srgb_to_tristimulus(
     assert 0.0 <= green <= 1.0
     assert any(isinstance(blue, valid_type) for valid_type in [int, float])
     assert 0.0 <= blue <= 1.0
+    if coefficients is not None:
+        assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
+        if isinstance(coefficients, ndarray):
+            assert len(coefficients.shape) == 2
+            assert all(dimension == 3 for dimension in coefficients.shape)
+        else:
+            assert len(coefficients) == 3
+            assert all(len(coefficient_row) == 3 for coefficient_row in coefficients)
+        assert all(all(isinstance(value, float) for value in coefficient_row) for coefficient_row in coefficients)
     # endregion
 
     # region Gamma Correction
@@ -89,13 +108,13 @@ def srgb_to_tristimulus(
             / 1.055
         ) ** 2.4
         for value in [red, green, blue]
-    )
+    ) if coefficients is None else (red, green, blue)
     # endregion
 
     # region Return Linear Transformation
     return tuple(
         matmul(
-            SRGB_TO_XYZ,
+            SRGB_TO_XYZ if coefficients is None else coefficients,
             rgb_values
         )
     )
@@ -104,10 +123,17 @@ def srgb_to_tristimulus(
 # endregion
 
 # region Function - Convert sRGB to CIE 1931 2-Degree Chromoluminance
-def srgb_to_chromoluminance(
+def rgb_to_chromoluminance(
     red : Union[int, float],
     green : Union[int, float],
-    blue : Union[int, float]
+    blue : Union[int, float],
+    coefficients : Optional[
+        Union[
+            List[Union[List[float], Tuple[float, float, float]]],
+            Tuple[Union[List[float], Tuple[float, float, float]]],
+            ndarray
+        ]
+    ] = None
 ) -> Tuple[float, float, float]: # (x, y, Y)
 
     # region Validate Arguments
@@ -117,10 +143,19 @@ def srgb_to_chromoluminance(
     assert 0.0 <= green <= 1.0
     assert any(isinstance(blue, valid_type) for valid_type in [int, float])
     assert 0.0 <= blue <= 1.0
+    if coefficients is not None:
+        assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
+        if isinstance(coefficients, ndarray):
+            assert len(coefficients.shape) == 2
+            assert all(dimension == 3 for dimension in coefficients.shape)
+        else:
+            assert len(coefficients) == 3
+            assert all(len(coefficient_row) == 3 for coefficient_row in coefficients)
+        assert all(all(isinstance(value, float) for value in coefficient_row) for coefficient_row in coefficients)
     # endregion
 
     # region Convert and Return
-    tristimulus_values = srgb_to_tristimulus(red, green, blue)
+    tristimulus_values = rgb_to_tristimulus(red, green, blue, coefficients = coefficients)
     return (
         tristimulus_values[0]
         / sum(tristimulus_values),
@@ -133,10 +168,17 @@ def srgb_to_chromoluminance(
 # endregion
 
 # region Function Convert CIE 1931 2-Degree Tristimulus Values to sRGB
-def tristimulus_to_srgb(
+def tristimulus_to_rgb(
     X : Union[int, float],
     Y : Union[int, float],
-    Z : Union[int, float]
+    Z : Union[int, float],
+    coefficients : Optional[
+        Union[
+            List[Union[List[float], Tuple[float, float, float]]],
+            Tuple[Union[List[float], Tuple[float, float, float]]],
+            ndarray
+        ]
+    ] = None
 ) -> Tuple[float, float, float]: # (R, G, B)
 
     # region Validate Arguments
@@ -146,11 +188,20 @@ def tristimulus_to_srgb(
     assert 0.0 <= Y <= 1.0
     assert any(isinstance(Z, valid_type) for valid_type in [int, float])
     assert 0.0 <= Z
+    if coefficients is not None:
+        assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
+        if isinstance(coefficients, ndarray):
+            assert len(coefficients.shape) == 2
+            assert all(dimension == 3 for dimension in coefficients.shape)
+        else:
+            assert len(coefficients) == 3
+            assert all(len(coefficient_row) == 3 for coefficient_row in coefficients)
+        assert all(all(isinstance(value, float) for value in coefficient_row) for coefficient_row in coefficients)
     # endregion
 
     # region Apply Linear Transformation
     srgb_values = matmul(
-        XYZ_TO_SRGB,
+        XYZ_TO_SRGB if coefficients is None else coefficients,
         (X, Y, Z)
     )
     # endregion
@@ -167,16 +218,23 @@ def tristimulus_to_srgb(
         if value <= (0.04045 / 12.92) # (0.0031308) Used to minimize rounding error going back and forth
         else 1.055 * (value ** (1.0 / 2.4)) - 0.055
         for value in clipped_srgb_values
-    )
+    ) if coefficients is None else clipped_srgb_values
     # endregion
 
 # endregion
 
 # region Function - Convert CIE 1931 2-Degree Chromoluminance to sRGB
-def chromoluminance_to_srgb(
+def chromoluminance_to_rgb(
     x : Union[int, float],
     y : Union[int, float],
-    Y : Union[int, float]
+    Y : Union[int, float],
+    coefficients : Optional[
+        Union[
+            List[Union[List[float], Tuple[float, float, float]]],
+            Tuple[Union[List[float], Tuple[float, float, float]]],
+            ndarray
+        ]
+    ] = None
 ) -> Tuple[float, float, float]: # (R, G, B)
 
     # region Validate Arguments
@@ -186,13 +244,23 @@ def chromoluminance_to_srgb(
     assert 0.0 < y <= 1.0
     assert any(isinstance(Y, valid_type) for valid_type in [int, float])
     assert 0.0 <= Y <= 1.0
+    if coefficients is not None:
+        assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
+        if isinstance(coefficients, ndarray):
+            assert len(coefficients.shape) == 2
+            assert all(dimension == 3 for dimension in coefficients.shape)
+        else:
+            assert len(coefficients) == 3
+            assert all(len(coefficient_row) == 3 for coefficient_row in coefficients)
+        assert all(all(isinstance(value, float) for value in coefficient_row) for coefficient_row in coefficients)
     # endregion
 
     # region Convert and Return
-    return tristimulus_to_srgb(
+    return tristimulus_to_rgb(
         Y * (x / y), # X
         Y,
-        Y * ((1 - x - y) / y) # Z
+        Y * ((1 - x - y) / y), # Z
+        coefficients = coefficients
     )
     # endregion
 
@@ -205,23 +273,39 @@ if __name__ == '__main__':
     green = 1.0
     blue = 1.0
 
-    tristimulus_values = srgb_to_tristimulus(red, green, blue)
-    chromoluminance_values = srgb_to_chromoluminance(red, green, blue)
-    rgb_from_tristimulus = tristimulus_to_srgb(*tristimulus_values)
-    rgb_from_chromoluminance = chromoluminance_to_srgb(*chromoluminance_values)
+    tristimulus_values = rgb_to_tristimulus(red, green, blue)
+    chromoluminance_values = rgb_to_chromoluminance(red, green, blue)
+    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values)
+    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values)
 
     print('\nOriginal RGB: ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(red, green, blue))
     print('Tristimulus Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*tristimulus_values))
     print('Chromoluminance Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*chromoluminance_values))
     print('RGB from Tristimulus:  ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(*rgb_from_tristimulus))
-    print('RGB from Chromoluminance:  ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(*rgb_from_chromoluminance))
+    print('RGB from Chromoluminance:  ({0:0.2f}, {1:0.2f}, {2:0.2f})\n'.format(*rgb_from_chromoluminance))
 
     print( # Invalid chromoluminance, outside of gamut, generates warning
-        chromoluminance_to_srgb(
+        chromoluminance_to_rgb(
             0.01,
             0.01,
             0.5
         )
     )
+
+    rgb_to_xyz = ( # Taken from CRT display
+        (0.0455, 0.0369, 0.0282),
+        (0.0256, 0.0708, 0.0184),
+        (0.0023, 0.0106, 0.1484)
+    )
+    xyz_to_rgb = inv(rgb_to_xyz)
+    tristimulus_values = rgb_to_tristimulus(red, green, blue, coefficients = rgb_to_xyz)
+    chromoluminance_values = rgb_to_chromoluminance(red, green, blue, coefficients = rgb_to_xyz)
+    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values, coefficients = xyz_to_rgb)
+    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values, coefficients = xyz_to_rgb)
+    print('\nWith arbitrary linear transformation coefficients:')
+    print('Tristimulus Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*tristimulus_values))
+    print('Chromoluminance Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*chromoluminance_values))
+    print('RGB from Tristimulus:  ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(*rgb_from_tristimulus))
+    print('RGB from Chromoluminance:  ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(*rgb_from_chromoluminance))
 
 # endregion

@@ -153,7 +153,7 @@ red_panel = figure.add_panel(
     x_label = r'Wavelength $\lambda$ (nm)',
     x_lim = (370, 790),
     x_ticks = arange(400, 751, 50),
-    y_label = r'Luminance $\frac{Cd}{m^2}$'
+    y_label = 'Spectral Radiance\n(units unknown)'
 )
 green_panel = figure.add_panel(
     name = 'green',
@@ -162,7 +162,7 @@ green_panel = figure.add_panel(
     x_label = r'Wavelength $\lambda$ (nm)',
     x_lim = (370, 790),
     x_ticks = arange(400, 751, 50),
-    y_label = r'Luminance $\frac{Cd}{m^2}$'
+    y_label = 'Spectral Radiance\n(units unknown)'
 )
 blue_panel = figure.add_panel(
     name = 'blue',
@@ -171,7 +171,7 @@ blue_panel = figure.add_panel(
     x_label = r'Wavelength $\lambda$ (nm)',
     x_lim = (370, 790),
     x_ticks = arange(400, 751, 50),
-    y_label = r'Luminance $\frac{Cd}{m^2}$'
+    y_label = 'Spectral Radiance\n(units unknown)'
 )
 # endregion
 
@@ -316,8 +316,6 @@ for color_index, color_name in enumerate(COLOR_NAMES):
             *inverse_transform[color_index]
         )
     )
-# from pprint import pprint; pprint(phosphor_chromaticities); pprint(white_chromaticity)
-
 # endregion
 
 # region Figure 11 - Estimating CRT White Chromaticity
