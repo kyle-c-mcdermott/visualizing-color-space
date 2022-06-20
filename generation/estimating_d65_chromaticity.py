@@ -6,12 +6,12 @@ Figure Captions:
 6 - Energy spectrum of the standard CIE Illuminant D65 (daylight, with a
 correlated color temperature of roughly 6500K - that will be demonstrated later).
 7 - The products of the D65 spectrum from Figure 6 with each of the color
-matching functions from Figure 5 are shown on the left where the area under each
-of the resulting curves (shaded) are annotated.  On the right, the trivalues X,
-Y, and Z are converted to chromaticity (x, y) and plotted.  The resulting
-chromaticity coordinates are reasonably close to those listed for the CIE 1964
-10-degree diagram (of which the presented CIE 170-2 10-degree diagram is a
-modification).
+matching functions from Figure 5 are shown on the left where the areas under
+each of the resulting curves (shaded) are annotated.  On the right, the
+trivalues X, Y, and Z are converted to chromaticity (x, y) and plotted.  The
+resulting chromaticity coordinates are reasonably close to those listed for the
+CIE 1964 10-degree diagram (of which the presented CIE 170-2 10-degree diagram
+is a modification).
 https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
 """
 
