@@ -10,7 +10,10 @@ phosphor spectra.
 11 - The products of the CRT white spectrum with each of the color matching
 functions are shown on the left where the areas under each of the resulting
 curves (shaded) are annotated.  On the right are plotted the chromaticity of
-white as well as the three CRT phosphors.
+white as well as the three CRT phosphors.  The interior of the spectrum locus is
+shaded except for the triangular region formed by the three display phosphors to
+indicate the portion of the spectrum locus where chromaticities can be achieved
+by mixing of the three phosphors.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -70,6 +73,7 @@ from csv import DictReader
 from figure.figure import Figure
 from numpy import arange, linspace, transpose, ptp
 from maths.chromaticity_from_spectrum import chromaticity_from_spectrum
+from numpy.linalg import inv
 # endregion
 
 # region Contants
@@ -284,6 +288,36 @@ white_chromaticity = chromaticity_from_spectrum(
     ),
     standard = '170_2_10_deg'
 )
+print('\nPhosphor Tristimulus Values:')
+for function_index, function_name in enumerate(FUNCTION_NAMES):
+    print(
+        '{0}_R: {1:0.4f}, {0}_G: {2:0.4f}, {0}_B: {3:0.4f}'.format(
+            function_name,
+            *list(
+                phosphor_chromaticities[color_name][0][function_index]
+                for color_name in COLOR_NAMES
+            )
+        )
+    )
+inverse_transform = inv(
+    list(
+        list(
+            phosphor_chromaticities[color_name][0][function_index]
+            for color_name in COLOR_NAMES
+        )
+        for function_index in range(len(FUNCTION_NAMES))
+    )
+)
+print('\nInverse Transformation Coefficients')
+for color_index, color_name in enumerate(COLOR_NAMES):
+    print(
+        '{0}_X: {1:0.2f}, {0}_Y: {2:0.2f}, {0}_Z: {3:0.2f}'.format(
+            color_name[0],
+            *inverse_transform[color_index]
+        )
+    )
+# from pprint import pprint; pprint(phosphor_chromaticities); pprint(white_chromaticity)
+
 # endregion
 
 # region Figure 11 - Estimating CRT White Chromaticity
