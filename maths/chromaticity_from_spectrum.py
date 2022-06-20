@@ -19,7 +19,7 @@ folders = list()
 while True:
     for root, dirs, files in walk('.'):
         folders += list(name for name in dirs)
-    if 'generation' not in folders:
+    if 'maths' not in folders:
         chdir(dirname(getcwd())) # Move up one
     else:
         break
@@ -95,7 +95,22 @@ http://www.cvrl.org/ciexyzpr.htm
 Under "Colour matching functions", "2-deg XYZ CMFs transformed from the CIE
 (2006) 2-deg LMS cone fundamentals" using 1 nm Stepsize and csv Format
 """
-
+with open(
+    'cvrl/lin2012xyz10e_1_7sf.csv',
+    'r'
+) as read_file:
+    color_matching_functions['170_2_2_deg'] = list(
+        {
+            'Wavelength' : int(row['Wavelength']),
+            'X' : float(row['X']),
+            'Y' : float(row['Y']),
+            'Z' : float(row['Z'])
+        }
+        for row in DictReader(
+            read_file,
+            fieldnames = ['Wavelength', 'X', 'Y', 'Z']
+        )
+    )
 
 """
 Tabulated color matching functions for CIE 170-2 10-degree downloaded from:
@@ -282,15 +297,15 @@ if __name__ == '__main__':
         )
     d65_chromaticity = chromaticity_from_spectrum(
         d65_spectrum,
-        standard = '170_2_10_deg'
+        standard = '170_2_2_deg'
     )
     print(
-        '\nD65 Tristimulus Values (170-2 10-deg):\nX = {0:0.0f}\nY = {1:0.0f}\nZ = {2:0.0f}'.format(
+        '\nD65 Tristimulus Values (170-2 2-deg):\nX = {0:0.0f}\nY = {1:0.0f}\nZ = {2:0.0f}'.format(
             *d65_chromaticity[0]
         )
     )
     print(
-        'D65 Chromaticity (170-2 10-deg) = ({0:0.4f}, {1:0.4f})'.format(
+        'D65 Chromaticity (170-2 2-deg) = ({0:0.4f}, {1:0.4f})'.format(
             *d65_chromaticity[1]
         )
     )

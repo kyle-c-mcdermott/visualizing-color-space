@@ -2,7 +2,7 @@
 Plotting the spectra and chromaticities for the three phosphors of a CRT display
 and their combined output (white).
 
-Figure Caption:
+Figure Captions:
 10 - Luminance spectra of the three phorphors of a CRT display measured with a
 spectroradiometer (Photo Research PR 650, if memory serves).  In each panel the
 summed spectrum representing white is also shown along with the individual

@@ -1,0 +1,4 @@
+Tabulated color matching functions for CIE 170-2 2-degree downloaded from:
+http://www.cvrl.org/ciexyzpr.htm
+Under "Colour matching functions", "2-deg XYZ CMFs transformed from the CIE
+(2006) 2-deg LMS cone fundamentals" using 1 nm Stepsize and csv Format
