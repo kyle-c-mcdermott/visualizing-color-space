@@ -156,13 +156,23 @@ def rgb_to_chromoluminance(
 
     # region Convert and Return
     tristimulus_values = rgb_to_tristimulus(red, green, blue, coefficients = coefficients)
-    return (
-        tristimulus_values[0]
-        / sum(tristimulus_values),
-        tristimulus_values[1]
-        / sum(tristimulus_values),
-        tristimulus_values[1]
-    )
+    if sum(tristimulus_values) == 0: # Black, special case
+        white_tristimulus = rgb_to_tristimulus(1.0, 1.0, 1.0, coefficients = coefficients)
+        return(
+            white_tristimulus[0]
+            / sum(white_tristimulus),
+            white_tristimulus[1]
+            / sum(white_tristimulus),
+            0.0
+        )
+    else:
+        return (
+            tristimulus_values[0]
+            / sum(tristimulus_values),
+            tristimulus_values[1]
+            / sum(tristimulus_values),
+            tristimulus_values[1]
+        )
     # endregion
 
 # endregion

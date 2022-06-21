@@ -3,3 +3,8 @@ http://www.cvrl.org/cie.htm
 Under Chromaticity Coordinates, CIE 1931 2-deg xyz chromaticity coordinates
 using the second button "/W" with a solid (instead of dashed) line indicating
 higher sampling resolution (1 nm)
+(Note that chromaticity values do not change beyond 699 nm, likely due to the
+fact that rounding errors seem to cause the spectrum locus to start wandering
+about back on itself based on chromaticities converted from the tabulated color
+matching functions - the converted values were abandoned and 699 nm copied down
+for the remainder of the series.)
