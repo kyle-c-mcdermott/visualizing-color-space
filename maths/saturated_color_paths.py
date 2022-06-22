@@ -374,6 +374,7 @@ def visible_spectrum(
 # region Function - Chromaticity within Gamut
 def chromaticity_within_gamut(
     resolution : Optional[int] = None, # default RESOLUTION
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[ # default sRGB
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -393,6 +394,8 @@ def chromaticity_within_gamut(
     if resolution is None: resolution = RESOLUTION
     assert isinstance(resolution, int)
     assert resolution >= 2
+    if gamma_correct is None: gamma_correct = False
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None: # Can otherwise be passed as None
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -441,6 +444,7 @@ def chromaticity_within_gamut(
                 chromoluminance_vertices = list(
                     rgb_to_chromoluminance(
                         *rgb_vertice,
+                        gamma_correct = gamma_correct,
                         coefficients = coefficients
                     )
                     for rgb_vertice in rgb_vertices
@@ -627,6 +631,7 @@ def three_dimensional_surface(
     space_index : int, # RGB = 0, Chromoluminance = 1
     color_value : Optional[int] = None, # default 1
     resolution : Optional[int] = None, # default RESOLUTION
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[ # default sRGB / CIE 1931
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -658,6 +663,8 @@ def three_dimensional_surface(
     if resolution is None: resolution = RESOLUTION
     assert isinstance(resolution, int)
     assert resolution >= 2
+    if gamma_correct is None: gamma_correct = True
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None: # Can otherwise be passed as None
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -685,6 +692,7 @@ def three_dimensional_surface(
             else:
                 use_values = rgb_to_chromoluminance(
                     *triplet,
+                    gamma_correct = gamma_correct,
                     coefficients = coefficients
                 )
             row_xs.append(use_values[0])

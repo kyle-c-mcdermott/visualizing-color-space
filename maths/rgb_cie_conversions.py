@@ -72,6 +72,7 @@ def rgb_to_tristimulus(
     red : Union[int, float],
     green : Union[int, float],
     blue : Union[int, float],
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -88,6 +89,8 @@ def rgb_to_tristimulus(
     assert 0.0 <= green <= 1.0
     assert any(isinstance(blue, valid_type) for valid_type in [int, float])
     assert 0.0 <= blue <= 1.0
+    if gamma_correct is None: gamma_correct = False
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None:
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -100,15 +103,18 @@ def rgb_to_tristimulus(
     # endregion
 
     # region Gamma Correction
-    rgb_values = list(
-        value / 12.92
-        if value <= 0.04045
-        else (
-            (value + 0.055)
-            / 1.055
-        ) ** 2.4
-        for value in [red, green, blue]
-    ) if coefficients is None else (red, green, blue)
+    if gamma_correct:
+        rgb_values = list(
+            value / 12.92
+            if value <= 0.04045
+            else (
+                (value + 0.055)
+                / 1.055
+            ) ** 2.4
+            for value in [red, green, blue]
+        ) if coefficients is None else (red, green, blue)
+    else:
+        rgb_values = (red, green, blue)
     # endregion
 
     # region Return Linear Transformation
@@ -127,6 +133,7 @@ def rgb_to_chromoluminance(
     red : Union[int, float],
     green : Union[int, float],
     blue : Union[int, float],
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -143,6 +150,8 @@ def rgb_to_chromoluminance(
     assert 0.0 <= green <= 1.0
     assert any(isinstance(blue, valid_type) for valid_type in [int, float])
     assert 0.0 <= blue <= 1.0
+    if gamma_correct is None: gamma_correct = False
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None:
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -155,9 +164,21 @@ def rgb_to_chromoluminance(
     # endregion
 
     # region Convert and Return
-    tristimulus_values = rgb_to_tristimulus(red, green, blue, coefficients = coefficients)
+    tristimulus_values = rgb_to_tristimulus(
+        red,
+        green,
+        blue,
+        gamma_correct = gamma_correct,
+        coefficients = coefficients
+    )
     if sum(tristimulus_values) == 0: # Black, special case
-        white_tristimulus = rgb_to_tristimulus(1.0, 1.0, 1.0, coefficients = coefficients)
+        white_tristimulus = rgb_to_tristimulus(
+            1.0,
+            1.0,
+            1.0,
+            gamma_correct = gamma_correct,
+            coefficients = coefficients
+        )
         return(
             white_tristimulus[0]
             / sum(white_tristimulus),
@@ -182,6 +203,7 @@ def tristimulus_to_rgb(
     X : Union[int, float],
     Y : Union[int, float],
     Z : Union[int, float],
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -198,6 +220,8 @@ def tristimulus_to_rgb(
     assert 0.0 <= Y <= 1.0
     assert any(isinstance(Z, valid_type) for valid_type in [int, float])
     assert 0.0 <= Z
+    if gamma_correct is None: gamma_correct = False
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None:
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -223,12 +247,15 @@ def tristimulus_to_rgb(
     # endregion
 
     # region Return with Gamma Correction
-    return tuple(
-        12.92 * value
-        if value <= (0.04045 / 12.92) # (0.0031308) Used to minimize rounding error going back and forth
-        else 1.055 * (value ** (1.0 / 2.4)) - 0.055
-        for value in clipped_srgb_values
-    ) if coefficients is None else clipped_srgb_values
+    if gamma_correct:
+        return tuple(
+            12.92 * value
+            if value <= (0.04045 / 12.92) # (0.0031308) Used to minimize rounding error going back and forth
+            else 1.055 * (value ** (1.0 / 2.4)) - 0.055
+            for value in clipped_srgb_values
+        ) if coefficients is None else clipped_srgb_values
+    else:
+        return clipped_srgb_values
     # endregion
 
 # endregion
@@ -238,6 +265,7 @@ def chromoluminance_to_rgb(
     x : Union[int, float],
     y : Union[int, float],
     Y : Union[int, float],
+    gamma_correct : Optional[bool] = None,
     coefficients : Optional[
         Union[
             List[Union[List[float], Tuple[float, float, float]]],
@@ -254,6 +282,8 @@ def chromoluminance_to_rgb(
     assert 0.0 < y <= 1.0
     assert any(isinstance(Y, valid_type) for valid_type in [int, float])
     assert 0.0 <= Y <= 1.0
+    if gamma_correct is None: gamma_correct = False
+    assert isinstance(gamma_correct, bool)
     if coefficients is not None:
         assert any(isinstance(coefficients, valid_type) for valid_type in [list, tuple, ndarray])
         if isinstance(coefficients, ndarray):
@@ -270,6 +300,7 @@ def chromoluminance_to_rgb(
         Y * (x / y), # X
         Y,
         Y * ((1 - x - y) / y), # Z
+        gamma_correct = gamma_correct,
         coefficients = coefficients
     )
     # endregion
@@ -282,11 +313,12 @@ if __name__ == '__main__':
     red = 1.0
     green = 1.0
     blue = 1.0
+    gamma_correct = True
 
-    tristimulus_values = rgb_to_tristimulus(red, green, blue)
-    chromoluminance_values = rgb_to_chromoluminance(red, green, blue)
-    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values)
-    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values)
+    tristimulus_values = rgb_to_tristimulus(red, green, blue, gamma_correct = gamma_correct)
+    chromoluminance_values = rgb_to_chromoluminance(red, green, blue, gamma_correct = gamma_correct)
+    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values, gamma_correct = gamma_correct)
+    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values, gamma_correct = gamma_correct)
 
     print('\nOriginal RGB: ({0:0.2f}, {1:0.2f}, {2:0.2f})'.format(red, green, blue))
     print('Tristimulus Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*tristimulus_values))
@@ -308,10 +340,10 @@ if __name__ == '__main__':
         (0.0023, 0.0106, 0.1484)
     )
     xyz_to_rgb = inv(rgb_to_xyz)
-    tristimulus_values = rgb_to_tristimulus(red, green, blue, coefficients = rgb_to_xyz)
-    chromoluminance_values = rgb_to_chromoluminance(red, green, blue, coefficients = rgb_to_xyz)
-    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values, coefficients = xyz_to_rgb)
-    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values, coefficients = xyz_to_rgb)
+    tristimulus_values = rgb_to_tristimulus(red, green, blue, gamma_correct = gamma_correct, coefficients = rgb_to_xyz)
+    chromoluminance_values = rgb_to_chromoluminance(red, green, blue, gamma_correct = gamma_correct, coefficients = rgb_to_xyz)
+    rgb_from_tristimulus = tristimulus_to_rgb(*tristimulus_values, gamma_correct = gamma_correct, coefficients = xyz_to_rgb)
+    rgb_from_chromoluminance = chromoluminance_to_rgb(*chromoluminance_values, gamma_correct = gamma_correct, coefficients = xyz_to_rgb)
     print('\nWith arbitrary linear transformation coefficients:')
     print('Tristimulus Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*tristimulus_values))
     print('Chromoluminance Values: ({0:0.4f}, {1:0.4f}, {2:0.4f})'.format(*chromoluminance_values))
