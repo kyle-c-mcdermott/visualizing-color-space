@@ -58,7 +58,7 @@ from csv import DictReader
 from maths.saturated_color_paths import (
     visible_spectrum,
     chromaticity_within_gamut,
-    chromaticity_outisde_gamut
+    chromaticity_outside_gamut
 )
 from typing import Optional, Union, List, Tuple
 from figure.figure import Figure
@@ -465,7 +465,7 @@ chromaticity_panel.add_collection(
         zorder = 1
     )
 )
-paths, colors = chromaticity_outisde_gamut(
+paths, colors = chromaticity_outside_gamut(
     resolution = RESOLUTION
 )
 chromaticity_panel.add_collection(
@@ -524,6 +524,7 @@ figure.save(
     name = figure.name,
     extension = EXTENSION
 )
+figure.close()
 # endregion
 
 # endregion
@@ -722,6 +723,7 @@ figure.save(
     name = figure.name,
     extension = EXTENSION
 )
+figure.close()
 # endregion
 
 # endregion

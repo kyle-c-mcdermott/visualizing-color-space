@@ -88,7 +88,7 @@ from figure.figure import Figure
 from numpy import linspace, transpose, array
 from maths.saturated_color_paths import (
     chromaticity_within_gamut,
-    chromaticity_outisde_gamut,
+    chromaticity_outside_gamut,
     three_dimensional_surface
 )
 from matplotlib.collections import PathCollection
@@ -272,6 +272,7 @@ if SAVE_FIGURES[0]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion
@@ -374,7 +375,7 @@ if SAVE_FIGURES[1]:
             zorder = 1
         )
     )
-    paths, colors = chromaticity_outisde_gamut(
+    paths, colors = chromaticity_outside_gamut(
         resolution = RESOLUTIONS[0]
     )
     coarse_panel.add_collection(
@@ -397,7 +398,7 @@ if SAVE_FIGURES[1]:
             zorder = 1
         )
     )
-    paths, colors = chromaticity_outisde_gamut(
+    paths, colors = chromaticity_outside_gamut(
         resolution = RESOLUTIONS[1]
     )
     fine_panel.add_collection(
@@ -417,6 +418,7 @@ if SAVE_FIGURES[1]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion
@@ -530,7 +532,7 @@ if SAVE_FIGURES[2]:
             zorder = 1
         )
     )
-    paths, colors = chromaticity_outisde_gamut(
+    paths, colors = chromaticity_outside_gamut(
         resolution = RESOLUTIONS[1]
     )
     for panel in figure.panels.values():
@@ -551,6 +553,7 @@ if SAVE_FIGURES[2]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion
@@ -662,6 +665,7 @@ if SAVE_FIGURES[3]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion
@@ -742,7 +746,7 @@ if SAVE_FIGURES[4]:
             zorder = 1
         )
     )
-    paths, colors = chromaticity_outisde_gamut(
+    paths, colors = chromaticity_outside_gamut(
         resolution = RESOLUTIONS[1],
         coefficients = INSIDE_PRIMARIES_COEFFICIENTS
     )
@@ -785,6 +789,7 @@ if SAVE_FIGURES[4]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion
@@ -917,6 +922,7 @@ if SAVE_FIGURES[5]:
         name = figure.name,
         extension = EXTENSION
     )
+    figure.close()
     # endregion
 
 # endregion

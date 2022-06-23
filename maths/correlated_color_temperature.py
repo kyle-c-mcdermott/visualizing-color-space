@@ -50,8 +50,8 @@ TEMPERATURES = (
     list(linspace(100, 1990, 16))
     + list(linspace(2000, 3900, 16))
     + list(linspace(4000, 7900, 16))
-    + list(linspace(8000, 99000, 8))
-    + list(linspace(100000, 1000000, 8))
+    + list(linspace(8000, 49000, 16))
+    + list(linspace(50000, 1000000, 8))
 )
 # endregion
 

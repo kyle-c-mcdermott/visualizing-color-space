@@ -475,7 +475,7 @@ def chromaticity_within_gamut(
 # endregion
 
 # region Function - Chromaticity outside Gamut (but inside Spectrum Locus)
-def chromaticity_outisde_gamut(
+def chromaticity_outside_gamut(
     resolution : Optional[int] = None, # default RESOLUTION
     coefficients : Optional[ # default sRGB
         Union[
@@ -830,6 +830,7 @@ if __name__ == '__main__':
     #     name = figure.name,
     #     extension = 'svg'
     # )
+    # figure.close()
     # endregion
 
     # region chromaticity_within_gamut
@@ -898,9 +899,10 @@ if __name__ == '__main__':
     #     name = figure.name,
     #     extension = 'svg'
     # )
+    # figure.close()
     # endregion
 
-    # region chromaticity_outisde_gamut
+    # region chromaticity_outside_gamut
     # figure = Figure(
     #     name = 'Demonstration - saturated_color_paths chromaticity_outside_gamut',
     #     size = (16, 9),
@@ -933,7 +935,7 @@ if __name__ == '__main__':
     #         aspect = 'equal', # Make horizontal and vertical axes the same scale
     #         adjustable = 'box' # Change the plot area aspect ratio to achieve this
     #     )
-    # paths, colors = chromaticity_outisde_gamut()
+    # paths, colors = chromaticity_outside_gamut()
     # srgb_panel.add_collection(
     #     PathCollection(
     #         paths,
@@ -942,7 +944,7 @@ if __name__ == '__main__':
     #         zorder = 0
     #     )
     # )
-    # paths, colors = chromaticity_outisde_gamut(
+    # paths, colors = chromaticity_outside_gamut(
     #     resolution = 64,
     #     coefficients = rgb_to_xyz
     # )
@@ -960,6 +962,7 @@ if __name__ == '__main__':
     #     name = figure.name,
     #     extension = 'svg'
     # )
+    # figure.close()
     # endregion
 
     # region three_dimensional_surface
@@ -1055,6 +1058,7 @@ if __name__ == '__main__':
     #     name = figure.name,
     #     extension = 'svg'
     # )
+    # figure.close()
     # endregion
 
 # endregion

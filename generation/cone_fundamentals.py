@@ -262,6 +262,7 @@ figure.save(
     name = figure.name,
     extension = EXTENSION
 )
+figure.close()
 # endregion
 
 # endregion
@@ -377,6 +378,7 @@ figure.save(
     name = figure.name,
     extension = EXTENSION
 )
+figure.close()
 # endregion
 
 # endregion
