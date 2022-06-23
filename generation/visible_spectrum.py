@@ -9,7 +9,11 @@ from white point - D65) are illustrated in the vertical strip to the right.  The
 approximate wavelength of named colors are given.  Note the uneven spacing of
 wavelengths along the spectrum locus, emphasized by the same tick locations on
 the linear-wavelength scale of the vertical strip.
-21 - (Horizontal spectra - with red, green, and blue values - from sRGB conversion and approximating functions)
+21 - Colorized visible spectrum bands from the colorized chromaticity diagram, a
+simplified set of piecewise functions using straight lines between colors and
+arctangent functions at the edges, and a fancy set of piecewise functions using
+a sigmoid function.  The lower panel shows the values for red, green, and blue
+for each of the three spectrum colorations.
 """
 
 # region (Ensuring Access to Directories and Modules)
