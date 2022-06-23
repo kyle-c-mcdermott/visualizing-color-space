@@ -12,8 +12,6 @@ the linear-wavelength scale of the vertical strip.
 21 - (Horizontal spectra - with red, green, and blue values - from sRGB conversion and approximating functions)
 """
 
-# TODO: Come up with simplified, piecewise functions for red, green, and blue
-
 # region (Ensuring Access to Directories and Modules)
 """
 If the script is not run from the project folder (highest level in repository),
@@ -38,7 +36,7 @@ from sys import path; path.append('.')
 # endregion
 
 # region Settings
-INVERTED = True
+INVERTED = False
 SIZE = (16, 9)
 FONT_SIZES = {
     'titles' : 16,
@@ -51,13 +49,14 @@ EXTENSION = 'svg'
 # endregion
 
 # region Imports
-from numpy import arange, ptp, linspace
+from numpy import arange, ptp, linspace, pi, arctan, exp
 from csv import DictReader
 from maths.saturated_color_paths import (
     visible_spectrum,
     chromaticity_within_gamut,
     chromaticity_outisde_gamut
 )
+from typing import Optional, Union, List, Tuple
 from figure.figure import Figure
 from matplotlib.collections import PathCollection
 # endregion
@@ -139,6 +138,213 @@ for wavelength_index, wavelength in enumerate(
         )
         if best_wavelengths[color_name] is None or best_wavelengths[color_name][1] > error:
             best_wavelengths[color_name] = (wavelength, error)
+# endregion
+
+# region Function - Simplified Coloration of Spectrum
+def simplified_spectrum_colors(
+    min_wavelength : Optional[Union[int, float]] = None,
+    max_wavelength : Optional[Union[int, float]] = None,
+    resolution : Optional[int] = None
+) -> List[Tuple[float, float, float]]:
+
+    if min_wavelength is None: min_wavelength = WAVELENGTH_BOUNDS[0]
+    assert any(isinstance(min_wavelength, valid_type) for valid_type in [int, float])
+    assert 300 < min_wavelength < 900 # arbitrary, but reasonable limits
+    if max_wavelength is None: max_wavelength = WAVELENGTH_BOUNDS[1]
+    assert any(isinstance(max_wavelength, valid_type) for valid_type in [int, float])
+    assert 300 < max_wavelength < 900 # arbitrary, but reasonable limits
+    if resolution is None: resolution = RESOLUTION
+    assert isinstance(resolution, int)
+    assert resolution >= 2
+
+    wavelengths = linspace(min_wavelength, max_wavelength, resolution)
+    colors = list()
+    for wavelength in wavelengths:
+        if wavelength <= best_wavelengths['Blue'][0]:
+            colors.append(
+                (
+                    (0.3 / (pi / 2))
+                    * arctan(0.08 * (best_wavelengths['Blue'][0] - wavelength)),
+                    0.0,
+                    1.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Cyan'][0]:
+            colors.append(
+                (
+                    0.0,
+                    (wavelength - best_wavelengths['Blue'][0])
+                    / (best_wavelengths['Cyan'][0] - best_wavelengths['Blue'][0]),
+                    1.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Green'][0]:
+            colors.append(
+                (
+                    0.0,
+                    1.0,
+                    1.0 - (wavelength - best_wavelengths['Cyan'][0])
+                    / (best_wavelengths['Green'][0] - best_wavelengths['Cyan'][0])
+                )
+            )
+        elif wavelength <= best_wavelengths['Yellow'][0]:
+            colors.append(
+                (
+                    (wavelength - best_wavelengths['Green'][0])
+                    / (best_wavelengths['Yellow'][0] - best_wavelengths['Green'][0]),
+                    1.0,
+                    0.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Red'][0]:
+            colors.append(
+                (
+                    1.0,
+                    1.0 - (wavelength - best_wavelengths['Yellow'][0])
+                    / (best_wavelengths['Red'][0] - best_wavelengths['Yellow'][0]),
+                    0.0
+                )
+            )
+        else: # > Red
+            colors.append(
+                (
+                    1.0,
+                    0.0,
+                    (0.1 / (pi / 2))
+                    * arctan(0.075 * (wavelength - best_wavelengths['Red'][0]))
+                )
+            )
+
+    return colors
+
+# endregion
+
+# region Functions - Fancy Coloration of Spectrum
+def sigmoid(
+    x : Union[int, float],
+    minimum : float,
+    maximum : float,
+    center : Union[int, float],
+    maximum_slope : float
+) -> float:
+    return (
+        minimum
+        + (maximum - minimum)
+        / (
+            1.0
+            + exp(
+                (4.0 * maximum_slope * (center - x))
+                / (maximum - minimum)
+            )
+        )
+    )
+
+def fancy_spectrum_colors(
+    min_wavelength : Optional[Union[int, float]] = None,
+    max_wavelength : Optional[Union[int, float]] = None,
+    resolution : Optional[int] = None
+) -> List[Tuple[float, float, float]]:
+
+    if min_wavelength is None: min_wavelength = WAVELENGTH_BOUNDS[0]
+    assert any(isinstance(min_wavelength, valid_type) for valid_type in [int, float])
+    assert 300 < min_wavelength < 900 # arbitrary, but reasonable limits
+    if max_wavelength is None: max_wavelength = WAVELENGTH_BOUNDS[1]
+    assert any(isinstance(max_wavelength, valid_type) for valid_type in [int, float])
+    assert 300 < max_wavelength < 900 # arbitrary, but reasonable limits
+    if resolution is None: resolution = RESOLUTION
+    assert isinstance(resolution, int)
+    assert resolution >= 2
+
+    wavelengths = linspace(min_wavelength, max_wavelength, resolution)
+    colors = list()
+    for wavelength in wavelengths:
+        if wavelength <= best_wavelengths['Blue'][0]:
+            colors.append(
+                (
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        0.275,
+                        best_wavelengths['Blue'][0] - 20,
+                        -0.02
+                    ),
+                    0.0,
+                    1.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Cyan'][0]:
+            colors.append(
+                (
+                    0.0,
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        1.0,
+                        (best_wavelengths['Blue'][0] + best_wavelengths['Cyan'][0]) / 2.0,
+                        0.1
+                    ),
+                    1.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Green'][0]:
+            colors.append(
+                (
+                    0.0,
+                    1.0,
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        1.0,
+                        (best_wavelengths['Cyan'][0] + best_wavelengths['Green'][0]) / 2.0,
+                        -0.05
+                    )
+                )
+            )
+        elif wavelength <= best_wavelengths['Yellow'][0]:
+            colors.append(
+                (
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        1.0,
+                        (best_wavelengths['Green'][0] + best_wavelengths['Yellow'][0]) / 2.0,
+                        0.15
+                    ),
+                    1.0,
+                    0.0
+                )
+            )
+        elif wavelength <= best_wavelengths['Red'][0]:
+            colors.append(
+                (
+                    1.0,
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        1.0,
+                        (best_wavelengths['Yellow'][0] + best_wavelengths['Red'][0]) / 2.0,
+                        -0.075
+                    ),
+                    0.0
+                )
+            )
+        else: # > Red
+            colors.append(
+                (
+                    1.0,
+                    0.0,
+                    sigmoid(
+                        wavelength,
+                        0.0,
+                        0.09,
+                        best_wavelengths['Red'][0] + 20,
+                        0.005
+                    )
+                )
+            )
+
+    return colors
+
 # endregion
 
 # region Figure 20 - Wavelength Annotated Chromaticity Diagram and Vertical Color Spectrum
@@ -341,12 +547,13 @@ spectra_panel = figure.add_panel(
         676,
         25
     ),
-    y_lim = (0, 1),
+    y_lim = (0, 3),
     y_margin = 0.0,
-    y_ticks = (0.25, 0.75),
+    y_ticks = (0.5, 1.5, 2.5),
     y_tick_labels = [
-        'from\nChromaticity',
-        'Simplified'
+        'Fancy\n(dotted lines)',
+        'Simplified\n(dashed lines)',
+        'from\nChromaticity\n(solid lines)'
     ]
 )
 rgb_panel = figure.add_panel(
@@ -379,10 +586,41 @@ for y in [0, 1]:
 # region Color Fill and Value Plotting
 paths, colors = visible_spectrum(
     WAVELENGTH_BOUNDS[0],
-    0,
+    2,
     int(ptp(WAVELENGTH_BOUNDS)),
-    0.5,
+    1,
     *WAVELENGTH_BOUNDS,
+    resolution = RESOLUTION * 8
+)
+spectra_panel.add_collection(
+    PathCollection(
+        paths,
+        facecolors = colors,
+        edgecolors = colors,
+        zorder = 0
+    )
+)
+legend_handles = list()
+for color_index in range(3):
+    color = 3 * [0.0]; color[color_index] = 1.0
+    legend_handles.append(
+        rgb_panel.plot(
+            linspace(*WAVELENGTH_BOUNDS, RESOLUTION * 8),
+            list(datum[color_index] for datum in colors),
+            linewidth = 2,
+            color = color,
+            zorder = 1
+        )[0]
+    )
+paths, colors = visible_spectrum(
+    WAVELENGTH_BOUNDS[0],
+    1,
+    int(ptp(WAVELENGTH_BOUNDS)),
+    1,
+    *WAVELENGTH_BOUNDS,
+    resolution = RESOLUTION * 8
+)
+colors = simplified_spectrum_colors(
     resolution = RESOLUTION * 8
 )
 spectra_panel.add_collection(
@@ -395,13 +633,53 @@ spectra_panel.add_collection(
 )
 for color_index in range(3):
     color = 3 * [0.0]; color[color_index] = 1.0
-    rgb_panel.plot(
-        linspace(*WAVELENGTH_BOUNDS, RESOLUTION * 8),
-        list(datum[color_index] for datum in colors),
-        linewidth = 2,
-        color = color,
-        zorder = 1
+    legend_handles.append(
+        rgb_panel.plot(
+            linspace(*WAVELENGTH_BOUNDS, RESOLUTION * 8),
+            list(datum[color_index] for datum in colors),
+            linestyle = '--',
+            color = color,
+            zorder = 1
+        )[0]
     )
+paths, colors = visible_spectrum(
+    WAVELENGTH_BOUNDS[0],
+    0,
+    int(ptp(WAVELENGTH_BOUNDS)),
+    1,
+    *WAVELENGTH_BOUNDS,
+    resolution = RESOLUTION * 8
+)
+colors = fancy_spectrum_colors(
+    resolution = RESOLUTION * 8
+)
+spectra_panel.add_collection(
+    PathCollection(
+        paths,
+        facecolors = colors,
+        edgecolors = colors,
+        zorder = 0
+    )
+)
+for color_index in range(3):
+    color = 3 * [0.0]; color[color_index] = 1.0
+    legend_handles.append(
+        rgb_panel.plot(
+            linspace(*WAVELENGTH_BOUNDS, RESOLUTION * 8),
+            list(datum[color_index] for datum in colors),
+            linestyle = ':',
+            color = color,
+            zorder = 1
+        )[0]
+    )
+rgb_panel.legend(
+    legend_handles,
+    list('{0} from Chromaticity'.format(color) for color in ['Red', 'Green', 'Blue'])
+    + list('{0} Simplified'.format(color) for color in ['Red', 'Green', 'Blue'])
+    + list('{0} Fancy'.format(color) for color in ['Red', 'Green', 'Blue']),
+    loc = 'right',
+    facecolor = figure.grey_level(1)
+)
 # endregion
 
 # region Annotations
