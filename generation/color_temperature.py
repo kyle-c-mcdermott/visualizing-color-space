@@ -14,10 +14,15 @@ standards.  While the latter appears to be rotated, it is more accurately
 squished and/or stretched; note that the spectrum locus approaches closest to
 the vertical axis between 500 and 510 nm in both diagrams.  The Planckian locus,
 and the sRGB display gamut, are illustrated for comparison.
-24 - (CIE 1960 diagram zoomed in on isotherm lines, select standard illuminants
-      plotted)
-25 - (CIE 1931 and (zoomed out) 1960 diagrams with isotherm lines and standard
-      illuminants)
+24 - CIE 1960 chromaticity diagram with isotherm lines extending from selected
+temperatures.  A selection of standard illuminants are also annotated and their
+estimated correlated color temperature provided in the legend.
+25 - Chromaticity diagrams for the CIE 1931 (x, y) and CIE 1960 (u, v) standards
+with selected isotherm lines annotated.  The region in which correlated color
+temperatures may be estimated is outlined.  Note that the length and
+perpendicularity of isotherm lines is not preserved in CIE 1931 space -
+correlated color temperature must be estimated in CIE 1960 space, regardless of
+the color space ultimately being visualized or discussed.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -45,9 +50,9 @@ from sys import path; path.append('.')
 
 # region Settings
 SAVE_FIGURES = (
-    False, # Figure 22 - Planckian locus and blackbody spectra
-    False, # Figure 23 - CIE 1931 vs 1960 chromaticity diagrams
-    False, # Figure 24 - Isotherm lines close look
+    True, # Figure 22 - Planckian locus and blackbody spectra
+    True, # Figure 23 - CIE 1931 vs 1960 chromaticity diagrams
+    True, # Figure 24 - Isotherm lines close look
     True # Figure 25 - Isotherm lines in CIE 1931 and 1960
 )
 INVERTED = False
@@ -67,10 +72,11 @@ from numpy import arange, linspace, transpose
 from csv import DictReader
 from maths.correlated_color_temperature import (
     chromaticity_from_temperature,
+    isotherm_endpoints_from_temperature,
+    TEMPERATURES,
     radiant_emitance,
     temperature_chromaticities,
     xy_to_uv,
-    isotherm_endpoints_from_temperature,
     correlated_color_temperature
 )
 from maths.rgb_cie_conversions import (
@@ -87,7 +93,7 @@ from matplotlib.path import Path
 # endregion
 
 # region Constants
-TEMPERATURES = [1000, 2000, 3000, 4000, 5000, 6000, 8000, 12000]
+SELECTED_TEMPERATURES = [1000, 2000, 3000, 4000, 5000, 6000, 8000, 12000]
 WAVELENGTH_BOUNDS = (365, 655)
 WAVELENGTH_TICKS = [
     400,
@@ -152,7 +158,7 @@ with open(
 
 # region Determine Select Temperature Chromaticities
 chromaticities = dict()
-for temperature in TEMPERATURES:
+for temperature in SELECTED_TEMPERATURES:
     chromaticities[temperature] = chromaticity_from_temperature(temperature)
 # endregion
 
@@ -165,6 +171,19 @@ srgb_primary_chromaticities = list(
     )[0:2]
     for (red, green, blue) in [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]
 )
+# endregion
+
+# region Isotherm Lines
+selected_endpoints = list()
+for temperature in SELECTED_TEMPERATURES:
+    selected_endpoints.append(
+        isotherm_endpoints_from_temperature(temperature)
+    )
+endpoints = list()
+for temperature in TEMPERATURES:
+    endpoints.append(
+        isotherm_endpoints_from_temperature(temperature)
+    )
 # endregion
 
 # region Figure 22 - Planckian Locus and Blackbody Radiation
@@ -320,7 +339,7 @@ if SAVE_FIGURES[0]:
         5
     )
     legend_handles = list()
-    for temperature in TEMPERATURES:
+    for temperature in SELECTED_TEMPERATURES:
         spectrum = list(
             (
                 wavelength,
@@ -376,7 +395,7 @@ if SAVE_FIGURES[0]:
         )
     spectra_panel.legend(
         reversed(legend_handles),
-        reversed(list('{0:,} K'.format(temperature) for temperature in TEMPERATURES)),
+        reversed(list('{0:,} K'.format(temperature) for temperature in SELECTED_TEMPERATURES)),
         loc = 'lower right',
         facecolor = figure.grey_level(1)
     )
@@ -829,20 +848,25 @@ if SAVE_FIGURES[2]:
     # endregion
 
     # region Isotherm Lines
-    for temperature in TEMPERATURES:
-        endpoints = isotherm_endpoints_from_temperature(temperature)
+    for temperature_index, temperature in enumerate(SELECTED_TEMPERATURES):
         panel.plot(
-            [endpoints[1][0][0], endpoints[1][1][0]],
-            [endpoints[1][0][1], endpoints[1][1][1]],
+            [
+                selected_endpoints[temperature_index][1][0][0],
+                selected_endpoints[temperature_index][1][1][0]
+            ],
+            [
+                selected_endpoints[temperature_index][1][0][1],
+                selected_endpoints[temperature_index][1][1][1]
+            ],
             color = (0.25, 0.25, 0.25),
             zorder = 4
         )
         panel.annotate(
             text = '{0:,} K'.format(temperature),
             xy = (
-                endpoints[1][1 if temperature < 3500 else 0][0]
+                selected_endpoints[temperature_index][1][1 if temperature < 3500 else 0][0]
                 + (0.0 if temperature < 3500 else -0.001),
-                endpoints[1][1 if temperature < 3500 else 0][1]
+                selected_endpoints[temperature_index][1][1 if temperature < 3500 else 0][1]
                 + (-0.001 if temperature < 3500 else 0.0)
             ),
             xycoords = 'data',
@@ -954,6 +978,328 @@ if SAVE_FIGURES[2]:
         fontsize = figure.font_sizes['legends'],
         color = (0, 0, 0),
         zorder = 5
+    )
+    # endregion
+
+    # region Save Figure
+    figure.update()
+    figure.save(
+        path = 'images',
+        name = figure.name,
+        extension = EXTENSION
+    )
+    figure.close()
+    # endregion
+
+# endregion
+
+# region Figure 25 - CIE 1931 and CIE 1960 Chromaticity Diagrams with Isotherm Lines
+
+if SAVE_FIGURES[3]:
+
+    # region Initialize Figure
+    figure = Figure(
+        name = 'CIE 1931 and CIE 1960 Chromaticity Diagrams with Isotherm Lines{0}'.format(
+            ' (inverted)' if INVERTED else ''
+        ),
+        size = SIZE,
+        inverted = INVERTED
+    )
+    figure.set_fonts(**FONT_SIZES)
+    xy_panel = figure.add_panel(
+        name = 'xy',
+        title = 'CIE 1931 (x, y) Chromaticity Diagram\nwith Isotherm Lines',
+        position = (0, 0, 0.5, 1),
+        x_label = 'x',
+        x_ticks = linspace(0, 0.8, 9),
+        x_lim = (-0.065, 0.865),
+        y_label = 'y',
+        y_ticks = linspace(0, 0.8, 9),
+        y_lim = (-0.065, 0.865)
+    )
+    uv_panel = figure.add_panel(
+        name = 'uv',
+        title = 'CIE 1960 (u, v) Chromaticity Diagram\nwith Isotherm Lines',
+        position = (0.5, 0, 0.5, 1),
+        x_label = 'u',
+        x_ticks = linspace(0, 0.6, 7),
+        x_lim = (-0.05, 0.7),
+        y_label = 'v',
+        y_ticks = linspace(0, 0.4, 5),
+        y_lim = (-0.2, 0.55)
+    )
+    for panel in figure.panels.values():
+        panel.set_aspect(
+            aspect = 'equal', # Make horizontal and vertical axes the same scale
+            adjustable = 'box' # Change the plot area aspect ratio to achieve this
+        )
+    # endregion
+
+    # region Reference
+    for panel in figure.panels.values():
+        panel.axhline(
+            y = 0,
+            linewidth = 2,
+            color = figure.grey_level(0),
+            zorder = 0
+        )
+        panel.axvline(
+            x = 0,
+            linewidth = 2,
+            color = figure.grey_level(0),
+            zorder = 0
+        )
+    xy_panel.plot(
+        [0, 1],
+        [1, 0],
+        linestyle = '--',
+        color = figure.grey_level(0.5),
+        zorder = 0
+    )
+    uv_panel.plot(
+        *transpose(list(xy_to_uv(x, y) for x, y in [(0.0, 1.0), (1.0, 0.0)])),
+        linestyle = '--',
+        color = figure.grey_level(0.5),
+        zorder = 0
+    )
+    xy_panel.plot(
+        list(datum['x'] for datum in spectrum_locus),
+        list(datum['y'] for datum in spectrum_locus),
+        color = figure.grey_level(0.25),
+        zorder = 2
+    )
+    xy_panel.plot(
+        [spectrum_locus[0]['x'], spectrum_locus[-1]['x']],
+        [spectrum_locus[0]['y'], spectrum_locus[-1]['y']],
+        color = figure.grey_level(0.25),
+        linestyle = ':',
+        zorder = 2
+    )
+    uv_panel.plot(
+        *transpose(
+            list(
+                xy_to_uv(
+                    datum['x'],
+                    datum['y']
+                )
+                for datum in spectrum_locus
+            )
+        ),
+        color = figure.grey_level(0.25),
+        zorder = 2
+    )
+    uv_panel.plot(
+        *transpose(
+            list(
+                xy_to_uv(
+                    datum['x'],
+                    datum['y']
+                )
+                for datum in [spectrum_locus[0], spectrum_locus[-1]]
+            )
+        ),
+        color = figure.grey_level(0.25),
+        linestyle = ':',
+        zorder = 2
+    )
+    # endregion
+
+    # region Color Fill
+    paths, colors = chromaticity_within_gamut(
+        resolution = RESOLUTION
+    )
+    xy_panel.add_collection(
+        PathCollection(
+            paths,
+            facecolors = colors,
+            edgecolors = colors,
+            zorder = 1
+        )
+    )
+    uv_panel.add_collection(
+        PathCollection(
+            list(
+                Path(
+                    list(
+                        xy_to_uv(*vertice)
+                        for vertice in path.vertices
+                    )
+                )
+                for path in paths
+            ),
+            facecolors = colors,
+            edgecolors = colors,
+            zorder = 1
+        )
+    )
+    paths, colors = chromaticity_outside_gamut(
+        resolution = RESOLUTION
+    )
+    xy_panel.add_collection(
+        PathCollection(
+            paths,
+            facecolors = colors,
+            edgecolors = colors,
+            zorder = 1
+        )
+    )
+    uv_panel.add_collection(
+        PathCollection(
+            list(
+                Path(
+                    list(
+                        xy_to_uv(*vertice)
+                        for vertice in path.vertices
+                    )
+                )
+                for path in paths
+            ),
+            facecolors = colors,
+            edgecolors = colors,
+            zorder = 1
+        )
+    )
+    # endregion
+
+    # region Isotherm Region and Lines
+    for temperature_index, temperature in enumerate(SELECTED_TEMPERATURES):
+        xy_panel.plot(
+            [
+                selected_endpoints[temperature_index][0][0][0],
+                selected_endpoints[temperature_index][0][1][0]
+            ],
+            [
+                selected_endpoints[temperature_index][0][0][1],
+                selected_endpoints[temperature_index][0][1][1]
+            ],
+            color = (0.25, 0.25, 0.25),
+            zorder = 3
+        )
+        uv_panel.plot(
+            [
+                selected_endpoints[temperature_index][1][0][0],
+                selected_endpoints[temperature_index][1][1][0]
+            ],
+            [
+                selected_endpoints[temperature_index][1][0][1],
+                selected_endpoints[temperature_index][1][1][1]
+            ],
+            color = (0.25, 0.25, 0.25),
+            zorder = 3
+        )
+        xy_panel.annotate(
+            text = '{0:,} K'.format(temperature),
+            xy = (
+                selected_endpoints[temperature_index][0][1 if temperature < 3500 else 0][0]
+                + (0.0 if temperature < 3500 else -0.001),
+                selected_endpoints[temperature_index][0][1 if temperature < 3500 else 0][1]
+                + (-0.001 if temperature < 3500 else 0.0)
+            ),
+            xycoords = 'data',
+            horizontalalignment = 'left' if temperature < 3500 else 'right',
+            verticalalignment = 'top' if temperature < 3500 else 'center',
+            fontsize = figure.font_sizes['legends'] - 2,
+            color = (0.25, 0.25, 0.25),
+            zorder = 5
+        )
+        uv_panel.annotate(
+            text = '{0:,} K'.format(temperature),
+            xy = (
+                selected_endpoints[temperature_index][1][1 if temperature < 3500 else 0][0]
+                + (0.0 if temperature < 3500 else -0.001),
+                selected_endpoints[temperature_index][1][1 if temperature < 3500 else 0][1]
+                + (-0.002 if temperature < 3500 else 0.0)
+            ),
+            xycoords = 'data',
+            horizontalalignment = 'left' if temperature < 3500 else 'right',
+            verticalalignment = 'top' if temperature < 3500 else 'center',
+            fontsize = figure.font_sizes['legends'] - 2,
+            color = (0.25, 0.25, 0.25),
+            zorder = 5
+        )
+    xy_panel.annotate(
+        text = r'$\infty$',
+        xy = (
+            temperature_chromaticities[-1][0][0] - 0.001,
+            temperature_chromaticities[-1][0][1] - 0.001
+        ),
+        xycoords = 'data',
+        horizontalalignment = 'center',
+        verticalalignment = 'top',
+        fontsize = figure.font_sizes['legends'] + 4,
+        color = (0.25, 0.25, 0.25),
+        zorder = 5
+    )
+    uv_panel.annotate(
+        text = r'$\infty$',
+        xy = (
+            temperature_chromaticities[-1][1][0] - 0.001,
+            temperature_chromaticities[-1][1][1] - 0.001
+        ),
+        xycoords = 'data',
+        horizontalalignment = 'center',
+        verticalalignment = 'top',
+        fontsize = figure.font_sizes['legends'] + 4,
+        color = (0.25, 0.25, 0.25),
+        zorder = 5
+    )
+    xy_panel.plot(
+        *transpose(
+            list(
+                temperature_chromaticity[0]
+                for temperature_chromaticity in temperature_chromaticities
+            )
+        ),
+        color = (0.25, 0.25, 0.25),
+        linewidth = 2,
+        zorder = 3
+    )
+    uv_panel.plot(
+        *transpose(
+            list(
+                temperature_chromaticity[1]
+                for temperature_chromaticity in temperature_chromaticities
+            )
+        ),
+        color = (0.25, 0.25, 0.25),
+        linewidth = 2,
+        zorder = 3
+    )
+    xy_panel.plot(
+        *transpose(
+            list(
+                endpoint[0][0]
+                for endpoint in endpoints
+            ) + list(
+                reversed(
+                    list(
+                        endpoint[0][1]
+                        for endpoint in endpoints
+                    )
+                )
+            ) + [endpoints[0][0][0]]
+        ),
+        linewidth = 0.5,
+        color = figure.grey_level(0.75),
+        zorder = 4
+    )
+    uv_panel.plot(
+        *transpose(
+            list(
+                endpoint[1][0]
+                for endpoint in endpoints
+            ) + list(
+                reversed(
+                    list(
+                        endpoint[1][1]
+                        for endpoint in endpoints
+                    )
+                )
+            ) + [endpoints[0][1][0]]
+        ),
+        linewidth = 0.5,
+        color = figure.grey_level(0.75),
+        zorder = 4
     )
     # endregion
 
