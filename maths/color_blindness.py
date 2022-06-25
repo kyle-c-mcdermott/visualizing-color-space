@@ -33,7 +33,6 @@ from maths.rgb_cie_conversions import (
     rgb_to_tristimulus,
     tristimulus_to_rgb
 )
-
 # endregion
 
 # region Constants
