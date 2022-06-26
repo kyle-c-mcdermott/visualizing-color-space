@@ -68,12 +68,19 @@ MIDDLE_COLOR_NAME = 'Grey'
 MIDDLE_COLOR = MIDDLE_COLORS[MIDDLE_COLOR_NAME]
 CONE_TYPE = 'S'
 STIMULUS_CHROMATIC_SIGN = +1 # +/-1, will flip colors of foreground and background
-CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.1) # Proportion of maximum distance, within gamut, on either side of distribution
+CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.6) # Proportion of maximum distance, within gamut, on either side of distribution
 LUMINANCE_SATURATION_PROPORTION_BOUNDS = (0.25, 0.75) # Proportion (of saturation) range for luminance variation
-FIGURE_TITLE = 'Color-Blind Stimulus - {0}-Cone Variation around {1} pointing {2}'.format(
+FIGURE_BACKGROUNDS = {
+    'Black' : (0, 0, 0),
+    'White' : (1, 1, 1),
+    'Mean' : None # Estimated later
+}
+FIGURE_BACKGROUND_NAME = 'Mean'
+FIGURE_TITLE = 'Color-Blind Stimulus - {0}-Cone Variation around {1} pointing {2} on {3}'.format(
     CONE_TYPE,
     MIDDLE_COLOR_NAME,
-    STIMULUS_GAP_NAME
+    STIMULUS_GAP_NAME,
+    FIGURE_BACKGROUND_NAME
 )
 FIGURE_SIZE = (9, 9)
 EXTENSION = 'png'
@@ -243,7 +250,72 @@ circles = list(
     for circle in circles
 ) # (x, y, distance, angle, size, in-stimulus)
 
+# Determine Maximum Luminance
+chromaticity_bounds = (
+    (
+        COPUNCTAL_POINTS[CONE_TYPE][0]
+        + (
+            middle_polar[1]
+            - maximum_distance
+            * CHROMATIC_DISTANCE_PROPORTION_BOUNDS[1]
+        )
+        * cos(middle_polar[0]),
+        COPUNCTAL_POINTS[CONE_TYPE][1]
+        + (
+            middle_polar[1]
+            - maximum_distance
+            * CHROMATIC_DISTANCE_PROPORTION_BOUNDS[1]
+        )
+        * sin(middle_polar[0])
+    ),
+    (
+        COPUNCTAL_POINTS[CONE_TYPE][0]
+        + (
+            middle_polar[1]
+            + maximum_distance
+            * CHROMATIC_DISTANCE_PROPORTION_BOUNDS[1]
+        )
+        * cos(middle_polar[0]),
+        COPUNCTAL_POINTS[CONE_TYPE][1]
+        + (
+            middle_polar[1]
+            + maximum_distance
+            * CHROMATIC_DISTANCE_PROPORTION_BOUNDS[1]
+        )
+        * sin(middle_polar[0])
+    )
+)
+color_bounds = tuple(
+    chromoluminance_to_rgb(
+        *chromaticity_bound,
+        0.05, # Arbitrarily low
+        gamma_correct = False
+    )
+    for chromaticity_bound in chromaticity_bounds
+)
+saturated_color_bounds = tuple(
+    tuple(value / max(color_bound) for value in color_bound)
+    for color_bound in color_bounds
+)
+luminance_bounds = tuple(
+    rgb_to_chromoluminance(
+        *saturated_color_bound,
+        gamma_correct = False
+    )[2]
+    for saturated_color_bound in saturated_color_bounds
+)
+maximum_luminance = min(luminance_bounds)
+
+print('\nMaximum Luminance: {0:0.3f}'.format(maximum_luminance))
+
 # Set Colors
+FIGURE_BACKGROUNDS['Mean'] = chromoluminance_to_rgb(
+    *middle_chromaticity[0:2],
+    maximum_luminance * (
+        sum(LUMINANCE_SATURATION_PROPORTION_BOUNDS) / 2.0
+    ),
+    gamma_correct = False
+)
 circle_colors = list()
 for circle in circles:
     distance = (
@@ -261,15 +333,12 @@ for circle in circles:
     )
     color = chromoluminance_to_rgb(
         *chromaticity,
-        0.05, # Arbitrarily low luminance
+        maximum_luminance * (
+            LUMINANCE_SATURATION_PROPORTION_BOUNDS[0]
+            + rand() * ptp(LUMINANCE_SATURATION_PROPORTION_BOUNDS)
+        ),
         gamma_correct = False
     )
-    saturated_color = list(value / max(color) for value in color)
-    luminance_gain = (
-        LUMINANCE_SATURATION_PROPORTION_BOUNDS[0]
-        + rand() * ptp(LUMINANCE_SATURATION_PROPORTION_BOUNDS)
-    )
-    color = list(luminance_gain * value for value in saturated_color)
     circle_colors.append(color)
 
 # endregion
@@ -282,12 +351,12 @@ for circle in circles:
 figure = Figure(
     name = FIGURE_TITLE,
     size = FIGURE_SIZE,
-    figure_color = MIDDLE_COLOR
+    figure_color = FIGURE_BACKGROUNDS[FIGURE_BACKGROUND_NAME]
 )
 panel = figure.add_panel(
     name = 'main',
     title = '',
-    panel_color = MIDDLE_COLOR,
+    panel_color = FIGURE_BACKGROUNDS[FIGURE_BACKGROUND_NAME],
     x_label = '',
     x_ticks = [],
     x_lim = (-1.05 * FIELD_RADIUS, 1.05 * FIELD_RADIUS),
@@ -297,7 +366,7 @@ panel = figure.add_panel(
 )
 for child in panel.get_children(): # Remove border
     if isinstance(child, Spine):
-        child.set_color(MIDDLE_COLOR)
+        child.set_color(FIGURE_BACKGROUNDS[FIGURE_BACKGROUND_NAME])
 # endregion
 
 # region Fill Circles

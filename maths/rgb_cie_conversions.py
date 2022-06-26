@@ -241,7 +241,7 @@ def tristimulus_to_rgb(
     # endregion
 
     # region Apply Clipping and Warn if Necessary
-    clipped_srgb_values = clip(srgb_values, a_min = 0.0, a_max = 1.0)
+    clipped_srgb_values = list(clip(srgb_values, a_min = 0.0, a_max = 1.0))
     if not all(srgb_values[index] == clipped_srgb_values[index] for index in range(3)):
         warn('sRGB Values have been clipped and are not a valid conversion!')
     # endregion
