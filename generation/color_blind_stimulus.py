@@ -55,7 +55,7 @@ STIMULUS_GAP_DIRECTIONS = {
     'Down' : -pi / 2,
     'Left' : pi
 }
-STIMULUS_GAP_NAME = 'Down'
+STIMULUS_GAP_NAME = 'Left'
 STIMULUS_GAP_DIRECTION = STIMULUS_GAP_DIRECTIONS[STIMULUS_GAP_NAME]
 STIMULUS_GAP_WIDTH = pi / 6 # Radians
 MIDDLE_COLORS = {
@@ -69,7 +69,8 @@ MIDDLE_COLOR = MIDDLE_COLORS[MIDDLE_COLOR_NAME]
 CONE_TYPE = 'S'
 STIMULUS_CHROMATIC_SIGN = +1 # +/-1, will flip colors of foreground and background
 CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.6) # Proportion of maximum distance, within gamut, on either side of distribution
-LUMINANCE_SATURATION_PROPORTION_BOUNDS = (0.25, 0.75) # Proportion (of saturation) range for luminance variation
+MAXIMUM_ALLOWED_LUMINANCE = 0.4
+LUMINANCE_SATURATION_PROPORTION_BOUNDS = (0.75, 0.95) # Proportion (of saturation) range for luminance variation
 FIGURE_BACKGROUNDS = {
     'Black' : (0, 0, 0),
     'White' : (1, 1, 1),
@@ -297,16 +298,20 @@ saturated_color_bounds = tuple(
     tuple(value / max(color_bound) for value in color_bound)
     for color_bound in color_bounds
 )
-luminance_bounds = tuple(
+luminance_bounds = list(
     rgb_to_chromoluminance(
         *saturated_color_bound,
         gamma_correct = False
     )[2]
     for saturated_color_bound in saturated_color_bounds
 )
-maximum_luminance = min(luminance_bounds)
-
-print('\nMaximum Luminance: {0:0.3f}'.format(maximum_luminance))
+maximum_luminance = min(luminance_bounds + [MAXIMUM_ALLOWED_LUMINANCE])
+print(
+    '\nMaximum Luminance: {0:0.3f} / ({1:0.3f})'.format(
+        maximum_luminance,
+        MAXIMUM_ALLOWED_LUMINANCE
+    )
+)
 
 # Set Colors
 FIGURE_BACKGROUNDS['Mean'] = chromoluminance_to_rgb(
