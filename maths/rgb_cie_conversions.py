@@ -35,7 +35,7 @@ from sys import path; path.append('.')
 # region Imports
 from numpy.linalg import inv
 from typing import Union, Optional, List, Tuple
-from numpy import ndarray, matmul, clip
+from numpy import ndarray, matmul, round, clip
 from warnings import warn
 # endregion
 
@@ -234,16 +234,32 @@ def tristimulus_to_rgb(
     # endregion
 
     # region Apply Linear Transformation
-    srgb_values = matmul(
-        XYZ_TO_SRGB if coefficients is None else coefficients,
-        (X, Y, Z)
-    )
+    if (X + Y + Z) == 0:
+        srgb_values = 3 * [0.0]
+    else:
+        x = X / (X + Y + Z); y = Y / (X + Y + Z) # In case of luminance adjustment
+        srgb_values = matmul(
+            XYZ_TO_SRGB if coefficients is None else coefficients,
+            (X, Y, Z)
+        )
+        srgb_values = round(srgb_values, 4) # Rounding up negative values near zero to zero
+    while 0.0 > min(srgb_values) or max(srgb_values) > 1.0:
+        if Y < 0.05:
+            Y += 0.01
+        else:
+            Y -= 0.01
+        X = Y * (x / y)
+        Z = Y * ((1.0 - x - y) / y)
+        srgb_values = matmul(
+            XYZ_TO_SRGB if coefficients is None else coefficients,
+            (X, Y, Z)
+        )
     # endregion
 
     # region Apply Clipping and Warn if Necessary
     clipped_srgb_values = list(clip(srgb_values, a_min = 0.0, a_max = 1.0))
     if not all(srgb_values[index] == clipped_srgb_values[index] for index in range(3)):
-        warn('sRGB Values have been clipped and are not a valid conversion!')
+        warn('sRGB Values have been clipped and are not a valid conversion!') # Shouldn't occur after luminance adjustment
     # endregion
 
     # region Return with Gamma Correction
