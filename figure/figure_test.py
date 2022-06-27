@@ -5,9 +5,32 @@ Can be run as script, or with unittest from console with:
 python -m unittest figure_test
 
 Successfully tested with:
-matplotlib==3.4.2
+matplotlib==3.5.2
 numpy==1.21.1
 """
+
+# region (Ensuring Access to Directories and Modules)
+"""
+If the script is not run from the project folder (highest level in repository),
+but instead (presumably) from the folder containing this script, the current
+working directory is moved up until a known sub-folder name is visible.
+"""
+from os import walk, chdir, getcwd
+from os.path import dirname
+folders = list()
+while True:
+    for root, dirs, files in walk('.'):
+        folders += list(name for name in dirs)
+    if 'figure' not in folders:
+        chdir(dirname(getcwd())) # Move up one
+    else:
+        break
+"""
+Adding the (now updated) current working directory to the path so that imports
+from the repository will work.
+"""
+from sys import path; path.append('.')
+# endregion
 
 # region Imports
 from unittest import TestCase, main
@@ -66,7 +89,8 @@ class TestFigure(TestCase):
             Figure(figure_color = ('1', '1', '1')) # Invalid types
         with self.assertRaises(AssertionError):
             Figure(figure_color = (2, 2, 2)) # Invalid values
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            Figure(figure_color = '12345') # Invalid length
 
     # endregion
 
@@ -137,7 +161,8 @@ class TestFigure(TestCase):
             figure.set_fonts(color = ('1', '1', '1')) # Invalid types
         with self.assertRaises(AssertionError):
             figure.set_fonts(color = (2, 2, 2)) # Invalid values
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.set_fonts(color = '12345') # Invalid length
 
         # Close
         figure.close()
@@ -191,7 +216,8 @@ class TestFigure(TestCase):
             figure.add_panel(panel_color = ('1', '1', '1')) # Invalid types
         with self.assertRaises(AssertionError):
             figure.add_panel(panel_color = (2, 2, 2)) # Invalid values
-        # String assertions handled by hex_to_rgb() / hex_to_rgba()
+        with self.assertRaises(AssertionError):
+            figure.add_panel(panel_color = '12345') # Invalid length
 
         # Test three_dimensional Assertions
         with self.assertRaises(AssertionError):
@@ -635,7 +661,11 @@ class TestFigure(TestCase):
                 name = 'test',
                 panel_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panel_color(
+                name = 'test',
+                panel_color = '12345' # Invalid length
+            )
 
         # Test Return
         test_return = figure.change_panel_color(
@@ -709,7 +739,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 x_pane_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                x_pane_color = '12345' # Invalid length
+            )
 
         # Test x_grid_line Assertions
         with self.assertRaises(AssertionError):
@@ -759,7 +793,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 x_grid_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                x_grid_color = '12345' # Invalid length
+            )
 
         # Test y_pane_color Assertions
         with self.assertRaises(AssertionError):
@@ -792,7 +830,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 y_pane_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                y_pane_color = '12345' # Invalid length
+            )
 
         # Test y_grid_line Assertions
         with self.assertRaises(AssertionError):
@@ -842,7 +884,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 y_grid_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                y_grid_color = '12345' # Invalid length
+            )
 
         # Test z_pane_color Assertions
         with self.assertRaises(AssertionError):
@@ -875,7 +921,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 z_pane_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                z_pane_color = '12345' # Invalid length
+            )
 
         # Test z_grid_line Assertions
         with self.assertRaises(AssertionError):
@@ -925,7 +975,11 @@ class TestFigure(TestCase):
                 name = '3D',
                 z_grid_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.change_panes(
+                name = '3D',
+                z_grid_color = '12345' # Invalid length
+            )
 
         # Close
         figure.close()
@@ -1170,7 +1224,12 @@ class TestFigure(TestCase):
                 coordinates = ((0, 0), (1, 1)),
                 font_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.annotate_coordinates(
+                name = 'test',
+                coordinates = ((0, 0), (1, 1)),
+                font_color = '12345' # Invalid length
+            )
 
         # Test tick_color Assertions
         with self.assertRaises(AssertionError):
@@ -1209,7 +1268,12 @@ class TestFigure(TestCase):
                 coordinates = ((0, 0), (1, 1)),
                 tick_color = (2, 2, 2) # Invalid values
             )
-        # String assertions handled by hex_to_rgb()
+        with self.assertRaises(AssertionError):
+            figure.annotate_coordinates(
+                name = 'test',
+                coordinates = ((0, 0), (1, 1)),
+                tick_color = '12345' # Invalid length
+            )
 
         # Test z_order Assertions
         with self.assertRaises(AssertionError):

@@ -11,6 +11,29 @@ Most methods streamline matplotlib.pyplot operations, while
 .annotate_coordinates allows for the adding of text annotaitons to data series.
 """
 
+# region (Ensuring Access to Directories and Modules)
+"""
+If the script is not run from the project folder (highest level in repository),
+but instead (presumably) from the folder containing this script, the current
+working directory is moved up until a known sub-folder name is visible.
+"""
+from os import walk, chdir, getcwd
+from os.path import dirname
+folders = list()
+while True:
+    for root, dirs, files in walk('.'):
+        folders += list(name for name in dirs)
+    if 'figure' not in folders:
+        chdir(dirname(getcwd())) # Move up one
+    else:
+        break
+"""
+Adding the (now updated) current working directory to the path so that imports
+from the repository will work.
+"""
+from sys import path; path.append('.')
+# endregion
+
 # region Imports
 from typing import Optional, Union, List, Tuple, Dict
 from matplotlib import pyplot, transforms
@@ -133,6 +156,9 @@ class Figure(object):
             assert all(0.0 <= value <= 1.0 for value in figure_color)
             if isinstance(figure_color, list): figure_color = tuple(figure_color)
         else: # Treat as hexadecimal 24-bit RGB string
+            assert isinstance(figure_color, str)
+            assert 6 <= len(figure_color) <= 7
+            if '#' not in figure_color: figure_color = '#{0}'.format(figure_color)
             figure_color = to_rgb(figure_color)
         self.__figure_color = figure_color
         if hasattr(self, 'figure'): self.figure.set_facecolor(figure_color)
@@ -202,6 +228,9 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in color)
                 if isinstance(color, list): color = tuple(color)
             else: # Treat as hexadecimal 24-bit RGB string
+                assert isinstance(color, str)
+                assert 6 <= len(color) <= 7
+                if '#' not in color: color = '#{0}'.format(color)
                 color = to_rgb(color)
         # endregion
 
@@ -287,9 +316,13 @@ class Figure(object):
             assert all(0.0 <= value <= 1.0 for value in panel_color)
             if isinstance(panel_color, list): panel_color = tuple(panel_color)
         else: # Treat as hexadecimal string
-            if len(panel_color) == 6:
+            assert isinstance(panel_color, str)
+            assert 6 <= len(panel_color) <= 9
+            if 6 <= len(panel_color) == 7:
+                if '#' not in panel_color: panel_color = '#{0}'.format(panel_color)
                 panel_color = to_rgb(panel_color)
             else:
+                if '#' not in panel_color: panel_color = '#{0}'.format(panel_color)
                 panel_color = to_rgba(panel_color)
         if three_dimensional is not None:
             assert isinstance(three_dimensional, bool)
@@ -607,6 +640,9 @@ class Figure(object):
                     for value in panel_color
                 )
         else:
+            assert isinstance(panel_color, str)
+            assert 6 <= len(panel_color) <= 7
+            if '#' not in panel_color: panel_color = '#{0}'.format(panel_color)
             panel_color = to_rgb(panel_color)
         # endregion
 
@@ -647,9 +683,13 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in x_pane_color)
                 if isinstance(x_pane_color, list): x_pane_color = tuple(x_pane_color)
             else: # Treat as hexadecimal string
-                if len(x_pane_color) == 6:
+                assert isinstance(x_pane_color, str)
+                assert 6 <= len(x_pane_color) <= 9
+                if 6 <= len(x_pane_color) <= 7:
+                    if '#' not in x_pane_color: x_pane_color = '#{0}'.format(x_pane_color)
                     x_pane_color = to_rgb(x_pane_color)
                 else:
+                    if '#' not in x_pane_color: x_pane_color = '#{0}'.format(x_pane_color)
                     x_pane_color = to_rgba(x_pane_color)
         else:
             x_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
@@ -664,6 +704,9 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in x_grid_color)
                 if isinstance(x_grid_color, list): x_grid_color = tuple(x_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
+                assert isinstance(x_grid_color, str)
+                assert 6 <= len(x_grid_color) <= 7
+                if '#' not in x_grid_color: x_grid_color = '#{0}'.format(x_grid_color)
                 x_grid_color = to_rgb(x_grid_color)
         else:
             x_grid_color = (0.9, 0.9, 0.9)
@@ -675,9 +718,13 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in y_pane_color)
                 if isinstance(y_pane_color, list): y_pane_color = tuple(y_pane_color)
             else: # Treat as hexadecimal string
-                if len(y_pane_color) == 6:
+                assert isinstance(y_pane_color, str)
+                assert 6 <= len(y_pane_color) <= 9
+                if 6 <= len(y_pane_color) <= 7:
+                    if '#' not in y_pane_color: y_pane_color = '#{0}'.format(y_pane_color)
                     y_pane_color = to_rgb(y_pane_color)
                 else:
+                    if '#' not in y_pane_color: y_pane_color = '#{0}'.format(y_pane_color)
                     y_pane_color = to_rgba(y_pane_color)
         else:
             y_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
@@ -692,7 +739,9 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in y_grid_color)
                 if isinstance(y_grid_color, list): y_grid_color = tuple(y_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
-                y_grid_color = to_rgb(y_grid_color)
+                assert isinstance(y_grid_color, str)
+                assert 6 <= len(y_grid_color) <= 7
+                if '#' not in y_grid_color: y_grid_color = '#{0}'.format(y_grid_color)
         else:
             y_grid_color = (0.9, 0.9, 0.9)
         if z_pane_color is not None:
@@ -703,9 +752,13 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in z_pane_color)
                 if isinstance(z_pane_color, list): z_pane_color = tuple(z_pane_color)
             else: # Treat as hexadecimal string
-                if len(z_pane_color) == 6:
+                assert isinstance(z_pane_color, str)
+                assert 6 <= len(z_pane_color) <= 9
+                if 6 <= len(z_pane_color) <= 7:
+                    if '#' not in z_pane_color: z_pane_color = '#{0}'.format(z_pane_color)
                     z_pane_color = to_rgb(z_pane_color)
                 else:
+                    if '#' not in z_pane_color: z_pane_color = '#{0}'.format(z_pane_color)
                     z_pane_color = to_rgba(z_pane_color)
         else:
             z_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
@@ -720,7 +773,9 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in z_grid_color)
                 if isinstance(z_grid_color, list): z_grid_color = tuple(z_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
-                z_grid_color = to_rgb(z_grid_color)
+                assert isinstance(z_grid_color, str)
+                assert 6 <= len(z_grid_color) <= 7
+                if '#' not in z_grid_color: z_grid_color = '#{0}'.format(z_grid_color)
         else:
             z_grid_color = (0.9, 0.9, 0.9)
         # endregion
@@ -824,6 +879,9 @@ class Figure(object):
                         for value in font_color
                     )
             else:
+                assert isinstance(font_color, str)
+                assert 6 <= len(font_color) <= 7
+                if '#' not in font_color: font_color = '#{0}'.format(font_color)
                 font_color = to_rgb(font_color)
         if tick_color is None:
             tick_color = self.grey_level(0.0)
@@ -840,6 +898,9 @@ class Figure(object):
                         for value in tick_color
                     )
             else:
+                assert isinstance(tick_color, str)
+                assert 6 <= len(tick_color) <= 7
+                if '#' not in tick_color: tick_color = '#{0}'.format(tick_color)
                 tick_color = to_rgb(tick_color)
         if z_order is None: z_order = 100
         assert isinstance(z_order, int)
