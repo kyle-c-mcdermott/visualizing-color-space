@@ -112,7 +112,7 @@ XYZ_TO_LMS_2 = inv(LMS_TO_XYZ_2)
 """
 Linear transformation coefficients for sRGB to CIE 1931 2-Degree tristimulus
 values taken from:
-https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
+https://en.wikipedia.org/wiki/SRGB
 (Optional gamma correction is handled within the associated conversion function)
 """
 SRGB_TO_XYZ_2 = (
@@ -121,6 +121,16 @@ SRGB_TO_XYZ_2 = (
     (0.0193, 0.1192, 0.9505) # Z_R, Z_G, Z_B
 )
 XYZ_TO_SRGB_2 = inv(SRGB_TO_XYZ_2)
+
+"""
+Primaries derived from measured spectra from a CRT display
+"""
+RGB_TO_XYZ_CRT_10 = ( # Not a CIE standard, but estimated using 10-degree CMFs
+    (0.0455, 0.0369, 0.0282), # X_R, X_G, X_B
+    (0.0256, 0.0708, 0.0184), # Y_R, Y_G, Y_B
+    (0.0023, 0.0106, 0.1484) # Z_R, Z_G, Z_B
+)
+XYZ_TO_RGB_CRT_10 = inv(RGB_TO_XYZ_CRT_10)
 
 """
 Custom primaries designed to maximize the area of the gamut triangle inside the
