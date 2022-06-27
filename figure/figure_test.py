@@ -11,7 +11,7 @@ numpy==1.21.1
 
 # region Imports
 from unittest import TestCase, main
-from figure import hex_to_rgb, hex_to_rgba, Figure
+from figure import Figure
 from numpy import array
 from matplotlib.axes import Axes
 # endregion
@@ -19,50 +19,6 @@ from matplotlib.axes import Axes
 # region Test
 class TestFigure(TestCase):
     """Test Figure Package"""
-
-    # region Test RGB Hexadecimal to Tri-Val
-    def test_hex_to_rgb(self):
-
-        # Test Argument Assertions
-        with self.assertRaises(AssertionError):
-            hex_to_rgb(1) # Not a str
-        with self.assertRaises(AssertionError):
-            hex_to_rgb(1.0) # Not a str
-        with self.assertRaises(AssertionError):
-            hex_to_rgb('00000') # Length invalid
-        with self.assertRaises(AssertionError):
-            hex_to_rgb('GGGGGG') # G not a valid hex digit
-
-        # Test Return
-        test_return = hex_to_rgb('FF00FF')
-        self.assertIsInstance(test_return, tuple)
-        self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([1.0, 0.0, 1.0]):
-            self.assertEqual(test_return[index], value)
-
-    # endregion
-
-    # region Test RGBA Hexadecimal to Quad-Val
-    def test_hex_to_rgba(self):
-
-        # Test Argument Assertions
-        with self.assertRaises(AssertionError):
-            hex_to_rgba(1) # Not a str
-        with self.assertRaises(AssertionError):
-            hex_to_rgba(1.0) # Not a str
-        with self.assertRaises(AssertionError):
-            hex_to_rgba('0000000') # Length invalid
-        with self.assertRaises(AssertionError):
-            hex_to_rgba('GGGGGGGG') # G not a valid hex digit
-
-        # Test Return
-        test_return = hex_to_rgba('FF00FF80')
-        self.assertIsInstance(test_return, tuple)
-        self.assertEqual(len(test_return), 4)
-        for index, value in enumerate([1.0, 0.0, 1.0, 128 / 255]):
-            self.assertEqual(test_return[index], value)
-
-    # endregion
 
     # region Test Figure Initialization
     def test_figure_init(self):

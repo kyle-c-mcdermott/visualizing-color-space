@@ -12,56 +12,13 @@ Most methods streamline matplotlib.pyplot operations, while
 """
 
 # region Imports
-from typing import Tuple, cast, Optional, Union, List, Dict
+from typing import Optional, Union, List, Tuple, Dict
 from matplotlib import pyplot, transforms
-from numpy import ndarray, arctan2, mean, pi, cos, sin, ptp
+from matplotlib.colors import to_rgb, to_rgba
+from numpy import ndarray, mean, arctan2, ptp, pi, cos, sin
 from matplotlib.axes import Axes
 from warnings import warn
 from uuid import uuid4
-# endregion
-
-# region RGB Hexadecimal to Tri-Val
-def hex_to_rgb(hex_value : str) -> Tuple[float, float, float]:
-
-    # Validate
-    assert isinstance(hex_value, str)
-    assert len(hex_value) == 6
-    assert all(character.isdigit() or 65 <= ord(character.upper()) <= 70 for character in hex_value)
-
-    # Return
-    return cast(
-        Tuple[float, float, float],
-        tuple(
-            int(
-                hex_value[index:index + 2],
-                16
-            )
-            / 255
-            for index in (0, 2, 4)
-        )
-    )
-# endregion
-
-# region RGBA Hexadecimal to Quad-Val
-def hex_to_rgba(hex_value : str) -> Tuple[float, float, float, float]:
-
-    # Validate
-    assert isinstance(hex_value, str)
-    assert len(hex_value) == 8
-    assert all(character.isdigit() or 65 <= ord(character.upper()) <= 70 for character in hex_value)
-
-    # Return
-    return cast(
-        Tuple[float, float, float, float],
-        tuple(
-            int(
-                hex_value[index:index + 2],
-                16
-            )
-            / 255
-            for index in (0, 2, 4, 6)
-        )
-    )
 # endregion
 
 # region Figure Class
@@ -176,7 +133,7 @@ class Figure(object):
             assert all(0.0 <= value <= 1.0 for value in figure_color)
             if isinstance(figure_color, list): figure_color = tuple(figure_color)
         else: # Treat as hexadecimal 24-bit RGB string
-            figure_color = hex_to_rgb(figure_color)
+            figure_color = to_rgb(figure_color)
         self.__figure_color = figure_color
         if hasattr(self, 'figure'): self.figure.set_facecolor(figure_color)
 
@@ -203,15 +160,13 @@ class Figure(object):
         Return grey level color of value (default 1.0), inverting if necessary
         """
 
-        # region Validate Argument
+        # Validate Argument
         if value is None: value = 1.0
         assert any(isinstance(value, valid_type) for valid_type in [int, float])
         assert 0.0 <= value <= 1.0
-        # endregion
 
-        # region Return
+        # Return
         return (value, value, value) if not self.inverted else (1.0 - value, 1.0 - value, 1.0 - value)
-        # endregion
 
     # endregion
 
@@ -247,7 +202,7 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in color)
                 if isinstance(color, list): color = tuple(color)
             else: # Treat as hexadecimal 24-bit RGB string
-                color = hex_to_rgb(color)
+                color = to_rgb(color)
         # endregion
 
         # region Update Properties
@@ -333,9 +288,9 @@ class Figure(object):
             if isinstance(panel_color, list): panel_color = tuple(panel_color)
         else: # Treat as hexadecimal string
             if len(panel_color) == 6:
-                panel_color = hex_to_rgb(panel_color)
+                panel_color = to_rgb(panel_color)
             else:
-                panel_color = hex_to_rgba(panel_color)
+                panel_color = to_rgba(panel_color)
         if three_dimensional is not None:
             assert isinstance(three_dimensional, bool)
         else:
@@ -519,19 +474,17 @@ class Figure(object):
     ) -> bool:
         """Remove the named panel, if it exists, and return success or failure"""
 
-        # region Validate Arguments
+        # Validate Arguments
         assert any(isinstance(name, valid_type) for valid_type in [int, str])
         if isinstance(name, str): assert len(name) > 0
-        # endregion
 
-        # region Remove Panel (if it exists)
+        # Remove Panel (if it exists)
         if name not in self.panels: return False
         pyplot.figure(self.figure.number) # Set as current figure (is this necessary here?)
         self.panels[name].remove()
         self.panels.pop(name, None)
         self.__nominal_positions.pop(name, None)
         return True
-        # endregion
 
     # endregion
 
@@ -654,7 +607,7 @@ class Figure(object):
                     for value in panel_color
                 )
         else:
-            panel_color = hex_to_rgb(panel_color)
+            panel_color = to_rgb(panel_color)
         # endregion
 
         # region Set and Return
@@ -695,9 +648,9 @@ class Figure(object):
                 if isinstance(x_pane_color, list): x_pane_color = tuple(x_pane_color)
             else: # Treat as hexadecimal string
                 if len(x_pane_color) == 6:
-                    x_pane_color = hex_to_rgb(x_pane_color)
+                    x_pane_color = to_rgb(x_pane_color)
                 else:
-                    x_pane_color = hex_to_rgba(x_pane_color)
+                    x_pane_color = to_rgba(x_pane_color)
         else:
             x_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if x_grid_line is None: x_grid_line = '-'
@@ -711,7 +664,7 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in x_grid_color)
                 if isinstance(x_grid_color, list): x_grid_color = tuple(x_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
-                x_grid_color = hex_to_rgb(x_grid_color)
+                x_grid_color = to_rgb(x_grid_color)
         else:
             x_grid_color = (0.9, 0.9, 0.9)
         if y_pane_color is not None:
@@ -723,9 +676,9 @@ class Figure(object):
                 if isinstance(y_pane_color, list): y_pane_color = tuple(y_pane_color)
             else: # Treat as hexadecimal string
                 if len(y_pane_color) == 6:
-                    y_pane_color = hex_to_rgb(y_pane_color)
+                    y_pane_color = to_rgb(y_pane_color)
                 else:
-                    y_pane_color = hex_to_rgba(y_pane_color)
+                    y_pane_color = to_rgba(y_pane_color)
         else:
             y_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if y_grid_line is None: y_grid_line = '-'
@@ -739,7 +692,7 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in y_grid_color)
                 if isinstance(y_grid_color, list): y_grid_color = tuple(y_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
-                y_grid_color = hex_to_rgb(y_grid_color)
+                y_grid_color = to_rgb(y_grid_color)
         else:
             y_grid_color = (0.9, 0.9, 0.9)
         if z_pane_color is not None:
@@ -751,9 +704,9 @@ class Figure(object):
                 if isinstance(z_pane_color, list): z_pane_color = tuple(z_pane_color)
             else: # Treat as hexadecimal string
                 if len(z_pane_color) == 6:
-                    z_pane_color = hex_to_rgb(z_pane_color)
+                    z_pane_color = to_rgb(z_pane_color)
                 else:
-                    z_pane_color = hex_to_rgba(z_pane_color)
+                    z_pane_color = to_rgba(z_pane_color)
         else:
             z_pane_color = (0.0, 0.0, 0.0, 0.0) # transparent
         if z_grid_line is None: z_grid_line = '-'
@@ -767,7 +720,7 @@ class Figure(object):
                 assert all(0.0 <= value <= 1.0 for value in z_grid_color)
                 if isinstance(z_grid_color, list): z_grid_color = tuple(z_grid_color)
             else: # Treat as hexadecimal 24-bit RGB string
-                z_grid_color = hex_to_rgb(z_grid_color)
+                z_grid_color = to_rgb(z_grid_color)
         else:
             z_grid_color = (0.9, 0.9, 0.9)
         # endregion
@@ -871,7 +824,7 @@ class Figure(object):
                         for value in font_color
                     )
             else:
-                font_color = hex_to_rgb(font_color)
+                font_color = to_rgb(font_color)
         if tick_color is None:
             tick_color = self.grey_level(0.0)
         else:
@@ -887,7 +840,7 @@ class Figure(object):
                         for value in tick_color
                     )
             else:
-                tick_color = hex_to_rgb(tick_color)
+                tick_color = to_rgb(tick_color)
         if z_order is None: z_order = 100
         assert isinstance(z_order, int)
         # endregion
@@ -1313,7 +1266,7 @@ if __name__ == '__main__':
         # Initialize Figure
         demo_figure = Figure(
             name = 'Demonstration Figure{0}'.format(
-                ' (Inverted)' if inverted else ''
+                ' (inverted)' if inverted else ''
             ), # Used by default as file name when saving
             size = (16, 9), # Inches
             inverted = inverted
