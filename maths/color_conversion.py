@@ -315,11 +315,8 @@ def xyz_to_rgb(
 
     # Validate Argumnets
     assert isinstance(X, float)
-    assert 0.0 <= X
     assert isinstance(Y, float)
-    assert 0.0 <= Y
     assert isinstance(Z, float)
-    assert 0.0 <= Z
     if display is None: display = DISPLAY.SRGB.value
     assert isinstance(display, str)
     assert any(display == valid.value for valid in DISPLAY)
@@ -338,28 +335,41 @@ def xyz_to_rgb(
     else: # default sRGB
         coefficients = XYZ_TO_SRGB_2
 
+    # More Validation (using exterior display primaries skips these)
+    if all(coefficient >= 0.0 for coefficient in coefficients[0]):
+        assert 0.0 <= X
+    if all(coefficient >= 0.0 for coefficient in coefficients[1]):
+        assert 0.0 <= Y
+    if all(coefficient >= 0.0 for coefficient in coefficients[2]):
+        assert 0.0 <= Z
+
     # (Check Validity of Coordinates within Origin Space)
     if not suppress_warnings:
-        x_r, y_r = xyz_to_xyy(*tuple(inv(coefficients)[index][0] for index in range(3)))[0:2]
-        x_g, y_g = xyz_to_xyy(*tuple(inv(coefficients)[index][1] for index in range(3)))[0:2]
-        x_b, y_b = xyz_to_xyy(*tuple(inv(coefficients)[index][2] for index in range(3)))[0:2]
-        def is_inside(x, y):
-            def area(x1, y1, x2, y2, x3, y3):
-                return abs(
-                    (
-                        x1 * (y2 - y3)
-                        + x2 * (y3 - y1)
-                        + x3 * (y1 - y2)
+        if apply_gamma_correction and display != DISPLAY.SRGB.value:
+            warn('xyz_to_rgb() - Cannot Apply Gamma Correction when display is not sRGB!')
+        if display != DISPLAY.EXTERIOR.value:
+            x_r, y_r = xyz_to_xyy(*tuple(inv(coefficients)[index][0] for index in range(3)))[0:2]
+            x_g, y_g = xyz_to_xyy(*tuple(inv(coefficients)[index][1] for index in range(3)))[0:2]
+            x_b, y_b = xyz_to_xyy(*tuple(inv(coefficients)[index][2] for index in range(3)))[0:2]
+            def is_inside(x, y):
+                def area(x1, y1, x2, y2, x3, y3):
+                    return abs(
+                        (
+                            x1 * (y2 - y3)
+                            + x2 * (y3 - y1)
+                            + x3 * (y1 - y2)
+                        )
+                        / 2.0
                     )
-                    / 2.0
-                )
-            a = area(x_r, y_r, x_g, y_g, x_b, y_b)
-            a1 = area(x, y, x_g, y_g, x_b, y_b)
-            a2 = area(x_r, y_r, x, y, x_b, y_b)
-            a3 = area(x_r, y_r, x_g, y_g, x, y)
-            return around(a, 6) == around(a1 + a2 + a3, 6)
-        if not is_inside(*xyz_to_xyy(X, Y, Z)[0:2]):
-            warn('xyz_to_rgb() - Chromaticity Outside Gamut!')
+                a = area(x_r, y_r, x_g, y_g, x_b, y_b)
+                a1 = area(x, y, x_g, y_g, x_b, y_b)
+                a2 = area(x_r, y_r, x, y, x_b, y_b)
+                a3 = area(x_r, y_r, x_g, y_g, x, y)
+                return around(a, 6) == around(a1 + a2 + a3, 6)
+            if not is_inside(*xyz_to_xyy(X, Y, Z)[0:2]):
+                warn('xyz_to_rgb() - Chromaticity Outside Gamut!')
+        else:
+            warn('xyz_to_rgb() - Within Gamut Check Skipped for Exterior Primaries')
         if Y > sum(inv(coefficients)[1]):
             warn('xyz_to_rgb() - Luminance Higher than Maximum (white)!')
 
@@ -382,6 +392,11 @@ def xyz_to_rgb(
             for value in rgb
         )
 
+    # (Check Validity of RGB Values)
+    if not suppress_warnings:
+        if any((value < 0.0 or value > 1.0) for value in rgb):
+            warn('xyz_to_rgb() - Red, Green, and/or Blue Values Outside the Interval [0, 1]!')
+
     # Return
     return tuple(float(abs(around(value, 8))) for value in rgb)
     # abs() applied because otherwise sometimes returns -0.0 for saturated values
@@ -391,7 +406,8 @@ def rgb_to_xyz(
     green : Union[int, float],
     blue : Union[int, float],
     display : Optional[str] = None, # default srgb
-    apply_gamma_correction : Optional[bool] = None # default False
+    apply_gamma_correction : Optional[bool] = None, # default False
+    suppress_warnings : Optional[bool] = None # default False
 ) -> Tuple[float, float, float]: # X, Y, Z
     """
     Convert from display colors to color matching functions.
@@ -412,6 +428,11 @@ def rgb_to_xyz(
     assert any(display == valid.value for valid in DISPLAY)
     if apply_gamma_correction is None: apply_gamma_correction = False
     assert isinstance(apply_gamma_correction, bool)
+    if suppress_warnings is None: suppress_warnings = False
+    assert isinstance(suppress_warnings, bool)
+    if not suppress_warnings:
+        if apply_gamma_correction and display != DISPLAY.SRGB.value:
+            warn('rgb_to_xyz() - Cannot Apply Gamma Correction when display is not sRGB!')
 
     # Select Coefficients
     if display == DISPLAY.CRT.value:
