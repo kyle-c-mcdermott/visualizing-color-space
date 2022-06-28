@@ -44,6 +44,16 @@ from maths.color_conversion import (
     xy_to_uv,
     uv_to_xy
 )
+from maths.chromaticity_conversion import (
+    wavelength_to_chromaticity,
+    STANDARD,
+    wavelength_to_hue_angle,
+    hue_angle_to_wavelength,
+    chromaticity_rectangular_to_polar,
+    CENTER,
+    chromaticity_polar_to_rectangular
+)
+from numpy import pi
 # endregion
 
 # region Test
@@ -217,6 +227,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 2)
         for index, value in enumerate([0.5, 0.5]):
+            self.assertIsInstance(test_return[index], float)
             self.assertEqual(test_return[index], value)
 
         # Test Return (parallel / collinear)
@@ -229,6 +240,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 2)
         for index, value in enumerate([float('inf'), float('inf')]):
+            self.assertIsInstance(test_return[index], float)
             self.assertEqual(test_return[index], value)
 
     # endregion
@@ -297,6 +309,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.191888, 0.019219, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_lms(
             1.0,
@@ -307,6 +320,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([2.846201, 0.168926, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -411,6 +425,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([-0.6431246874633334, 0.41480164505858064, 0.1957928622122068]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = lms_to_rgb(
             3.5,
@@ -421,6 +436,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([-0.39214312026556863, 0.37142744974395, 0.4960628690327141]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -525,6 +541,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.23513200000000004, 0.164852, 0.0032040000000000003]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = lms_to_xyz(
             0.2,
@@ -535,6 +552,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.021495189999999997, 0.278438132, 0.8587517800000001]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -639,6 +657,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.2388647821277039, 0.3000120004800192, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_lms(
             0.4,
@@ -649,6 +668,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.07900529274194415, 0.12944002280819375, 0.9781639113458372]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -753,6 +773,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.3333333333333333, 0.3333333333333333, 0.5]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_xyy(
             0.0,
@@ -763,6 +784,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.3127159072215825, 0.3290014805066623, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_xyy(
             0.0,
@@ -773,6 +795,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.2860098267390742, 0.2968709594000517, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_xyy(
             0.0,
@@ -783,6 +806,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.31270561916041584, 0.3289906566653507, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_xyy(
             0.0,
@@ -793,6 +817,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.31269329472922286, 0.32901230506020923, 0.0]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -874,6 +899,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.5, 0.5, 0.6666666666666666]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -1024,6 +1050,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.60239445, 0.47417143, 0.45434251]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_rgb(
             0.05,
@@ -1034,6 +1061,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.57206619, 0.42193973, 0.29792242]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_rgb(
             0.5,
@@ -1044,6 +1072,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.54493369, 0.47564714, 0.45727676]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_rgb(
             0.5,
@@ -1055,6 +1084,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.5310673, 0.48391441, 0.47057456]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_rgb(
             0.5,
@@ -1065,6 +1095,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.79915403, 0.71808196, 0.70444361]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
         # Test Warnings
@@ -1209,6 +1240,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.47525, 0.5, 0.5445]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_xyz(
             0.5,
@@ -1219,6 +1251,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.0553, 0.0574, 0.08065]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_xyz(
             0.5,
@@ -1229,6 +1262,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.47525, 0.5, 0.54455]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_xyz(
             0.5,
@@ -1239,6 +1273,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.4752, 0.5, 0.5445]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_xyz(
             0.5,
@@ -1249,6 +1284,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
         for index, value in enumerate([0.2034461, 0.21404114, 0.2330908]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
         # Test Warnings
@@ -1312,6 +1348,7 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 2)
         for index, value in enumerate([0.19999999999999998, 0.3]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
@@ -1365,6 +1402,424 @@ class TestMaths(TestCase):
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 2)
         for index, value in enumerate([0.30000000000000004, 0.3]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test chromaticity_conversion.wavelength_to_chromaticity
+    def test_chromaticity_conversion_wavelength_to_chromaticity(self):
+
+        # Valid Arguments
+        valid_wavelength = 550
+
+        # Test wavelength Assertions
+        with self.assertRaises(AssertionError):
+            wavelength_to_chromaticity(
+                '550' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_chromaticity(
+                250 # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            wavelength_to_chromaticity(
+                valid_wavelength,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_chromaticity(
+                valid_wavelength,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_chromaticity(
+                valid_wavelength,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = wavelength_to_chromaticity(
+            valid_wavelength
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.3016037993957512, 0.6923077623715743]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = wavelength_to_chromaticity(
+            valid_wavelength,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.3511403518094706, 0.6473414565509334]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = wavelength_to_chromaticity(
+            valid_wavelength,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.31161427083871945, 0.6857576592280564]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = wavelength_to_chromaticity(
+            valid_wavelength,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.3472959375972994, 0.6500899660783639]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test chromaticity_conversion.wavelength_to_hue_angle
+    def test_chromaticity_conversion_wavelength_to_hue_angle(self):
+
+        # Valid Arguments
+        valid_wavelength = 550
+
+        # Test wavelength Assertions
+        with self.assertRaises(AssertionError):
+            wavelength_to_hue_angle(
+                '550' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_hue_angle(
+                250 # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            wavelength_to_hue_angle(
+                valid_wavelength,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_hue_angle(
+                valid_wavelength,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            wavelength_to_hue_angle(
+                valid_wavelength,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = wavelength_to_hue_angle(
+            valid_wavelength
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, -4.681812452611317)
+        test_return = wavelength_to_hue_angle(
+            valid_wavelength,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, -4.832510418547499)
+        test_return = wavelength_to_hue_angle(
+            valid_wavelength,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, -4.709301065032081)
+        test_return = wavelength_to_hue_angle(
+            valid_wavelength,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, -4.819671747185267)
+
+    # endregion
+
+    # region Test chromaticity_conversion.hue_angle_to_wavelength
+    def test_chromaticity_conversion_hue_angle_to_wavelength(self):
+
+        # Valid Arguments
+        valid_angle = -pi
+
+        # Test angle Assertions
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                -0.51 * pi # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test suppress_warnings Assertions
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                suppress_warnings = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                suppress_warnings = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            hue_angle_to_wavelength(
+                valid_angle,
+                suppress_warnings = '0' # Invalid type
+            )
+
+        # Test Return
+        test_return = hue_angle_to_wavelength(
+            valid_angle
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, 491.52904608864185)
+        test_return = hue_angle_to_wavelength(
+            valid_angle,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, 484.31854444518814)
+        test_return = hue_angle_to_wavelength(
+            valid_angle,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, 488.78592569840157)
+        test_return = hue_angle_to_wavelength(
+            valid_angle,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, 485.06676341128315)
+
+        # Test Warnings
+        with self.assertWarns(UserWarning):
+            hue_angle_to_wavelength(
+                -3.0 * pi
+            )
+
+    # endregion
+
+    # region Test chromaticity_conversion.chromaticity_rectangular_to_polar
+    def test_chromaticity_conversion_chromaticity_rectangular_to_polar(self):
+
+        # Valid Arguments
+        valid_x = 0.3
+        valid_y = 0.3
+
+        # Test x Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                0, # Invalid type
+                valid_y
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                '0', # Invalid type
+                valid_y
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                -1.0, # Invalid value
+                valid_y
+            )
+
+        # Test y Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                -1.0 # Invalid value
+            )
+
+        # Test center Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                valid_y,
+                center = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                valid_y,
+                center = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_rectangular_to_polar(
+                valid_x,
+                valid_y,
+                center = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = chromaticity_rectangular_to_polar(
+            valid_x,
+            valid_y
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([-1.9840098855044832, 0.031666704407724636]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_rectangular_to_polar(
+            valid_x,
+            valid_y,
+            center = CENTER.LONG.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([-3.2443682645700243, 0.44836592198783354]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_rectangular_to_polar(
+            valid_x,
+            valid_y,
+            center = CENTER.MEDIUM.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([-3.7083218711132995, 1.3038404810405297]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_rectangular_to_polar(
+            valid_x,
+            valid_y,
+            center = CENTER.SHORT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([-5.1071801000844514, 0.325]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test chromaticity_conversion.chromaticity_polar_to_rectangular
+    def test_chromaticity_conversion_chromaticity_polar_to_rectangular(self):
+
+        # Valid Arguments
+        valid_angle = -pi
+        valid_radius = 0.05
+
+        # Test angle Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                0, # Invalid type
+                valid_radius
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                '0', # Invalid type
+                valid_radius
+            )
+
+        # Test radius Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                valid_angle,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                valid_angle,
+                '0' # Invalid type
+            )
+
+        # Test center Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                valid_angle,
+                valid_radius,
+                center = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                valid_angle,
+                valid_radius,
+                center = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_polar_to_rectangular(
+                valid_angle,
+                valid_radius,
+                center = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = chromaticity_polar_to_rectangular(
+            valid_angle,
+            valid_radius
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.2627159072215825, 0.3290014805066623]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_polar_to_rectangular(
+            -pi,
+            0.4,
+            center = CENTER.LONG.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.346, 0.25399999999999995]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_polar_to_rectangular(
+            -3.7,
+            1.3,
+            center = CENTER.MEDIUM.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.2974699587764693, 0.28878698318104146]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = chromaticity_polar_to_rectangular(
+            -5.1,
+            0.3,
+            center = CENTER.SHORT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for index, value in enumerate([0.28839332281389407, 0.27774440469831974]):
+            self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
     # endregion
