@@ -1,5 +1,0 @@
-Tabulated spectrum locus coordinates for CIE 1964 10-degree downloaded from:
-http://www.cvrl.org/cie.htm
-Under Chromaticity Coordinates, CIE 1964 10-deg chromaticity xyz coordinates
-using the second button "/W" with a solid (instead of dashed) line indicating
-higher sampling resolution (1 nm)
