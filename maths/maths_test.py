@@ -57,6 +57,15 @@ from maths.chromaticity_conversion import (
     chromaticity_polar_to_rectangular
 )
 from numpy import pi
+from maths.color_temperature import (
+    tristimulus_from_spectrum,
+    radiant_emitance,
+    spectrum_from_temperature,
+    isotherm_endpoints_from_temperature,
+    correlated_color_temperature_from_chromaticity,
+    generate_temperature_series
+)
+from maths.plotting_series import color_matching_functions_1931_2
 # endregion
 
 # region Test
@@ -2080,6 +2089,425 @@ class TestMaths(TestCase):
         for index, value in enumerate([0.28839332281389407, 0.27774440469831974]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test color_temperature.tristimulus_from_spectrum
+    def test_color_temperature_tristimulus_from_spectrum(self):
+
+        # Valid Arguments
+        valid_spectrum = [
+            (450, 1),
+            (550, 1)
+        ]
+
+        # Test spectrum Assertions
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                (1, 1) # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [1.0] # Invalid length
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                ['1', '1'] # Invalid types
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [('1', '1'), ('1', '1')] # Invalid types
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [(1, 1, 1), (2, 2, 2)] # Invalid lengths
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [-1.0, -1.0] # Invalid values
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [(0.0, -1.0), (1.0, -1.0)] # Invalid values
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [(1.0, -1.0), (2.0, -1.0)] # Invalid values
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                [(1.0, 1.0), (1.0, 1.0)] # Invalid (repeating) values (in first index)
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                valid_spectrum,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                valid_spectrum,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            tristimulus_from_spectrum(
+                valid_spectrum,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = tristimulus_from_spectrum(
+            valid_spectrum
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([0.38482495, 0.5164750499999999, 0.8904299995]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = tristimulus_from_spectrum(
+            valid_spectrum,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([0.46531545, 0.5473265, 1.065293789]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = tristimulus_from_spectrum(
+            valid_spectrum,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([0.38594215, 0.52687316, 0.9261676455000001]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = tristimulus_from_spectrum(
+            valid_spectrum,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([0.450264, 0.5406085, 0.999394]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        spectrum = list(
+            (
+                datum['Wavelength'],
+                1.0
+            )
+            for datum in color_matching_functions_1931_2
+            if datum['Wavelength'] > 450
+        )
+        test_return = tristimulus_from_spectrum(
+            spectrum # Testing omission of wavelengths
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([96.5168590442245, 106.23936400800198, 55.385171360635994]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        spectrum += [(450.5, spectrum[0][1])]
+        test_return = tristimulus_from_spectrum(
+            spectrum # Testing interpolation
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([96.8508073192245, 106.27874901050198, 57.154393035636]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+        spectrum += [(900, spectrum[-1][1])]
+        test_return = tristimulus_from_spectrum(
+            spectrum # Testing clipping
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index, value in enumerate([96.8508073192245, 106.27874901050198, 57.154393035636]):
+            self.assertIsInstance(test_return[index], float)
+            self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test color_temperature.radiant_emitance
+    def test_color_temperature_radiant_emitance(self):
+
+        # Valid Arguments
+        valid_wavelength = 550
+        valid_temperature = 3000
+
+        # Test wavelength Assertions
+        with self.assertRaises(AssertionError):
+            radiant_emitance(
+                '0', # Invalid type
+                valid_temperature
+            )
+        with self.assertRaises(AssertionError):
+            radiant_emitance(
+                -1, # Invalid type
+                valid_temperature
+            )
+
+        # Test temperature Assertions
+        with self.assertRaises(AssertionError):
+            radiant_emitance(
+                valid_wavelength,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            radiant_emitance(
+                valid_wavelength,
+                -1 # Invalid type
+            )
+
+        # Test Return
+        test_return = radiant_emitance(
+            valid_wavelength,
+            valid_temperature
+        )
+        self.assertIsInstance(test_return, float)
+        self.assertAlmostEqual(test_return, 1214360870680.4893)
+
+    # endregion
+
+    # region Test color_temperature.spectrum_from_temperature
+    def test_color_temperature_spectrum_from_temperature(self):
+
+        # Valid Arguments
+        valid_temperature = 3000
+
+        # Test temperature Assertions
+        with self.assertRaises(AssertionError):
+            spectrum_from_temperature(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            spectrum_from_temperature(
+                -1.0 # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            spectrum_from_temperature(
+                valid_temperature,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            spectrum_from_temperature(
+                valid_temperature,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            spectrum_from_temperature(
+                valid_temperature,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = spectrum_from_temperature(
+            valid_temperature
+        )
+        self.assertIsInstance(test_return, list)
+        for test_value in test_return:
+            self.assertIsInstance(test_value, float)
+        for index, value in [(0, 101365669845.23505), (-1, 2948380262101.136)]:
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = spectrum_from_temperature(
+            valid_temperature,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, list)
+        for test_value in test_return:
+            self.assertIsInstance(test_value, float)
+        for index, value in [(0, 189292552636.88422), (-1, 2948380262101.136)]:
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = spectrum_from_temperature(
+            valid_temperature,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, list)
+        for test_value in test_return:
+            self.assertIsInstance(test_value, float)
+        for index, value in [(0, 189292552636.88422), (-1, 2948380262101.136)]:
+            self.assertAlmostEqual(test_return[index], value)
+        test_return = spectrum_from_temperature(
+            valid_temperature,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, list)
+        for test_value in test_return:
+            self.assertIsInstance(test_value, float)
+        for index, value in [(0, 101365669845.23505), (-1, 2948380262101.136)]:
+            self.assertAlmostEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test color_temperature.isotherm_endpoints_from_temperature
+    def test_color_temperature_isotherm_endpoints_from_temperature(self):
+
+        # Valid Arguments
+        valid_temperature = 3000
+
+        # Test temperature Assertions
+        with self.assertRaises(AssertionError):
+            isotherm_endpoints_from_temperature(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            isotherm_endpoints_from_temperature(
+                -1.0 # Invalid value
+            )
+
+        # Test Return
+        test_return = isotherm_endpoints_from_temperature(valid_temperature)
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for test_pair in test_return:
+            self.assertIsInstance(test_pair, tuple)
+            self.assertEqual(len(test_pair), 2)
+            for test_value in test_pair:
+                self.assertIsInstance(test_value, float)
+        for index, value in enumerate([0.23278161951970855, 0.3943184107415542]):
+            self.assertAlmostEqual(test_return[0][index], value)
+
+    # endregion
+
+    # region Test color_temperature.correlated_color_temperature_from_chromaticity
+    def test_color_temperature_correlated_color_temperature_from_chromaticity(self):
+
+        # Valid Arguments
+        valid_u, valid_v = xy_to_uv(0.31271, 0.32902)
+
+        # Test u Assertions
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                0, # Invalid type
+                valid_v
+            )
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                '0', # Invalid type
+                valid_v
+            )
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                -0.1, # Invalid value
+                valid_v
+            )
+
+        # Test v Assertions
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                valid_u,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                valid_u,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            correlated_color_temperature_from_chromaticity(
+                valid_u,
+                -0.1 # Invalid value
+            )
+
+        # Test Return
+        test_return = correlated_color_temperature_from_chromaticity(
+            valid_u,
+            valid_v
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        self.assertIsInstance(test_return[0], int)
+        self.assertEqual(test_return[0], 6504)
+        self.assertIsInstance(test_return[1], float)
+        self.assertAlmostEqual(test_return[1], 0.003212310635578674)
+        self.assertIsInstance(test_return[2], bool)
+        self.assertTrue(test_return[2])
+
+    # endregion
+
+    # region Test color_temperature.generate_temperature_series
+    def test_color_temperature_generate_temperature_series(self):
+
+        # Valid Arguments
+        valid_minimum_temperature = 10 ** 3
+        valid_maximum_tmperature = 10 ** 7
+        valid_chromaticity_distance_step = 0.01
+
+        # Test minimum_temperature Assertions
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                minimum_temperature = '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                minimum_temperature = 0 # Invalid value
+            )
+
+        # Test maximum_temperature Assertions
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                maximum_temperature = '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                maximum_temperature = 0 # Invalid value
+            )
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                maximum_temperature = 10 # Invalid value (less than default minimum)
+            )
+
+        # Test chromaticity_distance_step Assertions
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                chromaticity_distance_step = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                chromaticity_distance_step = '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            generate_temperature_series(
+                chromaticity_distance_step = 0.0 # Invalid value
+            )
+
+        # Test Return
+        test_return = generate_temperature_series(
+            minimum_temperature = valid_minimum_temperature,
+            maximum_temperature = valid_maximum_tmperature,
+            chromaticity_distance_step = valid_chromaticity_distance_step
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertIsInstance(test_return[0], list)
+        self.assertEqual(len(test_return[0]), 24)
+        for test_value in test_return[0]:
+            self.assertIsInstance(test_value, int)
+        self.assertEqual(test_return[0][-1], 10000129200)
+
+        self.assertIsInstance(test_return[1], list)
+        self.assertEqual(len(test_return[1]), 24)
+        for test_pair in test_return[1]:
+            self.assertIsInstance(test_pair, tuple)
+            self.assertEqual(len(test_pair), 2)
+            for test_value in test_pair:
+                self.assertIsInstance(test_value, float)
+        for index, value in enumerate([0.23987727982643164, 0.23403837880105186]):
+            self.assertAlmostEqual(test_return[1][-1][index], value)
 
     # endregion
 
