@@ -315,6 +315,27 @@ enough) be confusing when plotted.
 )
 # endregion
 
+# region Load - Measured CRT Spectra
+"""
+Tabulated CRT Spectra recorded with a Photo Research spectroradiometer (PR650?)
+many years ago (monitor specifications not recorded)
+"""
+with open(
+    'data/crt_phosphors.csv',
+    'r'
+) as read_file:
+    phosphor_spectra = list(
+        {
+            'Wavelength' : int(row['Wavelength']),
+            **{
+                color_name : float(row[color_name])
+                for color_name in COLOR_NAMES
+            }
+        }
+        for row in DictReader(read_file)
+    )
+# endregion
+
 # region Gamut Triangle Chromaticities
 (
     gamut_triangle_vertices_srgb,
