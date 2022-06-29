@@ -30,7 +30,10 @@ from sys import path; path.append('.')
 
 # region Imports
 from unittest import TestCase, main
-from maths.functions import intersection_of_two_segments
+from maths.functions import (
+    intersection_of_two_segments,
+    conversion_matrix
+)
 from maths.color_conversion import (
     rgb_to_lms,
     lms_to_rgb,
@@ -242,6 +245,262 @@ class TestMaths(TestCase):
         for index, value in enumerate([float('inf'), float('inf')]):
             self.assertIsInstance(test_return[index], float)
             self.assertEqual(test_return[index], value)
+
+    # endregion
+
+    # region Test functions.conversion_matrix
+    def test_functions_conversion_matrix(self):
+
+        # Valid Arguments
+        valid_red_chromaticity = (0.6400, 0.3000)
+        valid_green_chromaticity = (0.3000, 0.6000)
+        valid_blue_chromaticity = (0.1500, 0.0600)
+        valid_white_chromaticity = (0.3127, 0.3290)
+
+        # Test red_chromaticity Assertions
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                0, # Invalid type
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                0.0, # Invalid type
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                '0', # Invalid type
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                (0.0, 1.0, 2.0), # Invalid length
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                ('0', '1'), # Invalid types
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                (0.3, 0.0), # Invalid value
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+
+        # Test green_chromaticity Assertions
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                0, # Invalid type
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                0.0, # Invalid type
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                '0', # Invalid type
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                (0.0, 1.0, 2.0), # Invalid length
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                ('0', '1'), # Invalid types
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                (0.3, 0.0), # Invalid value
+                valid_blue_chromaticity,
+                valid_white_chromaticity
+            )
+
+        # Test blue_chromaticity Assertions
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                0, # Invalid type
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                0.0, # Invalid type
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                '0', # Invalid type
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                (0.0, 1.0, 2.0), # Invalid length
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                ('0', '1'), # Invalid types
+                valid_white_chromaticity
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                (0.3, 0.0), # Invalid value
+                valid_white_chromaticity
+            )
+
+        # Test white_chromaticity Assertions
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                (0.0, 1.0, 2.0) # Invalid length
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                ('0', '1') # Invalid types
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                (0.3, 0.0) # Invalid value
+            )
+
+        # Test white_luminance Assertions
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            conversion_matrix(
+                valid_red_chromaticity,
+                valid_green_chromaticity,
+                valid_blue_chromaticity,
+                valid_white_chromaticity,
+                -1.0 # Invalid value
+            )
+
+        # Test Return
+        test_return = conversion_matrix(
+            valid_red_chromaticity,
+            valid_green_chromaticity,
+            valid_blue_chromaticity,
+            valid_white_chromaticity
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index_1, values in enumerate(
+            (
+                (0.4042728701465506, 0.3700149183479725, 0.17616813855714844),
+                (0.18950290788119561, 0.740029836695945, 0.07046725542285938),
+                (0.03790058157623913, 0.12333830611599081, 0.9278188630676486)
+            )
+        ):
+            self.assertIsInstance(test_return[index_1], tuple)
+            self.assertEqual(len(test_return[index_1]), 3)
+            for index_2, value in enumerate(values):
+                self.assertIsInstance(test_return[index_1][index_2], float)
+                self.assertAlmostEqual(test_return[index_1][index_2], value)
+        test_return = conversion_matrix(
+            (0.620, 0.349),
+            (0.312, 0.599),
+            (0.144, 0.094),
+            (0.286, 0.297),
+            white_luminance = 0.1148
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 3)
+        for index_1, values in enumerate(
+            (
+                (0.04562251477687339, 0.036885130826335655, 0.028040502544939106),
+                (0.025681060737304535, 0.070814722323638, 0.018304216939057472),
+                (0.0022811257388436717, 0.010521720011358565, 0.1483809926336361)
+            )
+        ):
+            self.assertIsInstance(test_return[index_1], tuple)
+            self.assertEqual(len(test_return[index_1]), 3)
+            for index_2, value in enumerate(values):
+                self.assertIsInstance(test_return[index_1][index_2], float)
+                self.assertAlmostEqual(test_return[index_1][index_2], value)
 
     # endregion
 
