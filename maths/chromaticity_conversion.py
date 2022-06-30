@@ -56,9 +56,9 @@ class CENTER(Enum):
     MEDIUM = 'medium'
     SHORT = 'short'
 COPUNCTAL_POINTS = { # Approximated from own calculations
-    'Long' : (0.746, 0.254),
-    'Medium' : (1.400, -0.400),
-    'Short' : (0.175, 0.000)
+    'long' : (0.746, 0.254),
+    'medium' : (1.400, -0.400),
+    'short' : (0.175, 0.000)
 }
 # endregion
 
@@ -366,11 +366,11 @@ def chromaticity_rectangular_to_polar(
 
     # Select Center
     if center == CENTER.LONG.value:
-        center = COPUNCTAL_POINTS['Long']
+        center = COPUNCTAL_POINTS['long']
     elif center == CENTER.MEDIUM.value:
-        center = COPUNCTAL_POINTS['Medium']
+        center = COPUNCTAL_POINTS['medium']
     elif center == CENTER.SHORT.value:
-        center = COPUNCTAL_POINTS['Short']
+        center = COPUNCTAL_POINTS['short']
     else:
         center = D65_WHITE
 
@@ -414,11 +414,11 @@ def chromaticity_polar_to_rectangular(
 
     # Select Center
     if center == CENTER.LONG.value:
-        center = COPUNCTAL_POINTS['Long']
+        center = COPUNCTAL_POINTS['long']
     elif center == CENTER.MEDIUM.value:
-        center = COPUNCTAL_POINTS['Medium']
+        center = COPUNCTAL_POINTS['medium']
     elif center == CENTER.SHORT.value:
-        center = COPUNCTAL_POINTS['Short']
+        center = COPUNCTAL_POINTS['short']
     else:
         center = D65_WHITE
 

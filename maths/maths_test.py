@@ -66,6 +66,11 @@ from maths.color_temperature import (
     generate_temperature_series
 )
 from maths.plotting_series import color_matching_functions_1931_2
+from maths.color_blind import (
+    get_unique_colors,
+    filter_image
+)
+from PIL import Image
 # endregion
 
 # region Test
@@ -2508,6 +2513,107 @@ class TestMaths(TestCase):
                 self.assertIsInstance(test_value, float)
         for index, value in enumerate([0.23987727982643164, 0.23403837880105186]):
             self.assertAlmostEqual(test_return[1][-1][index], value)
+
+    # endregion
+
+    # region Test color_blind.get_unique_colors
+    def test_color_blind_get_unique_colors(self):
+
+        # Test image Assertions
+        with self.assertRaises(AssertionError):
+            get_unique_colors(
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            get_unique_colors(
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            get_unique_colors(
+                '0' # Invalid type
+            )
+
+        # Test Return
+        test_return = get_unique_colors(
+            Image.new('RGB', (2, 2), color = (128, 128, 128))
+        )
+        self.assertIsInstance(test_return, dict)
+        self.assertEqual(len(test_return), 1)
+        self.assertIn((128, 128, 128), test_return)
+        self.assertEqual(test_return[(128, 128, 128)], 4)
+
+    # endregion
+
+    # region Test color_blind.filter_image
+    def test_color_blind_filter_image(self):
+
+        # Valid Arguments
+        valid_image = Image.new('RGB', (2, 2), color = (128, 128, 128))
+        valid_cone = 'long'
+
+        # Test image Assertions
+        with self.assertRaises(AssertionError):
+            filter_image(
+                0, # Invalid type
+                valid_cone
+            )
+        with self.assertRaises(AssertionError):
+            filter_image(
+                0.0, # Invalid type
+                valid_cone
+            )
+        with self.assertRaises(AssertionError):
+            filter_image(
+                '0', # Invalid type
+                valid_cone
+            )
+
+        # Test cone Assertions
+        with self.assertRaises(AssertionError):
+            filter_image(
+                valid_image,
+                0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            filter_image(
+                valid_image,
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            filter_image(
+                valid_image,
+                'invalid' # Invalid value
+            )
+
+        # Test Return
+        pixels = valid_image.load()
+        pixels[0, 0] = (192, 64, 64)
+        pixels[1, 0] = (64, 192, 64)
+        pixels[0, 1] = (64, 64, 192)
+        test_return = filter_image(
+            valid_image,
+            'long'
+        )
+        self.assertIsInstance(test_return, Image.Image)
+        pixels = test_return.load()
+        for index, value in enumerate([89, 93, 76]):
+            self.assertEqual(pixels[0, 0][index], value)
+        test_return = filter_image(
+            valid_image,
+            'medium'
+        )
+        self.assertIsInstance(test_return, Image.Image)
+        pixels = test_return.load()
+        for index, value in enumerate([102, 91, 57]):
+            self.assertEqual(pixels[0, 0][index], value)
+        test_return = filter_image(
+            valid_image,
+            'short'
+        )
+        self.assertIsInstance(test_return, Image.Image)
+        pixels = test_return.load()
+        for index, value in enumerate([197, 59, 95]):
+            self.assertEqual(pixels[0, 0][index], value)
 
     # endregion
 
