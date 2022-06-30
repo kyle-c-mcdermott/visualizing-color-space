@@ -32,14 +32,19 @@ from sys import path; path.append('.')
 # endregion
 
 # region Imports
-from numpy import linspace, arctan2, pi, ptp, cos, sin, transpose
+from numpy import linspace, pi, arctan2, cos, sin, ptp, transpose
+from maths.color_blind import CONE
 from numpy.random import rand
 from pprint import pprint
-from maths.rgb_cie_conversions import (
-    rgb_to_chromoluminance,
-    chromoluminance_to_rgb
+from maths.color_conversion import (
+    xyz_to_xyy,
+    rgb_to_xyz,
+    xyz_to_rgb,
+    xyy_to_xyz
 )
-from maths.color_blindness import intersection_two_segments
+from maths.chromaticity_conversion import COPUNCTAL_POINTS
+from maths.plotting_series import gamut_triangle_vertices_srgb
+from maths.functions import intersection_of_two_segments
 from figure.figure import Figure
 from matplotlib.spines import Spine
 # endregion
@@ -66,7 +71,7 @@ MIDDLE_COLORS = {
 }
 MIDDLE_COLOR_NAME = 'Grey'
 MIDDLE_COLOR = MIDDLE_COLORS[MIDDLE_COLOR_NAME]
-CONE_TYPE = 'S'
+CONE_TYPE = CONE.MEDIUM.value
 STIMULUS_CHROMATIC_SIGN = +1 # +/-1, will flip colors of foreground and background
 CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.6) # Proportion of maximum distance, within gamut, on either side of distribution
 MAXIMUM_ALLOWED_LUMINANCE = 0.4
@@ -78,21 +83,13 @@ FIGURE_BACKGROUNDS = {
 }
 FIGURE_BACKGROUND_NAME = 'Mean'
 FIGURE_TITLE = 'Color-Blind Stimulus - {0}-Cone Variation around {1} pointing {2} on {3}'.format(
-    CONE_TYPE,
+    CONE_TYPE.title(),
     MIDDLE_COLOR_NAME,
     STIMULUS_GAP_NAME,
     FIGURE_BACKGROUND_NAME
 )
 FIGURE_SIZE = (9, 9)
-EXTENSION = 'png'
-# endregion
-
-# region Constants
-COPUNCTAL_POINTS = {
-    'L' : (0.746, 0.254),
-    'M' : (1.400, -0.400),
-    'S' : (0.175, 0.000)
-}
+EXTENSION = 'svg'
 # endregion
 
 # region Determine Properties of Circles
@@ -181,10 +178,7 @@ print('\nCircle count by size:'); pprint(counts)
 # region Determine Colors
 
 # Determine Chromaticity Distribution
-middle_chromaticity = rgb_to_chromoluminance(
-    *MIDDLE_COLOR,
-    gamma_correct = False
-)
+middle_chromaticity = xyz_to_xyy(*rgb_to_xyz(*MIDDLE_COLOR))
 middle_polar = ( # from selected copunctal point
     arctan2(
         middle_chromaticity[1] - COPUNCTAL_POINTS[CONE_TYPE][1],
@@ -197,25 +191,25 @@ middle_polar = ( # from selected copunctal point
 ) # (angle, distance)
 gamut_segments = [
     (
-        rgb_to_chromoluminance(1.0, 0.0, 0.0)[0:2], # Red
-        rgb_to_chromoluminance(0.0, 1.0, 0.0)[0:2] # to Green
+        tuple(gamut_triangle_vertices_srgb['Red'][coord] for coord in ['x', 'y']),
+        tuple(gamut_triangle_vertices_srgb['Green'][coord] for coord in ['x', 'y'])
     ),
     (
-        rgb_to_chromoluminance(0.0, 1.0, 0.0)[0:2], # Green
-        rgb_to_chromoluminance(0.0, 0.0, 1.0)[0:2] # to Blue
+        tuple(gamut_triangle_vertices_srgb['Green'][coord] for coord in ['x', 'y']),
+        tuple(gamut_triangle_vertices_srgb['Blue'][coord] for coord in ['x', 'y'])
     ),
     (
-        rgb_to_chromoluminance(0.0, 0.0, 1.0)[0:2], # Blue
-        rgb_to_chromoluminance(1.0, 0.0, 0.0)[0:2] # to Red
+        tuple(gamut_triangle_vertices_srgb['Blue'][coord] for coord in ['x', 'y']),
+        tuple(gamut_triangle_vertices_srgb['Red'][coord] for coord in ['x', 'y'])
     )
 ]
 confusion_line_intersections = (
-    intersection_two_segments(
+    intersection_of_two_segments(
         COPUNCTAL_POINTS[CONE_TYPE],
         middle_chromaticity[0:2],
         *gamut_segments[2]
     ),
-    intersection_two_segments(
+    intersection_of_two_segments(
         COPUNCTAL_POINTS[CONE_TYPE],
         middle_chromaticity[0:2],
         *gamut_segments[0 if CONE_TYPE == 'S' else 1]
@@ -287,10 +281,11 @@ chromaticity_bounds = (
     )
 )
 color_bounds = tuple(
-    chromoluminance_to_rgb(
-        *chromaticity_bound,
-        0.05, # Arbitrarily low
-        gamma_correct = False
+    xyz_to_rgb(
+        *xyy_to_xyz(
+            *chromaticity_bound,
+            0.05, # Arbitrarily low
+        )
     )
     for chromaticity_bound in chromaticity_bounds
 )
@@ -299,9 +294,10 @@ saturated_color_bounds = tuple(
     for color_bound in color_bounds
 )
 luminance_bounds = list(
-    rgb_to_chromoluminance(
-        *saturated_color_bound,
-        gamma_correct = False
+    xyz_to_xyy(
+        *rgb_to_xyz(
+            *saturated_color_bound
+        )
     )[2]
     for saturated_color_bound in saturated_color_bounds
 )
@@ -314,12 +310,13 @@ print(
 )
 
 # Set Colors
-FIGURE_BACKGROUNDS['Mean'] = chromoluminance_to_rgb(
-    *middle_chromaticity[0:2],
-    maximum_luminance * (
-        sum(LUMINANCE_SATURATION_PROPORTION_BOUNDS) / 2.0
-    ),
-    gamma_correct = False
+FIGURE_BACKGROUNDS['Mean'] = xyz_to_rgb(
+    *xyy_to_xyz(
+        *middle_chromaticity[0:2],
+        maximum_luminance * (
+            sum(LUMINANCE_SATURATION_PROPORTION_BOUNDS) / 2.0
+        )
+    )
 )
 circle_colors = list()
 for circle in circles:
@@ -336,13 +333,14 @@ for circle in circles:
         COPUNCTAL_POINTS[CONE_TYPE][0] + distance * cos(middle_polar[0]),
         COPUNCTAL_POINTS[CONE_TYPE][1] + distance * sin(middle_polar[0])
     )
-    color = chromoluminance_to_rgb(
-        *chromaticity,
-        maximum_luminance * (
-            LUMINANCE_SATURATION_PROPORTION_BOUNDS[0]
-            + rand() * ptp(LUMINANCE_SATURATION_PROPORTION_BOUNDS)
-        ),
-        gamma_correct = False
+    color = xyz_to_rgb(
+        *xyy_to_xyz(
+            *chromaticity,
+            maximum_luminance * (
+                LUMINANCE_SATURATION_PROPORTION_BOUNDS[0]
+                + rand() * ptp(LUMINANCE_SATURATION_PROPORTION_BOUNDS)
+            )
+        )
     )
     circle_colors.append(color)
 
