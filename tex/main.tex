@@ -2,17 +2,34 @@
 \usepackage[utf8]{inputenc}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage[
+backend=biber,
+style=apa
+]{biblatex}
+\addbibresource{bibliography.bib}
+\usepackage{svg}
+\usepackage{amsmath}
+
+% Inversion
+\newif\ifinvert
+\invertfalse % Set \inverttrue or \invertfalse
+\ifinvert % Settings when inverted
+\pagecolor[rgb]{0,0,0}
+\color[rgb]{1,1,1}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=green,
+    citecolor=pink,
+    urlcolor=red
+}
+\else % Settings when normal
 \hypersetup{
     colorlinks=true,
     linkcolor=olive,
     citecolor=violet,
     urlcolor=purple
 }
-\usepackage[
-backend=biber,
-style=apa
-]{biblatex}
-\addbibresource{bibliography.bib}
+\fi
 
 \title{Visualizing Color Space}
 \author{Kyle Christopher McDermott}
@@ -20,6 +37,7 @@ style=apa
 
 \begin{document}
 
+% Title Page
 \begin{titlepage}
 \maketitle
 \thispagestyle{empty} % Removes page number
@@ -36,10 +54,26 @@ Typically the color matching functions of CIE 1931 standard (\cite{cie1932commis
 \subsection{Color Matching Experiment} \label{sec:experiment}
 Stiles \& Burch presented in 1959 data from 49 individual observers (including 4 experimenters who are represented twice for a total of 53 observations across two similar conditions) using a 10$^\circ$ Stimulus (\cite{stiles1959npl}).  They also presented data from 10 observers for a 2$^\circ$ stimulus, but this has been deemed too few from which to build a “standard observer”.  The Color \& Vision Research Laboratory have made the data available here (file download \href{http://www.cvrl.org/database/data/sb_individual/SB10_corrected_indiv_CMFs.xls}{link}); these are “corrected data” (see \href{http://www.cvrl.org/database/text/sb_individual/sb10_individual.htm}{here} (\cite{stiles1958average})).
 \subsubsection{Stimuli \& Procedure}
-The experiment presented observers with a circular stimulus 10$^\circ$ in diameter, bisected vertically.  On one side were presented a range of narrow-band lights from 14,000 $cm^{-1}$ to 25,500 $cm^{-1}$ (roughly 714 $nm$ to 392 $nm$, note the reversed order as the units are inverses of each other).  On the other side was a mixture of three “primary” lights at 15,500 $cm^{-1}$ (roughly 645 $nm$, and reddish), 19,000 $cm^{-1}$ (roughly 526 $nm$, and greenish), and 22,500 $cm^{-1}$ (roughly 444 $nm$, and bluish); the experimental data are “transformed” from the actual, physical values of 15,418 $cm^{-1}$, 18,997 $cm^{-1}$, and 22,456 $cm^{-1}$, respectively.  Observers’ task was to adjust the intensity of the three primary lights on one side to match the single light on the other side.\\ \\
-As will be illustrated later, it is not always possible to mix three primaries in this way to create a match if the test stimulus is outside the range of colors achievable by a mixing of those primaries.  Therefore the experimenters allowed the primaries to be adjusted to “negative” intensities - this meant that instead of adding that light to the mixture of primaries, it was instead added to the test light.  Therefore, when one of the primaries was adjusted to a negative intensity, observers were modifying both sides of the stimulus to achieve a match.
+The experiment presented observers with a circular stimulus 10$^\circ$ in diameter, bisected vertically.  On the "test" side were presented a range of narrow-band lights from 14,000 $cm^{-1}$ to 25,500 $cm^{-1}$ (roughly 714 $nm$ to 392 $nm$, note the reversed order as the units are inverses of each other).  On the other, "match" side was a mixture of (up to) three “primary” lights at 15,500 $cm^{-1}$ (roughly 645 $nm$, and reddish), 19,000 $cm^{-1}$ (roughly 526 $nm$, and greenish), and 22,500 $cm^{-1}$ (roughly 444 $nm$, and bluish); the experimental data are “transformed” from the actual, physical values of 15,418 $cm^{-1}$, 18,997 $cm^{-1}$, and 22,456 $cm^{-1}$, respectively.  Observers’ task was to adjust the intensity of the three primary lights on one side to match the single light on the other side.\\ \\
+As will be illustrated later, it is not always possible to mix three primaries in this way to create a match if the test stimulus is outside the range of colors achievable by a mixing of those primaries.  Therefore the experimenters allowed the primaries to be adjusted to “negative” intensities - this meant that instead of adding the primary to the "match" side, it was instead added to the "test" side.  Therefore, when one of the primaries was adjusted to a negative intensity, observers were adjusting the appearance of both sides of the stimulus to match them.
 \subsubsection{Data Visualization}
-
+Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' settings as well as the average (in bold).\\ \\
+\begin{figure*}
+\ifinvert
+\includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data_inverted.svg}
+\else
+\includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data.svg}
+\fi
+\caption{Individual (faded) and average (bold) settings of the red, green, and blue primary lights relative to the test light intensity plotted across all test light wave-numbers.  Positive settings indicate primary lights added together on the "match" side of the stimulus.  Negative settings indicate primary lights instead added to the "test" side of the stimulus along with the test light.  Where horizontal and vertical dotted lines cross, no settings were recorded (note there is zero individual variability at these points); instead it was presumed that each primary would exactly match itself in isolation.  Note that the step size between test lights is larger below 16,000 $cm^{-1}$ and above 21,500 $cm^{-1}$.}\label{fig:experiment_raw}
+\end{figure*}
+The red, green, and blue primary settings can be reduced to two values to form a chromaticity coordinate in the experimental chromaticity space.  If we use $R$, $G$, and $B$ to represent the settings of the red, green, and blue primaries, respectively, then the chromaticity coordinates $r$ and $g$ are:
+\begin{equation}\label{eq:experimental_chromaticity}
+\begin{aligned}
+r=\frac{R}{R+G+B}\\
+g=\frac{G}{R+G+B}
+\end{aligned}
+\end{equation}
+Figure X plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later.
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}

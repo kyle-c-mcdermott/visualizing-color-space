@@ -115,7 +115,13 @@ with open(
             read_file,
             fieldnames = ['Wave-Number', 'Wavelength', *COLOR_NAMES]
         )
+        if int(row['Wave-Number']) in list(datum['Wave-Number'] for datum in color_matching_experiment_individual_settings)
     )
+"""
+The tabulated data retrieved from CVRL have interpolated wave-numbers to fill
+gaps where original stimulus sampling was more sparse.  Those extra,
+interpolated rows are here being omitted.
+"""
 # endregion
 
 # region Load - 10-Degree Cone Fundamentals
