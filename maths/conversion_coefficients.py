@@ -65,13 +65,13 @@ RGB_TO_UNSCALED_LMS_10 = (
 UNSCALED_LMS_TO_RGB_10 = inv(RGB_TO_UNSCALED_LMS_10)
 
 """
-After quadratic interpolation in 1 nm steps, scaling constants were applied to
-give each cone fundamental a maximum value of 1.0.
+After quadratic spline interpolation in 1 nm steps, scaling constants were
+applied to give each cone fundamental a maximum value of 1.0.
 """
 RGB_TO_LMS_10 = (
-    (0.191888, 0.747846, 0.067419), # L_R, L_G, L_B
-    (0.019219, 0.940413, 0.113770), # M_R, M_G, M_B
-    (0.000000, 0.010590, 0.999052) # S_R, S_G, S_B
+    (0.191904, 0.747907, 0.067425), # L_R, L_G, L_B
+    (0.019201, 0.939552, 0.113666), # M_R, M_G, M_B
+    (0.000000, 0.010589, 0.998992) # S_R, S_G, S_B
 )
 LMS_TO_RGB_10 = inv(RGB_TO_LMS_10)
 # endregion

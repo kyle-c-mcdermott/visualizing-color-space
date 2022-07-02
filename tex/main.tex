@@ -180,8 +180,23 @@ Passing the mean color matching experiment settings through this linear transfor
     \caption{Unnormalized cone fundamentals transformed from color matching experiment mean settings using equation \ref{eq:cone_fundamental_linear_transformation}.  Dashed vertical lines indicate the wavelengths of the experimental primary lights; note that all three fundamentals pass through $1.0$ at the wavelength corresponding to the experimental blue primary.  IMAGE LINK, CODE LINK}\label{fig:unnormalized_cone_fundamentals}
 \end{figure*}
 \subsubsection{Normalization}
-
-
+The Colour \& Vision Research Laboratory does not list their computed normalization constants $k$, but the procedure is straightforward and we can check our work with their tabulated values for the normalized cone sensitivities.  Using quadratic spline interpolation to smooth out the unnormalized cone fundamentals in Figure \ref{fig:unnormalized_cone_fundamentals}, the peak sensitivities for the long-, medium-, and short-wavelength sensitive cones are $k_L\approx14.831370$, $k_M\approx8.797703$, and $k_S\approx1.001009$, respectively (at $569 nm$, $541 nm$, and $445 nm$, respectively) (CODE LINK).  Using equation \ref{eq:cone_fundamental_normalization_constants_symbolic} to solve for $L_B$, $M_B$, and $S_B$ and factoring into the linear transformation in equation \ref{eq:cone_fundamental_linear_transformation_symbolic_simplified} we now have the linear transformation to convert from the color matching experiment mean settings into \textit{normalized} cone fundamentals:
+\begin{equation}\label{eq:cone_fundamental_linear_transformation_normalized}
+    \begin{bmatrix}
+        0.191904&0.747907&0.067425\\
+        0.019201&0.939552&0.113666\\
+        0&0.010589&0.998992
+    \end{bmatrix}\begin{bmatrix}
+        \bar{R}(\lambda)\\
+        \bar{G}(\lambda)\\
+        \bar{B}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        \bar{L}(\lambda)\\
+        \bar{M}(\lambda)\\
+        \bar{S}(\lambda)
+    \end{bmatrix}
+\end{equation}
+Figure X shows the resulting normalized cone fundamentals smoothed by quadratic spline interpolation.
 
 
 \section{Color Mixing} \label{sec:color_mixing}
