@@ -1,17 +1,12 @@
 """
-Individual observer and mean red, green, and blue setting values plotted versus
-wave-number in cm^-1 (with top horizontal axis giving wavelength in nm).
+Unnormalized cone fundamentals transformed from the color matching experiment
+mean settings.
 
-Caption: Individual (faded) and average (bold) settings of the red, green, and
-blue primary lights relative to the test light intensity plotted across all test
-light wave-numbers.  Positive settings indicate primary lights added together on
-the "match" side of the stimulus.  Negative settings indicate primary lights
-instead added to the "test" side of the stimulus along with the test light.
-Where horizontal and vertical dotted lines cross, no settings were recorded
-(note there is zero individual variability at these points); instead it was
-presumed that each primary would exactly match itself in isolation.  Note that
-the step size between test lights is larger below 16,000 cm^-1 and above 21,500
-cm^-1.
+Caption: Unnormalized cone fundamentals transformed from color matching
+experiment mean settings using equation X.  Dashed vertical lines indicate the
+wavelengths of the experimental primary lights; note that all three fundamentals
+pass through $1.0$ at the wavelength corresponding to the experimental blue
+primary.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -50,16 +45,15 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
-from maths.plotting_series import (
-    color_matching_experiment_mean_settings,
-    color_matching_experiment_individual_settings
+from maths.plotting_series import color_matching_experiment_mean_settings
+from maths.color_conversion import rgb_to_lms
+from maths.conversion_coefficients import (
+    COLOR_NAMES,
+    CONE_NAMES,
+    EXPERIMENT_PRIMARIES
 )
 from numpy import arange, ceil, floor
 from figure.figure import Figure
-from maths.conversion_coefficients import (
-    EXPERIMENT_PRIMARIES,
-    COLOR_NAMES
-)
 # endregion
 
 # region Plot Settings
@@ -74,19 +68,43 @@ FONT_SIZES = {
 EXTENSION = 'svg'
 # endregion
 
+# region Transform Mean Settings into Unnormalized Cone Fundamentals
+unnormalized_cone_fundamentals = list()
+for datum in color_matching_experiment_mean_settings:
+    cone_fundamentals = rgb_to_lms(
+        *list(
+            datum[color_name]
+            for color_name in COLOR_NAMES
+        ),
+        normalize_fundamentals = False
+    )
+    unnormalized_cone_fundamentals.append(
+        {
+            'Wavelength' : datum['Wavelength'],
+            **{
+                cone_name : cone_fundamentals[cone_index]
+                for cone_index, cone_name in enumerate(CONE_NAMES)
+            }
+        }
+    )
+# endregion
+
 # region Horizontal Axes Settings (Derived from Data)
 minimum_wave_number = min(list(datum['Wave-Number'] for datum in color_matching_experiment_mean_settings))
 maximum_wave_number = max(list(datum['Wave-Number'] for datum in color_matching_experiment_mean_settings))
 wave_number_ticks = arange(minimum_wave_number, maximum_wave_number + 1, 500)
-wave_number_bounds = (minimum_wave_number - 250, maximum_wave_number + 250)
 minimum_wavelength = ceil(((10.0 ** 7.0) / maximum_wave_number) / 100.0) * 100.0
 maximum_wavelength = floor(((10.0 ** 7.0) / minimum_wave_number) / 100.0) * 100.0
 wavelength_ticks = arange(minimum_wavelength, maximum_wavelength + 1, 25)
+wavelength_bounds = (
+    (10.0 ** 7.0) / (maximum_wave_number + 250),
+    (10.0 ** 7.0) / (minimum_wave_number - 250)
+)
 # endregion
 
 # region Initialize Figure
 figure = Figure(
-    name = 'figure_01_color_matching_experiment_data{0}'.format(
+    name = 'figure_03_unnormalized_cone_fundamentals{0}'.format(
         '_inverted' if INVERTED else ''
     ),
     size = SIZE,
@@ -96,33 +114,25 @@ figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
-    x_label = r'Wave-Number ($cm^{-1}$)',
-    x_lim = wave_number_bounds,
+    x_label = r'Wavelength ($nm$)',
+    x_lim = wavelength_bounds,
     x_margin = 0.0,
-    x_ticks = wave_number_ticks,
-    x_tick_labels = list(
-        '{0:,}'.format(wave_number_tick)
-        if index / 2 == int(index / 2)
-        else ''
-        for index, wave_number_tick in enumerate(wave_number_ticks)
-    ),
-    y_label = 'Setting\n(relative to test intensity)',
-    y_lim = (-0.75, 4.25),
-    y_margin = 0.0,
-    y_ticks = arange(-0.5, 4.1, 0.5),
-    y_tick_labels = list(
-        int(y_tick) if int(y_tick) == y_tick else ''
-        for y_tick in arange(-0.5, 4.1, 0.5)
-    )
+    x_ticks = wavelength_ticks,
+    y_label = 'Unnormalized Cone Sensitivity'
 )
 front_panel = figure.add_panel(
     name = 'front',
     title = '',
-    x_label = r'Wavelength ($nm$)',
-    x_lim = wave_number_bounds,
+    x_label = r'Wave-Number ($cm^{-1}$)',
+    x_lim = wavelength_bounds,
     x_margin = 0.0,
-    x_ticks = list((10.0 ** 7.0) / x_tick for x_tick in wavelength_ticks),
-    x_tick_labels = list(int(wavelength_tick) for wavelength_tick in wavelength_ticks)
+    x_ticks = list((10.0 ** 7.0) / x_tick for x_tick in wave_number_ticks),
+    x_tick_labels = list(
+        '{0:,}'.format(wave_number_tick)
+        if index / 2 == int(index / 2) and wave_number_tick != 24000
+        else ''
+        for index, wave_number_tick in enumerate(wave_number_ticks)
+    )
 )
 front_panel.sharey(back_panel)
 front_panel.xaxis.set_label_position('top')
@@ -134,13 +144,13 @@ back_panel.axhline(
     y = 0,
     linewidth = 2,
     color = figure.grey_level(0.25),
-    zorder = 2
+    zorder = 1
 )
 back_panel.axhline(
     y = 1,
     linestyle = ':',
     color = figure.grey_level(0.75),
-    zorder = 2
+    zorder = 1
 )
 for color_index, color_wave_number in enumerate(EXPERIMENT_PRIMARIES):
     if not INVERTED:
@@ -148,55 +158,34 @@ for color_index, color_wave_number in enumerate(EXPERIMENT_PRIMARIES):
     else:
         line_color = 3 * [0]; line_color[color_index] = 0.25
     back_panel.axvline(
-        x = color_wave_number,
+        x = (10.0 ** 7.0) / color_wave_number,
         linestyle = ':',
         color = line_color,
-        zorder = 1
+        zorder = 0
     )
 # endregion
 
-# region Plot Individual Observer Settings
-for color_index, color_name in enumerate(COLOR_NAMES):
-    if not INVERTED:
-        line_color = 3 * [0.9]; line_color[color_index] = 1.0
-    else:
-        line_color = 3 * [0.0]; line_color[color_index] = 0.15
-    for observer_index in range(int(len(color_matching_experiment_individual_settings[0]) / 3.0)):
-        back_panel.plot(
-            list(
-                datum['Wave-Number']
-                for datum in color_matching_experiment_individual_settings
-            ),
-            list(
-                datum['{0:02.0f}-{1}'.format(observer_index, color_name)]
-                for datum in color_matching_experiment_individual_settings
-            ),
-            color = line_color,
-            zorder = 0
-        )
-# endregion
-
-# region Plot Mean Observer Settings
+# region Plot Unnormalized Cone Fundamentals
 legend_handles = list()
-for color_index, color_name in enumerate(COLOR_NAMES):
-    line_color = 3 * [0.0]; line_color[color_index] = 0.8
-    marker_color = 3 * [0.0]; marker_color[color_index] = 1.0
+for cone_index, cone_name in enumerate(CONE_NAMES):
+    line_color = 3 * [0.0]; line_color[cone_index] = 0.8
+    marker_color = 3 * [0.0]; marker_color[cone_index] = 1.0
     legend_handles.append(
         back_panel.plot(
             list(
-                datum['Wave-Number']
-                for datum in color_matching_experiment_mean_settings
+                datum['Wavelength']
+                for datum in unnormalized_cone_fundamentals
             ),
             list(
-                datum[color_name]
-                for datum in color_matching_experiment_mean_settings
+                datum[cone_name]
+                for datum in unnormalized_cone_fundamentals
             ),
             color = line_color,
             marker = 'o',
             markersize = 4,
             markeredgecolor = 'none',
             markerfacecolor = marker_color,
-            zorder = 3
+            zorder = 2
         )[0]
     )
 # endregion
@@ -205,25 +194,20 @@ for color_index, color_name in enumerate(COLOR_NAMES):
 back_panel.legend(
     legend_handles,
     list(
-        'Mean {0} ({1:,} {2} or {3}{4:0.2f} {5}) Setting {6}'.format(
-            color_name,
-            EXPERIMENT_PRIMARIES[color_index],
-            r'$cm^{-1}$',
-            r'$\approx$',
-            (10.0 ** 7.0) / EXPERIMENT_PRIMARIES[color_index],
-            r'$nm$',
-            r'$\bar{R}(\lambda)$'
-            if color_index == 0
+        'Unnormalized {0}-Cone Sensitivity {1}'.format(
+            cone_name,
+            r'$k_L\bar{L}(\lambda)$'
+            if cone_name == 'Long'
             else (
-                r'$\bar{G}(\lambda)$'
-                if color_index == 1
-                else r'$\bar{B}(\lambda)$'
+                r'$k_M\bar{M}(\lambda)$'
+                if cone_name == 'Medium'
+                else r'$k_S\bar{S}(\lambda)$'
             )
         )
-        for color_index, color_name in enumerate(COLOR_NAMES)
+        for cone_name in CONE_NAMES
     ),
     markerfirst = False,
-    loc = 'upper right',
+    loc = 'upper left',
     facecolor = figure.grey_level(1)
 )
 # endregion

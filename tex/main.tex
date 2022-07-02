@@ -127,7 +127,7 @@ The above linear combinations can be expressed as a linear transformation:
         \bar{S}(\lambda)
     \end{bmatrix}
 \end{equation}
-At this stage there are nine coefficients to find, however there are two things that can reduce this number: first, we will assert that we don't need to find the absolute sensitivities of the different cone types - we only wish to get the shape of the functions, but will normalize them to get \textit{relative} sensitivity only - and second, we will assert that the short-wavelength-sensitive cones are completely insensitive to the red primary light used in the color matching experiment.  Arbitrarily choosing the coefficients for the blue primary light, we define three normalization constants $k$ as:
+At this stage there are nine coefficients to find, however there are two things that can reduce this number: first, we will assert that we don't need to find the absolute sensitivities of the different cone types - we only wish to get the shape of the functions, but will normalize them to get \textit{relative} sensitivity only - and second, we will assert that the short-wavelength-sensitive cones are completely insensitive to the red primary light used in the color matching experiment.  Arbitrarily choosing the coefficients for the blue primary light, we use them to define three normalization constants $k$ as:
 \begin{equation}\label{eq:cone_fundamental_normalization_constants_symbolic}
     \begin{aligned}
         k_L=\frac{1}{L_B}\\
@@ -170,7 +170,20 @@ By comparing the sensitivity of observers who possess only short-wavelength-sens
         k_S\bar{S}(\lambda)
     \end{bmatrix}
 \end{equation}
-Passing the mean color matching experiment settings through this linear transformation gives us the correct shapes of the cone fundamentals, however their relative scale is still arbitrary (see Figure X).  All three series pass through a value of $1.0$ where the wavelength of light matches the blue experimental primary simply because of the method used to define the constants $k$.
+Passing the mean color matching experiment settings through this linear transformation gives us the correct shapes of the cone fundamentals, however their relative scale is still arbitrary (see Figure \ref{fig:unnormalized_cone_fundamentals}).  All three series pass through a value of $1.0$ where the wavelength of light matches the blue experimental primary simply because of the method used to define the constants $k$.
+\begin{figure*}
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_03_unnormalized_cone_fundamentals_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_03_unnormalized_cone_fundamentals.svg}
+    \fi
+    \caption{Unnormalized cone fundamentals transformed from color matching experiment mean settings using equation \ref{eq:cone_fundamental_linear_transformation}.  Dashed vertical lines indicate the wavelengths of the experimental primary lights; note that all three fundamentals pass through $1.0$ at the wavelength corresponding to the experimental blue primary.  IMAGE LINK, CODE LINK}\label{fig:unnormalized_cone_fundamentals}
+\end{figure*}
+\subsubsection{Normalization}
+
+
+
+
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}
