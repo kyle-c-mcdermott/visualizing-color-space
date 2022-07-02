@@ -39,6 +39,7 @@ from numpy.linalg import inv
 COLOR_NAMES = ('Red', 'Green', 'Blue') # for experimental or display primaries
 CONE_NAMES = ('Long', 'Medium', 'Short') # for cone fundamentals and color-blindness
 TRISTIMULUS_NAMES = ('X', 'Y', 'Z') # for color matching functions
+EXPERIMENT_PRIMARIES = [15500, 19000, 22500] # Wave-numbers in cm^-1
 # endregion
 
 # region Coefficients

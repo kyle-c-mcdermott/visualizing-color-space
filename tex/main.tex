@@ -44,36 +44,133 @@ style=apa
 \end{titlepage}
 
 \twocolumn[
-\section{Introduction} \label{sec:introduction}
-Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the CIE $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.\\ \\
-By far the resource used most in the preparation of this document is the excellent database maintained by Andrew Stockman and his colleagues in the Color \& Vision Research Laboratory at the Institute of Ophthalmology, University College London (\url{http://www.cvrl.org/} or \url{http://cvrl.ucl.ac.uk/}).  The theory, key variables, and tabulated data used both as source and a check on my own computations are there thoughtfully laid out, and links to key pages on their website appear throughout Section \ref{sec:derivation}.
-\section{Derivation of CIE $(x,y)$ Chromaticity} \label{sec:derivation}
+    \section{Introduction}
+    Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the CIE $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.\\ \\
+    By far the resource used most in the preparation of this document is the excellent database maintained by Andrew Stockman and his colleagues in the Colour \& Vision Research Laboratory at the Institute of Ophthalmology, University College London (\url{http://www.cvrl.org/} or \url{http://cvrl.ucl.ac.uk/}).  The theory, key variables, and tabulated data used both as source and a check on my own computations are there thoughtfully laid out, and links to key pages on their website appear throughout Section \ref{sec:derivation}.
+    \section{Derivation of CIE $(x,y)$ Chromaticity} \label{sec:derivation}
 ]
 Typically the color matching functions of CIE 1931 standard (\cite{cie1932commission}) are used to determine the $(x,y)$ chromaticity coordinate from a spectrum of light - doing so for a range of hypothetically purely monochromatic lights results in the “spectrum locus” curve depicted in chromaticity diagrams - and these are based on experiments which presented a relatively small 2$^\circ$ visual angle stimulus to experimental observers (\cite{wright1929re,guild1931colorimetric}).  However, the variables and tabulated data necessary to derive these color matching functions from experimental observations - and to verify my own computations at each step - are more readily available for a larger 10$^\circ$ stimulus (\cite{stiles1959npl}) (which originally contributed to the CIE 1964 standard).  The method detailed here ultimately results in color matching functions for the CIE 170-2 10$^\circ$ Observer standard.  The more typical CIE 1931 2$^\circ$ Observer standard color matching functions will be used in later sections primarily because the sRGB primaries are defined in that space.  As will be illustrated, the 2$^\circ$ and 10$^\circ$ chromaticity diagrams are similar enough to make the distinction important only for narrowly defined circumstances (i.e. experiments probing human vision).\\
 
-\subsection{Color Matching Experiment} \label{sec:experiment}
+\subsection{Color Matching Experiment}
 Stiles \& Burch presented in 1959 data from 49 individual observers (including 4 experimenters who are represented twice for a total of 53 observations across two similar conditions) using a 10$^\circ$ Stimulus (\cite{stiles1959npl}).  They also presented data from 10 observers for a 2$^\circ$ stimulus, but this has been deemed too few from which to build a “standard observer”.  The Color \& Vision Research Laboratory have made the data available here (file download \href{http://www.cvrl.org/database/data/sb_individual/SB10_corrected_indiv_CMFs.xls}{link}); these are “corrected data” (see \href{http://www.cvrl.org/database/text/sb_individual/sb10_individual.htm}{here} (\cite{stiles1958average})).
 \subsubsection{Stimuli \& Procedure}
 The experiment presented observers with a circular stimulus 10$^\circ$ in diameter, bisected vertically.  On the "test" side were presented a range of narrow-band lights from 14,000 $cm^{-1}$ to 25,500 $cm^{-1}$ (roughly 714 $nm$ to 392 $nm$, note the reversed order as the units are inverses of each other).  On the other, "match" side was a mixture of (up to) three “primary” lights at 15,500 $cm^{-1}$ (roughly 645 $nm$, and reddish), 19,000 $cm^{-1}$ (roughly 526 $nm$, and greenish), and 22,500 $cm^{-1}$ (roughly 444 $nm$, and bluish); the experimental data are “transformed” from the actual, physical values of 15,418 $cm^{-1}$, 18,997 $cm^{-1}$, and 22,456 $cm^{-1}$, respectively.  Observers’ task was to adjust the intensity of the three primary lights on one side to match the single light on the other side.\\ \\
 As will be illustrated later, it is not always possible to mix three primaries in this way to create a match if the test stimulus is outside the range of colors achievable by a mixing of those primaries.  Therefore the experimenters allowed the primaries to be adjusted to “negative” intensities - this meant that instead of adding the primary to the "match" side, it was instead added to the "test" side.  Therefore, when one of the primaries was adjusted to a negative intensity, observers were adjusting the appearance of both sides of the stimulus to match them.
 \subsubsection{Data Visualization}
-Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' settings as well as the average (in bold).\\ \\
+Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' settings as well as the average (in bold).  The original data are given in wave-number ($cm^{-1}$), however we will generally be using wavelength ($nm$) in our formulations and assign the symbol lambda ($\lambda$) to it.  The experimental average settings for the red, green, and blue primaries - as functions of wavelength $\lambda$ - are symbolized by $\bar{R}(\lambda)$, $\bar{G}(\lambda)$, and $\bar{B}(\lambda)$, respectively.\\ \\
 \begin{figure*}
-\ifinvert
-\includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data_inverted.svg}
-\else
-\includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data.svg}
-\fi
-\caption{Individual (faded) and average (bold) settings of the red, green, and blue primary lights relative to the test light intensity plotted across all test light wave-numbers.  Positive settings indicate primary lights added together on the "match" side of the stimulus.  Negative settings indicate primary lights instead added to the "test" side of the stimulus along with the test light.  Where horizontal and vertical dotted lines cross, no settings were recorded (note there is zero individual variability at these points); instead it was presumed that each primary would exactly match itself in isolation.  Note that the step size between test lights is larger below 16,000 $cm^{-1}$ and above 21,500 $cm^{-1}$.}\label{fig:experiment_raw}
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data.svg}
+    \fi
+    \caption{Individual (faded) and average (bold) settings of the red, green, and blue primary lights relative to the test light intensity plotted across all test light wave-numbers.  Positive settings indicate primary lights added together on the "match" side of the stimulus.  Negative settings indicate primary lights instead added to the "test" side of the stimulus along with the test light.  Where horizontal and vertical dotted lines cross, no settings were recorded (note there is zero individual variability at these points); instead it was presumed that each primary would exactly match itself in isolation.  Note that the step size between test lights is larger below 16,000 $cm^{-1}$ and above 21,500 $cm^{-1}$. IMAGE LINK, CODE LINK}\label{fig:experiment_raw}
 \end{figure*}
-The red, green, and blue primary settings can be reduced to two values to form a chromaticity coordinate in the experimental chromaticity space.  If we use $R$, $G$, and $B$ to represent the settings of the red, green, and blue primaries, respectively, then the chromaticity coordinates $r$ and $g$ are:
+The red, green, and blue primary settings can be reduced to two values to form a chromaticity coordinate in the experimental chromaticity space.  The chromaticity coordinates - as functions of wavelength $\lambda$ - $\bar{r}(\lambda)$ and $\bar{g}(\lambda)$ are given by:
 \begin{equation}\label{eq:experimental_chromaticity}
-\begin{aligned}
-r=\frac{R}{R+G+B}\\
-g=\frac{G}{R+G+B}
-\end{aligned}
+    \begin{aligned}
+        \bar{r}(\lambda)=\frac{\bar{R}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}\\
+        \bar{g}(\lambda)=\frac{\bar{G}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}
+    \end{aligned}
 \end{equation}
-Figure X plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later.
+Figure \ref{fig:experiment_chromaticity} plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later.
+\begin{figure}
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_02_color_matching_experiment_chromaticity_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_02_color_matching_experiment_chromaticity.svg}
+    \fi
+    \caption{Individual (faded) and average (bold) settings converted to experimental chromaticity.  Note that the settings between 19,000 $cm^{-1}$ (green) and 22,500 $cm^{-1}$ (blue) where the red setting is negative (see Figure \ref{fig:experiment_raw}) extend up and left relatively far, and that the individual variability here is also magnified. IMAGE LINK, CODE LINK}\label{fig:experiment_chromaticity}
+\end{figure}
+\subsubsection{Links}
+\begin{itemize}
+    \item Colour \& Vision Research Laboratory
+    \begin{itemize}
+        \item \href{http://www.cvrl.org/stilesburch10_ind.htm}{Stiles \& Burch individual 10$^\circ$ color matching data}
+    \end{itemize}
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 1 LIGHT AND DARK SVG
+        \item FIGURE 2 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item DATA INGESTION OF INDIVIDUAL AND MEAN DATA
+        \item FIGURE GENERATION FOR FIGURES 1 \& 2
+    \end{itemize}
+\end{itemize}
+\subsection{Conversion to Cone Sensitivities}
+In order to get from the color matching experimental data described above to the color matching \textit{functions} that will define the color spaces we wish to visualize we need to go through the "cone fundamentals" which describe the relative sensitivity to different wavelengths of light of the three types of cone photoreceptors.  The experiments used to measure the sensitivities of the different cone types will not be explored in detail, however the articles that describe these experiments present the necessary conversion constants to transform the matching experiment data into the cone fundamentals (and later to transform the cone fundamentals into the color matching functions).
+\subsubsection{Conversion Equations}
+The cone fundamentals are expressed as linear combinations of the three (average) settings for the red, green, and blue primaries from the color matching experiment:
+\begin{equation}\label{eq:cone_fundamental_linear_combination}
+    \begin{aligned}
+        L_R\bar{R}(\lambda)+L_G\bar{G}(\lambda)+L_B\bar{B}(\lambda)=\bar{L}(\lambda)\\
+        M_R\bar{R}(\lambda)+M_G\bar{G}(\lambda)+M_B\bar{B}(\lambda)=\bar{M}(\lambda)\\
+        S_R\bar{R}(\lambda)+S_G\bar{G}(\lambda)+S_B\bar{B}(\lambda)=\bar{S}(\lambda)
+    \end{aligned}
+\end{equation}
+where $\bar{L}(\lambda)$, $\bar{M}(\lambda)$, and $\bar{S}(\lambda)$ are the sensitivities of the long-, medium-, and short-wavelength-sensitive cones, respectively.  The coefficients $L_R$, $L_G$, ..., $S_G$, and $S_B$ are to be determined experimentally.\\ \\
+The above linear combinations can be expressed as a linear transformation:
+\begin{equation}\label{eq:cone_fundamental_linear_transformation_symbolic}
+    \begin{bmatrix}
+        L_R&L_G&L_B\\
+        M_R&M_G&M_B\\
+        S_R&S_G&S_B
+    \end{bmatrix}\begin{bmatrix}
+        \bar{R}(\lambda)\\
+        \bar{G}(\lambda)\\
+        \bar{B}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        \bar{L}(\lambda)\\
+        \bar{M}(\lambda)\\
+        \bar{S}(\lambda)
+    \end{bmatrix}
+\end{equation}
+At this stage there are nine coefficients to find, however there are two things that can reduce this number: first, we will assert that we don't need to find the absolute sensitivities of the different cone types - we only wish to get the shape of the functions, but will normalize them to get \textit{relative} sensitivity only - and second, we will assert that the short-wavelength-sensitive cones are completely insensitive to the red primary light used in the color matching experiment.  Arbitrarily choosing the coefficients for the blue primary light, we define three normalization constants $k$ as:
+\begin{equation}\label{eq:cone_fundamental_normalization_constants_symbolic}
+    \begin{aligned}
+        k_L=\frac{1}{L_B}\\
+        k_M=\frac{1}{M_B}\\
+        k_S=\frac{1}{S_B}
+    \end{aligned}
+\end{equation}
+the values of which will be determined later so as to independently make the maximum of each cone sensitivity equal to $1.0$.  Factoring these into the linear transformation gives:
+\begin{equation}\label{eq:cone_fundamental_linear_transformation_symbolic_simplified}
+    \begin{bmatrix}
+        \frac{L_R}{L_B}&\frac{L_G}{L_B}&1\\
+        \frac{M_R}{M_B}&\frac{M_G}{M_B}&1\\
+        0&\frac{S_G}{S_B}&1
+    \end{bmatrix}\begin{bmatrix}
+        \bar{R}(\lambda)\\
+        \bar{G}(\lambda)\\
+        \bar{B}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        k_L\bar{L}(\lambda)\\
+        k_M\bar{M}(\lambda)\\
+        k_S\bar{S}(\lambda)
+    \end{bmatrix}
+\end{equation}
+and now there are only five coefficients to find.
+\subsubsection{Constants from Experimentation}
+By comparing the sensitivity of observers who possess only short-wavelength-sensitive cones (\textit{s}-cone monochromats) to typical trichromats the sensitivity of \textit{s}-cones to various wavelengths of light was determined and the coefficient $\frac{S_G}{S_B}$ was estimated to be $0.010600$ (\cite{stockman1999spectral}).  Color-blind observers with missing \textit{m}- or \textit{l}-cones were compared to trichromats to derive the remaining coefficients: $\frac{L_R}{L_B}=2.846201$, $\frac{L_G}{L_B}=11.092490$, $\frac{M_R}{M_B}=0.168926$, and $\frac{M_G}{M_B}=8.265895$
+ (\cite{stockman2000spectral}), filling out the linear transformation:
+\begin{equation}\label{eq:cone_fundamental_linear_transformation}
+    \begin{bmatrix}
+        2.846201&11.092490&1\\
+        0.168926&8.265895&1\\
+        0&0.010600&1
+    \end{bmatrix}\begin{bmatrix}
+        \bar{R}(\lambda)\\
+        \bar{G}(\lambda)\\
+        \bar{B}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        k_L\bar{L}(\lambda)\\
+        k_M\bar{M}(\lambda)\\
+        k_S\bar{S}(\lambda)
+    \end{bmatrix}
+\end{equation}
+Passing the mean color matching experiment settings through this linear transformation gives us the correct shapes of the cone fundamentals, however their relative scale is still arbitrary (see Figure X).  All three series pass through a value of $1.0$ where the wavelength of light matches the blue experimental primary simply because of the method used to define the constants $k$.
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}

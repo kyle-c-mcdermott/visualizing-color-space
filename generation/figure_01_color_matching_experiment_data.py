@@ -1,6 +1,6 @@
 """
 Individual observer and mean red, green, and blue setting values plotted versus
-wave-number in cm^-1 (with top horizontal axis giving wavelength in nm)
+wave-number in cm^-1 (with top horizontal axis giving wavelength in nm).
 
 Caption: Individual (faded) and average (bold) settings of the red, green, and
 blue primary lights relative to the test light intensity plotted across all test
@@ -56,7 +56,10 @@ from maths.plotting_series import (
 )
 from numpy import arange, ceil, floor
 from figure.figure import Figure
-from maths.conversion_coefficients import COLOR_NAMES
+from maths.conversion_coefficients import (
+    EXPERIMENT_PRIMARIES,
+    COLOR_NAMES
+)
 # endregion
 
 # region Plot Settings
@@ -69,10 +72,6 @@ FONT_SIZES = {
     'legends' : 8
 }
 EXTENSION = 'svg'
-# endregion
-
-# region Constants
-COLOR_WAVE_NUMBERS = [15500, 19000, 22500]
 # endregion
 
 # region Horizontal Axes Settings (Derived from Data)
@@ -93,6 +92,7 @@ figure = Figure(
     size = SIZE,
     inverted = INVERTED
 )
+figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
@@ -142,7 +142,7 @@ back_panel.axhline(
     color = figure.grey_level(0.75),
     zorder = 1
 )
-for color_index, color_wave_number in enumerate(COLOR_WAVE_NUMBERS):
+for color_index, color_wave_number in enumerate(EXPERIMENT_PRIMARIES):
     if not INVERTED:
         line_color = 3 * [0.75]; line_color[color_index] = 1.0
     else:
@@ -205,13 +205,20 @@ for color_index, color_name in enumerate(COLOR_NAMES):
 back_panel.legend(
     legend_handles,
     list(
-        'Mean {0} Setting ({1:,} {2} or {3}{4:0.2f} {5})'.format(
+        'Mean {0} ({1:,} {2} or {3}{4:0.2f} {5}) Setting {6}'.format(
             color_name,
-            COLOR_WAVE_NUMBERS[color_index],
+            EXPERIMENT_PRIMARIES[color_index],
             r'$cm^{-1}$',
             r'$\approx$',
-            (10.0 ** 7.0) / COLOR_WAVE_NUMBERS[color_index],
-            r'$nm$'
+            (10.0 ** 7.0) / EXPERIMENT_PRIMARIES[color_index],
+            r'$nm$',
+            r'$\bar{R}(\lambda)$'
+            if color_index == 0
+            else (
+                r'$\bar{G}(\lambda)$'
+                if color_index == 1
+                else r'$\bar{B}(\lambda)$'
+            )
         )
         for color_index, color_name in enumerate(COLOR_NAMES)
     ),
