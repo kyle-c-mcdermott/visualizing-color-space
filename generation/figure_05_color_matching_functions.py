@@ -58,6 +58,11 @@ FONT_SIZES = {
     'legends' : 8
 }
 EXTENSION = 'svg'
+LINE_COLORS = (
+    (0.8, 0, 0.8), # X
+    (0.8, 0.5, 0), # Y
+    (0, 0, 0.8) # Z
+)
 # endregion
 
 # region Initialize Figure
@@ -98,15 +103,6 @@ panel.axhline(
 # region Plot Color Matching Functions
 legend_handles = list()
 for tristimulus_index, tristimulus_name in enumerate(TRISTIMULUS_NAMES):
-    line_color = (
-        (0.8, 0, 0.8)
-        if tristimulus_index == 0
-        else (
-            (0.8, 0.5, 0)
-            if tristimulus_index == 1
-            else (0, 0, 0.8)
-        )
-    )
     legend_handles.append(
         panel.plot(
             list(
@@ -117,7 +113,7 @@ for tristimulus_index, tristimulus_name in enumerate(TRISTIMULUS_NAMES):
                 datum[tristimulus_name]
                 for datum in color_matching_functions_170_2_10
             ),
-            color = line_color,
+            color = LINE_COLORS[tristimulus_index],
             zorder = 1
         )[0]
     )
