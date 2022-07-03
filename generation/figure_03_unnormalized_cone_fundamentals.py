@@ -114,7 +114,7 @@ figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
-    x_label = r'Wavelength ($nm$)',
+    x_label = r'Wavelength $\lambda$ ($nm$)',
     x_lim = wavelength_bounds,
     x_margin = 0.0,
     x_ticks = wavelength_ticks,
