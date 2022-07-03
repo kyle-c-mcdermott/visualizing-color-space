@@ -301,6 +301,16 @@ Transforming the cone fundamentals from Figure \ref{fig:cone_fundamentals} gives
     \caption{CIE 170-2 10$^\circ$ color matching functions transformed from the 10$^\circ$ cone fundamentals.  Note that $\bar{Y}(\lambda)$ peaks at $1.0$ and the integrated area under all three functions are equal to each other. IMAGE LINK, CODE LINK}\label{fig:color_matching_functions}
 \end{figure}
 \subsubsection{Using the Functions}
+The color matching functions are used to determine the tristimulus values $(X,Y,Z)$ for a given spectrum of light.  The three-value coordinate is typically reduced to a two-value coordinate of chromaticity $(x,y)$ - essentially another normalization - with the third coordinate lower-case $z$ ignored as it doesn't provide any additional information.  This will free up a third dimension to be used for luminance later on.\\ \\
+Figure \ref{fig:d65_spectrum} shows the spectrum for the CIE standard illuminant $D65$ for average midday illumination (clear skies in Western / Northern Europe) (\cite{judd1964spectral}).  Such spectra will here be represented by $\bar{R}(\lambda)$ generally, and for this specific spectrum $\bar{R}_{D65}(\lambda)$.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_06_d65_spectrum_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_06_d65_spectrum.svg}
+    \fi
+    \caption{CIE standard illuminant $D65$ energy spectrum.  IMAGE LINK, CODE LINK}\label{fig:d65_spectrum}
+\end{figure}
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}

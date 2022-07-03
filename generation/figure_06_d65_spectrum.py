@@ -1,9 +1,7 @@
 """
-Color Matching Functions.
+D65 Spectrum
 
-Caption: CIE 170-2 10-degree color matching functions transformed from the
-10-degree cone fundamentals.  Note that Y peaks at 1.0 and the integrated area
-under all three functions are equal to each other.
+Caption: CIE standard illuminant D65 energy spectrum.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -43,9 +41,7 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 
 # region Imports
 from figure.figure import Figure
-from numpy import arange
-from maths.conversion_coefficients import TRISTIMULUS_NAMES
-from maths.plotting_series import color_matching_functions_170_2_10
+from maths.plotting_series import d65_spectrum
 # endregion
 
 # region Plot Settings
@@ -62,7 +58,7 @@ EXTENSION = 'svg'
 
 # region Initialize Figure
 figure = Figure(
-    name = 'figure_05_color_matching_functions{0}'.format(
+    name = 'figure_06_d65_spectrum{0}'.format(
         '_inverted' if INVERTED else ''
     ),
     size = SIZE,
@@ -73,10 +69,7 @@ panel = figure.add_panel(
     name = 'main',
     title = '',
     x_label = r'Wavelength $\lambda$ ($nm$)',
-    x_lim = (360, 740),
-    x_margin = 0.0,
-    x_ticks = arange(400, 701, 50),
-    y_label = 'Value'
+    y_label = 'Energy'
 )
 # endregion
 
@@ -87,50 +80,30 @@ panel.axhline(
     color = figure.grey_level(0.25),
     zorder = 0
 )
-panel.axhline(
-    y = 1,
-    linestyle = ':',
-    color = figure.grey_level(0.75),
-    zorder = 0
-)
 # endregion
 
-# region Plot Color Matching Functions
+# region Plot Spectrum
 legend_handles = list()
-for tristimulus_index, tristimulus_name in enumerate(TRISTIMULUS_NAMES):
-    line_color = (
-        (0.8, 0, 0.8)
-        if tristimulus_index == 0
-        else (
-            (0.8, 0.5, 0)
-            if tristimulus_index == 1
-            else (0, 0, 0.8)
-        )
-    )
-    legend_handles.append(
-        panel.plot(
-            list(
-                datum['Wavelength']
-                for datum in color_matching_functions_170_2_10
-            ),
-            list(
-                datum[tristimulus_name]
-                for datum in color_matching_functions_170_2_10
-            ),
-            color = line_color,
-            zorder = 1
-        )[0]
-    )
+legend_handles.append(
+    panel.plot(
+        list(
+            datum['Wavelength']
+            for datum in d65_spectrum
+        ),
+        list(
+            datum['Energy']
+            for datum in d65_spectrum
+        ),
+        color = figure.grey_level(0),
+        zorder = 1
+    )[0]
+)
 # endregion
 
 # region Plot Legend
 panel.legend(
     legend_handles,
-    [
-        r'$\bar{X}(\lambda)$',
-        r'$\bar{Y}(\lambda)$',
-        r'$\bar{Z}(\lambda)$'
-    ],
+    [r'$D65$ Spectrum $\bar{R}_{D65}(\lambda)$'],
     markerfirst = False,
     loc = 'upper right',
     facecolor = figure.grey_level(1)

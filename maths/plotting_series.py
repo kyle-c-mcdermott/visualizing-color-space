@@ -259,7 +259,10 @@ with open(
 CIE Illuminant D65 Spectrum found on Older CIE Standards page:
 http://www.cvrl.org/cie.htm
 E/W button at the bottom of the page under CIE Illuminant D65
-(no citation given)
+Attributed elsewhere to:
+Judd, D. B., MacAdam, D. L., Wyszecki, G., Budde, H., Condit, H., Henderson, S.,
+& Simonds, J. (1964). Spectral distribution of typical daylight as a function of
+correlated color temperature. Josa, 54 (8), 1031-1040.
 Note: from the appearance the values tabulated here appear to be interpolated
 linearly from a more sparsely sampled source.
 """
