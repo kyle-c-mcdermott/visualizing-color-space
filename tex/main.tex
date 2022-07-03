@@ -1,5 +1,6 @@
 \documentclass[twocolumn]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[margin=1.75cm]{geometry}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage[
@@ -57,8 +58,7 @@ Stiles \& Burch presented in 1959 data from 49 individual observers (including 4
 The experiment presented observers with a circular stimulus 10$^\circ$ in diameter, bisected vertically.  On the "test" side were presented a range of narrow-band lights from 14,000 $cm^{-1}$ to 25,500 $cm^{-1}$ (roughly 714 $nm$ to 392 $nm$, note the reversed order as the units are inverses of each other).  On the other, "match" side was a mixture of (up to) three “primary” lights at 15,500 $cm^{-1}$ (roughly 645 $nm$, and reddish), 19,000 $cm^{-1}$ (roughly 526 $nm$, and greenish), and 22,500 $cm^{-1}$ (roughly 444 $nm$, and bluish); the experimental data are “transformed” from the actual, physical values of 15,418 $cm^{-1}$, 18,997 $cm^{-1}$, and 22,456 $cm^{-1}$, respectively.  Observers’ task was to adjust the intensity of the three primary lights on one side to match the single light on the other side.\\ \\
 As will be illustrated later, it is not always possible to mix three primaries in this way to create a match if the test stimulus is outside the range of colors achievable by a mixing of those primaries.  Therefore the experimenters allowed the primaries to be adjusted to “negative” intensities - this meant that instead of adding the primary to the "match" side, it was instead added to the "test" side.  Therefore, when one of the primaries was adjusted to a negative intensity, observers were adjusting the appearance of both sides of the stimulus to match them.
 \subsubsection{Data Visualization}
-Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' settings as well as the average (in bold).  The original data are given in wave-number ($cm^{-1}$), however we will generally be using wavelength ($nm$) in our formulations and assign the symbol lambda ($\lambda$) to it.  The experimental average settings for the red, green, and blue primaries - as functions of wavelength $\lambda$ - are symbolized by $\bar{R}(\lambda)$, $\bar{G}(\lambda)$, and $\bar{B}(\lambda)$, respectively.\\ \\
-\begin{figure*}
+\begin{figure*}[h]
     \ifinvert
         \includesvg[width=\textwidth]{../images/figure_01_color_matching_experiment_data_inverted.svg}
     \else
@@ -66,6 +66,7 @@ Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' set
     \fi
     \caption{Individual (faded) and average (bold) settings of the red, green, and blue primary lights relative to the test light intensity plotted across all test light wave-numbers.  Positive settings indicate primary lights added together on the "match" side of the stimulus.  Negative settings indicate primary lights instead added to the "test" side of the stimulus along with the test light.  Where horizontal and vertical dotted lines cross, no settings were recorded (note there is zero individual variability at these points); instead it was presumed that each primary would exactly match itself in isolation.  Note that the step size between test lights is larger below 16,000 $cm^{-1}$ and above 21,500 $cm^{-1}$. IMAGE LINK, CODE LINK}\label{fig:experiment_raw}
 \end{figure*}
+Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' settings as well as the average (in bold).  The original data are given in wave-number ($cm^{-1}$), however we will generally be using wavelength ($nm$) in our formulations and assign the symbol lambda ($\lambda$) to it.  The experimental average settings for the red, green, and blue primaries - as functions of wavelength $\lambda$ - are symbolized by $\bar{R}(\lambda)$, $\bar{G}(\lambda)$, and $\bar{B}(\lambda)$, respectively.\\ \\
 The red, green, and blue primary settings can be reduced to two values to form a chromaticity coordinate in the experimental chromaticity space.  The chromaticity coordinates - as functions of wavelength $\lambda$ - $\bar{r}(\lambda)$ and $\bar{g}(\lambda)$ are given by:
 \begin{equation}\label{eq:experimental_chromaticity}
     \begin{aligned}
@@ -74,7 +75,7 @@ The red, green, and blue primary settings can be reduced to two values to form a
     \end{aligned}
 \end{equation}
 Figure \ref{fig:experiment_chromaticity} plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later.
-\begin{figure}
+\begin{figure}[h]
     \ifinvert
         \includesvg[width=\linewidth]{../images/figure_02_color_matching_experiment_chromaticity_inverted.svg}
     \else
@@ -171,7 +172,7 @@ By comparing the sensitivity of observers who possess only short-wavelength-sens
     \end{bmatrix}
 \end{equation}
 Passing the mean color matching experiment settings through this linear transformation gives us the correct shapes of the cone fundamentals, however their relative scale is still arbitrary (see Figure \ref{fig:unnormalized_cone_fundamentals}).  All three series pass through a value of $1.0$ where the wavelength of light matches the blue experimental primary simply because of the method used to define the constants $k$.
-\begin{figure*}
+\begin{figure*}[h]
     \ifinvert
         \includesvg[width=\textwidth]{../images/figure_03_unnormalized_cone_fundamentals_inverted.svg}
     \else
@@ -196,9 +197,39 @@ The Colour \& Vision Research Laboratory does not list their computed normalizat
         \bar{S}(\lambda)
     \end{bmatrix}
 \end{equation}
-Figure X shows the resulting normalized cone fundamentals smoothed by quadratic spline interpolation.
-
-
+Figure \ref{fig:cone_fundamentals} shows the resulting normalized cone fundamentals smoothed by interpolation.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_04_cone_fundamentals_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_04_cone_fundamentals.svg}
+    \fi
+    \caption{Normalized, smoothed cone fundamentals.  The approximate peak of each cone's sensitivity curve is annotated.  IMAGE LINK, CODE LINK}\label{fig:cone_fundamentals}
+\end{figure*}
+\subsubsection{Links}
+\begin{itemize}
+    \item Article Full Text
+    \begin{itemize}
+        \item \cite{stockman1999spectral} - \href{https://www.sciencedirect.com/science/article/pii/S0042698998002259}{article page}
+        \item \cite{stockman2000spectral} - \href{https://www.sciencedirect.com/science/article/pii/S0042698900000213}{article page}
+    \end{itemize}
+    \item Colour \& Vision Research Laboratory
+    \begin{itemize}
+        \item \href{http://www.cvrl.org/cones.htm}{Cone Fundamentals Data Sets}
+        \item \href{http://www.cvrl.org/database/text/cones/ss10.htm}{10$^\circ$ Cone Fundamentals Information}
+    \end{itemize}
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 3 LIGHT AND DARK SVG
+        \item FIGURE 4 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item DATA INGESTION OF CONE FUNDAMENTALS
+        \item ESTIMATION OF NORMALIZATION CONSTANTS
+        \item FIGURE GENERATION FOR FIGURES 3 \& 4
+    \end{itemize}
+\end{itemize}
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}
