@@ -53,7 +53,7 @@ from maths.conversion_coefficients import COLOR_NAMES
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4.5, 3.7) # Squaring the axes can create empty white/black space, adjusted height down incrementally until fit was good
+SIZE = (4, 3.2) # Squaring the axes can create empty white/black space, adjusted height down incrementally until fit was good
 FONT_SIZES = {
     'titles' : 14,
     'labels' : 12,

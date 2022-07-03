@@ -46,7 +46,7 @@ style=apa
 
 \twocolumn[
     \section{Introduction}
-    Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the CIE $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.\\ \\
+    Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the Commission internationale de l'eclairage (CIE) $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.\\ \\
     By far the resource used most in the preparation of this document is the excellent database maintained by Andrew Stockman and his colleagues in the Colour \& Vision Research Laboratory at the Institute of Ophthalmology, University College London (\url{http://www.cvrl.org/} or \url{http://cvrl.ucl.ac.uk/}).  The theory, key variables, and tabulated data used both as source and a check on my own computations are there thoughtfully laid out, and links to key pages on their website appear throughout Section \ref{sec:derivation}.
     \section{Derivation of CIE $(x,y)$ Chromaticity} \label{sec:derivation}
 ]
@@ -230,6 +230,77 @@ Figure \ref{fig:cone_fundamentals} shows the resulting normalized cone fundament
         \item FIGURE GENERATION FOR FIGURES 3 \& 4
     \end{itemize}
 \end{itemize}
+\subsection{Color Matching Functions}
+The CIE color matching functions, and the resulting chromaticity diagram, do not directly represent the results of a color matching \textit{experiment}.  The chromaticity coordinates $x$ and $y$ do not represent primary lights of any physically realizable spectrum.  Whereas chromaticities along the vertical ($r=0$) and horizontal ($g=0$) axes in the $(r,g)$ chromaticity diagram depicted in Figure \ref{fig:experiment_chromaticity} represent actual colors within the bounds of those that can be achieved by mixing the primaries together, the vertical and horizontal axes of the $(x,y)$ chromaticity diagram are outside of the spectrum locus and the realm of possible physical colors.  Part of the reasoning behind the construction of the $(x,y)$ chromaticity diagram is, in fact, to have all possible physical colors fall within the bounding triangle of $0$ to $1$ on the two axes and the line $x+y=1$.\\ \\
+The color matching functions can each be expressed as a linear combination of the three cone fundamentals:
+\begin{equation}\label{eq:color_matching_functions_linear_combination}
+    \begin{aligned}
+        X_L\bar{L}(\lambda)+X_M\bar{M}(\lambda)+X_S\bar{S}(\lambda)=\bar{X}(\lambda)\\
+        Y_L\bar{L}(\lambda)+Y_M\bar{M}(\lambda)+Y_S\bar{S}(\lambda)=\bar{Y}(\lambda)\\
+        Z_L\bar{L}(\lambda)+Z_M\bar{M}(\lambda)+Z_S\bar{S}(\lambda)=\bar{Z}(\lambda)
+    \end{aligned}
+\end{equation}
+where $\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$ are the color matching functions.  The letters don't correspond to color or cone type, and are thus arbitrarily chosen.  The coefficients $X_L$, $X_M$, ..., $Z_M$, and $Z_S$ need to be determined.  As before, we will express the above set linear of combinations as a linear transformation:
+\begin{equation}\label{eq:color_matching_function_linear_transformation_symbolic}
+    \begin{bmatrix}
+        X_L&X_M&X_S\\
+        Y_L&Y_M&Y_S\\
+        Z_L&Z_M&Z_S
+    \end{bmatrix}\begin{bmatrix}
+        \bar{L}(\lambda)\\
+        \bar{M}(\lambda)\\
+        \bar{S}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        \bar{X}(\lambda)\\
+        \bar{Y}(\lambda)\\
+        \bar{Z}(\lambda)
+    \end{bmatrix}
+\end{equation}
+\subsubsection{Luminous Efficiency}
+The second color matching function $\bar{Y}(\lambda)$ is constructed to represent luminance, or perceived brightness.  The perceived brightness of lights of different wavelengths is expressed by a luminous efficiency function which depends, among other things, on the state of adaptation of the visual system being measured experimentally.  The perception of brightness is driven by the long- and medium-wavelength-sensitive cones, so the coefficient $Y_S=0$ and the short-wavelength-sensitive cone activation will not impact $\bar{Y}(\lambda)$.  The ratio of long- to medium-wavelength -sensitive cone contribution to luminous efficiency under normal daylight adaptation conditions was determined experimentally to be $\approx1.981377$ (\cite{sharpe2011luminous}):
+\begin{equation}\label{eq:luminous_efficieny_daylight}
+    1.981377\bar{L}(\lambda)+\bar{M}(\lambda)=V^*_{D65}(\lambda)
+\end{equation}
+where $V^*_{D65}$ is luminous efficiency when the visual system is adapted to standard illuminant $D65$ (normal daylight with a correlated color temperature of approximately $6,500K$).  The color matching function $\bar{Y}(\lambda)$ is further constrained to peak at $1.0$ and so, while maintaining the above ratio, its linear combination is:
+\begin{equation}\label{eq:color_matching_function_y}
+    0.692839\bar{L}(\lambda)+0.349676\bar{M}(\lambda)=\bar{Y}(\lambda)
+\end{equation}
+\subsubsection{Remaining Functions}
+The third color matching function $\bar{Z}(\lambda)$ depends only on the activation of the short-wavelength-sensitive cone, so $Z_L=0$ and $Z_M=0$.  All three color matching functions have the same integral (area under the curve) and so the linear combination for the third function is:
+\begin{equation}\label{eq:color_matching_function_z}
+    2.146879\bar{S}(\lambda)=\bar{Z}(\lambda)
+\end{equation}
+so that its area matches that under $\bar{Y}(\lambda)$.\\ \\
+Of the three color matching functions $\bar{X}(\lambda)$ bears the least resemblance to any physiological feature of the visual system - in fact, it has two peaks.  This function is constructed to give the resulting chromaticity diagram some of its features, visualized later, but in short the realm of physical colors is contained within the triangular area described earlier and to fill that area reasonably efficiently.  The following linear combination, having all positive values and the same area as the other two functions, was chosen to minimize the error between the present derivations and the CIE 1964 standard (also based on the same color matching experiment data) with acknowledgement given to Jan Henrik Wold (no citation given):
+\begin{equation}\label{eq:color_matching_function_x}
+    1.939864\bar{L}(\lambda)-1.346644\bar{M}(\lambda)+0.430449\bar{S}(\lambda)=\bar{X}(\lambda)
+\end{equation}
+The resulting linear transformation is:
+\begin{equation}\label{eq:color_matching_function_linear_transformation}
+    \begin{bmatrix}
+        1.939864&-1.346644&0.430449\\
+        0.692839&0.349676&0\\
+        0&0&2.146879
+    \end{bmatrix}\begin{bmatrix}
+        \bar{L}(\lambda)\\
+        \bar{M}(\lambda)\\
+        \bar{S}(\lambda)
+    \end{bmatrix}=\begin{bmatrix}
+        \bar{X}(\lambda)\\
+        \bar{Y}(\lambda)\\
+        \bar{Z}(\lambda)
+    \end{bmatrix}
+\end{equation}
+Transforming the cone fundamentals from Figure \ref{fig:cone_fundamentals} gives the color matching functions in Figure \ref{fig:color_matching_functions}.  These are referred to in various places as: CIE XYZ functions transformed from the CIE 2006 LMS functions, CIE 2012 XYZ color matching functions, and/or the CIE 170-2 10$^\circ$ standard; in this document we'll use the last designation.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_05_color_matching_functions_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_05_color_matching_functions.svg}
+    \fi
+    \caption{CIE 170-2 10$^\circ$ color matching functions transformed from the 10$^\circ$ cone fundamentals.  Note that $\bar{Y}(\lambda)$ peaks at $1.0$ and the integrated area under all three functions are equal to each other. IMAGE LINK, CODE LINK}\label{fig:color_matching_functions}
+\end{figure}
+\subsubsection{Using the Functions}
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}

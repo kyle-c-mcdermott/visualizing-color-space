@@ -88,9 +88,9 @@ the Y color matching function; said coefficient is in Stockman, Sharpe & Fach (1
 The X coefficients are credited to Jan Henrik Wold but there is no citation given.
 """
 LMS_TO_XYZ_10 = (
-    (1.93986443, -1.34664359, 0.43044935), # X_L, X_M, X_S
-    (0.69283932, 0.34967567, 0.00000000), # Y_L, Y_M, Y_S
-    (0.00000000, 0.00000000, 2.14687945) # Z_L, Z_M, Z_S
+    (1.939864, -1.346644, 0.430449), # X_L, X_M, X_S
+    (0.692839, 0.349676, 0.000000), # Y_L, Y_M, Y_S
+    (0.000000, 0.000000, 2.146879) # Z_L, Z_M, Z_S
 )
 XYZ_TO_LMS_10 = inv(LMS_TO_XYZ_10)
 
