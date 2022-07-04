@@ -282,7 +282,7 @@ for tristimulus_index, tristimulus_name in enumerate(TRISTIMULUS_NAMES):
         zorder = 3
     )
 chromaticity_panel.annotate(
-    text = '{0}\n({1:0.3f}, {2:0.3f})'.format(
+    text = '{0}\n({1:0.4f}, {2:0.4f})'.format(
         r'$D65$',
         *chromaticity
     ),

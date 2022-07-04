@@ -78,7 +78,7 @@ The red, green, and blue primary settings can be reduced to two values to form a
         \bar{g}(\lambda)=\frac{\bar{G}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}
     \end{aligned}
 \end{equation}
-Figure \ref{fig:experiment_chromaticity} plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later.
+Figure \ref{fig:experiment_chromaticity} plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later (see Figure \ref{fig:chromaticity_spaces}).
 \begin{figure}[h]
     \ifinvert
         \includesvg[width=\linewidth]{../images/figure_02_color_matching_experiment_chromaticity_inverted.svg}
@@ -343,9 +343,28 @@ Given the shared denominator for all three coordinates, any one can be found giv
     \else
         \includesvg[width=\textwidth]{../images/figure_07_estimating_d65_chromaticity.svg}
     \fi
-    \caption{Illustration of the estimation of chromaticity from a spectrum.  The three left panels show the products of the three color matching functions with the $D65$ spectrum.  The area shaded under each resulting curve is annotated within each panel by applying equation \ref{eq:tristimulus_from_spectrum}.  The right panel shows the resulting chromaticity coordinate $(x,y)$.  IMAGE LINK, CODE LINK}\label{fig:estimating_d65_chromaticity}
+    \caption{Illustration of the estimation of chromaticity from a spectrum.  The three left panels show the products of the three color matching functions with the $D65$ spectrum.  The area shaded under each resulting curve is annotated within each panel by applying equation \ref{eq:tristimulus_from_spectrum}.  The right panel shows the resulting chromaticity coordinate $(x,y)$ for the CIE 170-2 10$^\circ$ space (slightly different from the typically used CIE 1931).  IMAGE LINK, CODE LINK}\label{fig:estimating_d65_chromaticity}
 \end{figure*}
+\subsubsection{Spectrum Locus}
+Chromaticity diagrams typically depict the “spectrum locus” which is the inverted “U” shape that represents the boundary within which all physically real colors - the chromaticities resulting from all possible spectra - lie.  This is based on the notion that the most extreme chromaticities arise from the narrowest possible single-wavelength spectra (i.e. pure, monochromatic lights) and all other possible spectra must be some mix of wavelengths and therefore fall within the line of monochromatic spectra - the spectrum locus.  The chromaticity coordinates of the spectrum locus are given by:
+\begin{equation}
+    \begin{aligned}
+        \bar{x}(\lambda)=\frac{\bar{X}(\lambda)}{\bar{X}(\lambda)+\bar{Y}(\lambda)+\bar{Z}(\lambda)}\\
+        \bar{y}(\lambda)=\frac{\bar{Y}(\lambda)}{\bar{X}(\lambda)+\bar{Y}(\lambda)+\bar{Z}(\lambda)}
+    \end{aligned}
+\end{equation}
+using the color matching functions themselves ($\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$).  The curved path with ends joined at the bottom by a dotted line depicted in Figure \ref{fig:estimating_d65_chromaticity} is the spectrum locus curve derived from the color matching functions (in Figure \ref{fig:color_matching_functions}) of the CIE 170-2 10$^\circ$ standard.\\
 
+The differences among the CIE standards are slight, owing to updates and corrections over time arising from new experimental data or refinements of the underlying theory.  The difference between 10$^\circ$ and 2$^\circ$ standards arises from the difference in stimulus size, but this difference is usually only important under specific circumstances likely only to arise in psychophysical experiments themselves.  Figure \ref{fig:chromaticity_spaces} shows the spectrum loci and the chromaticity of $D65$ for a selection of CIE standards.  The CIE 170-2 standard (arguably the "modern" standard) has color matching functions for both 2$^\circ$ and 10$^\circ$ stimuli.  The CIE 1964 standard, based on a 10$^\circ$ stimulus, will come up later in the discussion of correlated color temperature (with a further conversion into a different chromaticity coordinate system).  The CIE 1931 standard - the original standard - using a 2$^\circ$ stimulus is still the most commonly cited standard and the one in which the sRGB system is defined.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_08_chromaticity_spaces_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_08_chromaticity_spaces.svg}
+    \fi
+    \caption{Spectrum loci and $D65$ chromaticities for the CIE 170-2 10$^\circ$ and 2$^\circ$, 1964 10$^\circ$, and 1931 2$^\circ$ standards.  The chromaticity coordinates for $D65$ are given in the legend.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_spaces}
+\end{figure}
+\subsubsection{Links}
 \section{Color Mixing} \label{sec:color_mixing}
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}
