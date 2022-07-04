@@ -46,13 +46,13 @@ style=apa
 \thispagestyle{empty} % Removes page number
 \end{titlepage}
 
-\twocolumn[
+\twocolumn[{
     \section{Introduction}
-    Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the Commission internationale de l'eclairage (CIE) $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.
-    \\~\\ % parskip doesn't function in here, apparently
+    Here are described methods for generating and, in particular, coloring diagrams of color space (chromaticity) and the visible spectrum.  Section \ref{sec:derivation} covers the derivation of the Commission internationale de l'eclairage (CIE) $(x,y)$ chromaticity diagram starting from experimental data collected from human observers, through the derivation of cone (photoreceptor) sensitivities and the color matching functions used to determine chromaticity from light spectra.  Section \ref{sec:color_mixing} uses the chromaticity diagram to illustrate how a few primary colors can be mixed to create a range of colors between, including the sRGB standard which will be used here to determine chromaticity from display color and vice versa.  Section \ref{sec:chromaticity_coloration} presents multiple methods for the coloration of diagrams of chromaticity and of the visible spectrum and the key differences and considerations for selecting among them.  Section \ref{sec:color_temperature} discusses correlated color temperature - relating to black-body radiation and the Planckian locus which is often depicted on chromaticity diagrams.  Finally, Section \ref{sec:color_blindndess} illustrates the theory behind both generating test stimuli for, and filtering images to mimic the effects of, color blindness.\\
+    
     By far the resource used most in the preparation of this document is the excellent database maintained by Andrew Stockman and his colleagues in the Colour \& Vision Research Laboratory at the Institute of Ophthalmology, University College London (\url{http://www.cvrl.org/} or \url{http://cvrl.ucl.ac.uk/}).  The theory, key variables, and tabulated data used both as source and a check on my own computations are there thoughtfully laid out, and links to key pages on their website appear throughout Section \ref{sec:derivation}.
     \section{Derivation of CIE $(x,y)$ Chromaticity} \label{sec:derivation}
-]
+}]
 Typically the color matching functions of CIE 1931 standard (\cite{cie1932commission}) are used to determine the $(x,y)$ chromaticity coordinate from a spectrum of light - doing so for a range of hypothetically purely monochromatic lights results in the “spectrum locus” curve depicted in chromaticity diagrams - and these are based on experiments which presented a relatively small 2$^\circ$ visual angle stimulus to experimental observers (\cite{wright1929re,guild1931colorimetric}).  However, the variables and tabulated data necessary to derive these color matching functions from experimental observations - and to verify my own computations at each step - are more readily available for a larger 10$^\circ$ stimulus (\cite{stiles1959npl}) (which originally contributed to the CIE 1964 standard).  The method detailed here ultimately results in color matching functions for the CIE 170-2 10$^\circ$ Observer standard.  The more typical CIE 1931 2$^\circ$ Observer standard color matching functions will be used in later sections primarily because the sRGB primaries are defined in that space.  As will be illustrated, the 2$^\circ$ and 10$^\circ$ chromaticity diagrams are similar enough to make the distinction important only for narrowly defined circumstances (i.e. experiments probing human vision).
 \subsection{Color Matching Experiment}
 Stiles \& Burch presented in 1959 data from 49 individual observers (including 4 experimenters who are represented twice for a total of 53 observations across two similar conditions) using a 10$^\circ$ Stimulus (\cite{stiles1959npl}).  They also presented data from 10 observers for a 2$^\circ$ stimulus, but this has been deemed too few from which to build a “standard observer”.  The Color \& Vision Research Laboratory have made the data available here (file download \href{http://www.cvrl.org/database/data/sb_individual/SB10_corrected_indiv_CMFs.xls}{link}); these are “corrected data” (see \href{http://www.cvrl.org/database/text/sb_individual/sb10_individual.htm}{here} (\cite{stiles1958average})).
@@ -328,7 +328,7 @@ The tristimulus values are found by multiplying each color matching function by 
     \end{aligned}
 \end{equation}
 To convert to chromaticity coordinates:
-\begin{equation}
+\begin{equation}\label{eq:chromaticity_from_tristimulus}
     \begin{aligned}
         x=\frac{X}{X+Y+Z}\\
         y=\frac{Y}{X+Y+Z}\\
@@ -365,15 +365,88 @@ The differences among the CIE standards are slight, owing to updates and correct
     \caption{Spectrum loci and $D65$ chromaticities for the CIE 170-2 10$^\circ$ and 2$^\circ$, 1964 10$^\circ$, and 1931 2$^\circ$ standards.  The chromaticity coordinates for $D65$ are given in the legend.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_spaces}
 \end{figure}
 \subsubsection{Links}
-\section{Color Mixing} \label{sec:color_mixing}
+\begin{itemize}
+    \item Article Full Text
+    \begin{itemize}
+        \item \cite{sharpe2011luminous} - \href{http://www.cvrl.org/people/Stockman/pubs/2011\%20Vstar\%20correction\%20SSJJ.pdf}{article page}
+    \end{itemize}
+    \item Colour \& Vision Research Laboratory
+    \begin{itemize}
+        \item \href{http://www.cvrl.org/ciexyzpr.htm}{Color Matching Functions (from CIE 2006 LMS)}
+        \item \href{http://www.cvrl.org/database/text/cienewxyz/cie2012xyz10.htm}{10$^\circ$ Color Matching Functions Information}
+        \item \href{http://www.cvrl.org/cie.htm}{CIE 1931 \& CIE 1964 Color Matching Functions}
+    \end{itemize}
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 4 LIGHT AND DARK SVG
+        \item FIGURE 5 LIGHT AND DARK SVG
+        \item FIGURE 6 LIGHT AND DARK SVG
+        \item FIGURE 7 LIGHT AND DARK SVG
+        \item FIGURE 8 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item DATA INGESTION OF COLOR MATCHING FUNCTIONS AND CONVERSION TO SPECTRUM LOCI
+        \item FIGURE GENERATION FOR ALL FIGURES (4-8)
+    \end{itemize}
+\end{itemize}
+\twocolumn[{\section{Color Mixing} \label{sec:color_mixing}}]
+To determine the chromaticity of a mix of two or more light sources we simply add up their tristimulus values ($X$, $Y$, and $Z$) and then apply equation \ref{eq:chromaticity_from_tristimulus}.  This is demonstrated below first with the color matching experiment mean settings used to match the experiment primaries on the match side with the test light (and sometimes an experimental primary) on the test side.  Next are two demonstrations using the tristimulus values of color displays.
+\subsection{Color Mixing in the Matching Experiment}
+The matching of mixed lights in the color matching experiment is easiest to arrange in a chromaticity diagram for the range of test colors between the green and blue primaries - where the green and blue settings are well above zero and contributing to the match side, and the red setting is well below zero and contributing to the test side - but the math is the same for any test light used in the experiment.  For this demonstration the test light with a wave-number of $20,250cm^{-1}$ is used, where the observers' averaged red, green, and blue settings are $\bar{R}(20,250cm^{-1})=-0.444$, $\bar{G}(20,250cm^{-1})=0.531$, and $\bar{B}(20,250cm^{-1})=0.144$, respectively.  The green and blue settings are positive and their tristimulus values are added together for the match side; the red setting is negative and its tristimulus values will be added to the test light's tristimulus values on the test side:
+\begin{equation}\label{eq:match_tristimulus}
+    \begin{aligned}
+        \bar{G}(20,250cm^{-1})X_G+\bar{B}(20,250cm^{-1})X_B=X_{match}\\
+        \bar{G}(20,250cm^{-1})Y_G+\bar{B}(20,250cm^{-1})Y_B=Y_{match}\\
+        \bar{G}(20,250cm^{-1})Z_G+\bar{B}(20,250cm^{-1})Z_B=Z_{match}
+    \end{aligned}
+\end{equation}
+\begin{equation}\label{eq:test_tristimulus}
+    \begin{aligned}
+        X_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})X_R=X_{test}\\
+        Y_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Y_R=Y_{test}\\
+        Z_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Z_R=Z_{test}
+    \end{aligned}
+\end{equation}
+where $X_R$, $Y_R$, and $Z_R$ are the tristimulus values for the red primary, $X_G$, $Y_G$, and $Z_G$ are the tristimulus values for the green primary, $X_B$, $Y_B$, and $Z_B$ are the tristimulus values for the blue primary, and $X_{20,250cm^{-1}}$, $Y_{20,250cm^{-1}}$, and $Z_{20,250cm^{-1}}$ are the tristimulus values for the test light.  To get the tristimulus values for the three primaries and the test light we simply go to those wave-numbers/wavelengths on each of the color matching functions; we are treating these as ideal, monochromatic light sources and so we can forego the multiplication and integration steps implied by equation \ref{eq:tristimulus_from_spectrum} and just use the values of $\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$.  Figure \ref{fig:color_matching_experiment_tristimulus} annotates the tristimulus values for the primary lights and the selected test light.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_09_color_matching_experiment_tristimulus_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_09_color_matching_experiment_tristimulus.svg}
+    \fi
+    \caption{CIE 170-2 10$^\circ$ color matching functions with the tristimulus values of the experiment primaries and the $20,250cm^{-1}$ test light annotated along the curves.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_tristimulus}
+\end{figure*}
+Factoring the tristimulus values into equations \ref{eq:match_tristimulus} and \ref{eq:test_tristimulus} we can solve for both sides of the experimental stimulus:
+\begin{equation}
+    \begin{aligned}
+        (0.531)0.192+(0.144)0.405=X_{match}=0.160\\
+        (0.531)0.850+(0.144)0.087=Y_{match}=0.464\\
+        (0.531)0.022+(0.144)2.130=Z_{match}=0.318
+    \end{aligned}
+\end{equation}
+\begin{equation}
+    \begin{aligned}
+        0.005-(-0.444)0.347=X_{test}=0.159\\
+        0.400-(-0.444)0.140=Y_{test}=0.462\\
+        0.313-(-0.444)0.000=Z_{test}=0.310
+    \end{aligned}
+\end{equation}
+The tristimulus values on the match and test sides line up reasonably well, though not perfectly due to rounding at various steps (including the tabulated color matching functions).  Using the tristimulus values for the primaries and the selected test light we can get their chromaticities using equation \ref{eq:chromaticity_from_tristimulus}: Red = $(0.713,0.287)$, Green = $(0.180,0.799)$, Blue = $(0.154,0.033)$ and for the $20,250cm^{-1}$ test light we get $(0.007,0.559)$.  The match and test chromaticities come to $(0.170,0.492)$ and $(0.171,0.496)$, respectively - again, reasonably similar.  Plotting all of these on a chromaticity diagram (see Figure X) demonstrates that the mixing of two lights results in a chromaticity falling along a straight line between them, and in the case of the color matching experiment the resulting stimulus chromaticity is the point where the lines connecting the two lights contributing to either side of the stimulus intersect with one another.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_10_color_matching_experiment_mixing_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_10_color_matching_experiment_mixing.svg}
+    \fi
+    \caption{Chromaticities of the experimental primaries and the $20,250cm^{-1}$ test light.  The green and blue primaries on the match side of the stimulus, and the test light and red primary on the test side of the stimulus, are mixed in proportions to find the chromaticity where the lines joining each pair intersect.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_mixing}
+\end{figure}
+\subsection{Three-Primary Systems for Color Displays}
+\twocolumn[{\section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}}]
 
-\section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}
+\twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
 
-\section{Color Temperature} \label{sec:color_temperature}
-
-\section{Color-Blindness} \label{sec:color_blindndess}
-\twocolumn[
-\printbibliography
-]
+\twocolumn[{\section{Color-Blindness} \label{sec:color_blindndess}}]
+\twocolumn[{\printbibliography}]
 
 \end{document}

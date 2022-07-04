@@ -2,7 +2,9 @@
 Plotting the (x, y) chromaticity space with spectrum loci of four different CIE
 standards along with the chromaticity of D65.
 
-Caption:
+Caption: Spectrum loci and D65 chromaticities for the CIE 170-2 10-degree and
+2-degree, 1964 10-degree, and 1931 2-degree standards.  The chromaticity
+coordinates for D65 are given in the legend.
 """
 
 # region (Ensuring Access to Directories and Modules)
