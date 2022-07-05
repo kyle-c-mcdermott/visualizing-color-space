@@ -451,7 +451,7 @@ Figure \ref{fig:crt_monitor} shows the measured spectra of the red, green, and b
     \else
         \includesvg[width=\textwidth]{../images/figure_11_crt_monitor.svg}
     \fi
-    \caption{Red, green, and blue phosphor spectra measured from a CRT monitor.  Above each spectral line is also shown the summed spectrum of white (dashed line).  The right panel plots the chromaticities (within the CIE 1931 2$^\circ$ standard) of the three phosphors and white; the triangle formed by the three primaries is the monitor's color gamut.  All colors that can be shown by combining the three phosphors at various intensities fall within the color gamut triangle.  IMAGE LINK, CODE LINK}\label{fig:crt_monitor}
+    \caption{Red, green, and blue phosphor spectra measured from a CRT monitor.  Above each spectral line is also shown the summed spectrum of white (dashed line).  The right panel plots the chromaticities (within the CIE 170-2 10$^\circ$ standard) of the three phosphors and white; the triangle formed by the three primaries is the monitor's color gamut.  All colors that can be shown by combining the three phosphors at various intensities fall within the color gamut triangle.  IMAGE LINK, CODE LINK}\label{fig:crt_monitor}
 \end{figure*}
 
 The chromaticity diagram in Figure \ref{fig:crt_monitor} plots the resulting chromaticities of the three CRT phosphors and the coordinate for white resulting from the addition of all three together at maximum intensity.  By changing the ratio of intensity of the three phosphors, any chromaticity within the triangle formed by the phosphor chromaticities can be realized.  This is the monitor's color gamut.
@@ -481,11 +481,11 @@ or as the linear transform:
     \end{bmatrix}
 \end{equation}
 Filling in the tristimulus values for the CRT phosphors gives:
-\begin{equation}
+\begin{equation}\label{eq:crt_transformation}
     \begin{bmatrix}
-        0.010983&0.007651&0.006215\\
-        0.006113&0.016524&0.002662\\
-        0.000556&0.003175&0.032659
+        0.011376&0.009225&0.007038\\
+        0.006395&0.017709&0.004606\\
+        0.000573&0.002638&0.037099
     \end{bmatrix}\begin{bmatrix}
         R\\
         G\\
@@ -513,6 +513,44 @@ Once again, applying equation \ref{eq:chromaticity_from_tristimulus} allows then
     \end{itemize}
 \end{itemize}
 \twocolumn[{\section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}}]
+There is no way to create a figure of the CIE $(x,y)$ chromaticity diagram where the interior of the spectrum locus is filled with accurate colors short of a complicated optical setup, and then it could only be viewed correctly in person - any pictures taken of the result would become false copies due to the limitations of the camera and the display on which the image is viewed.  Therefore, because compromises need to be made, we are free to choose how exactly we fill the space with color and there can’t be an objectively correct way to do so.  The area within the display gamut triangle is a bit more straightforward, so we’ll start there, and then expand the colors to fill the rest of the spectrum locus area.
+\subsection{sRGB}
+In the previous section we used the CIE 170-2 10$^\circ$ color matching functions, and therefore plotted chromaticity in that space.  The sRGB display standard is defined with CIE 1931 2$^\circ$ tristimulus values, and so from this point on in the document the CIE 1931 2$^\circ$ standard will be used (this ultimately has only a slight effect on the coordinates plotted as is evident in Figure \ref{fig:chromaticity_spaces}).  The sRGB tristimulus values are given in the following linear transformation (similar in function to equation \ref{eq:crt_transformation}) (\href{https://en.wikipedia.org/wiki/SRGB}{source}):
+\begin{equation}\label{eq:srgb_transformation}
+    \begin{bmatrix}
+        0.4124&0.3576&0.1805\\
+        0.2126&0.7152&0.0722\\
+        0.0193&0.1192&0.9505
+    \end{bmatrix}\begin{bmatrix}
+        R\\
+        G\\
+        B
+    \end{bmatrix}=\begin{bmatrix}
+        X\\
+        Y\\
+        Z
+    \end{bmatrix}
+\end{equation}
+Note that the sum of the second row, the $Y$ values for red, green, and blue, is equal to 1.0.  The sRGB system is set up so that the maximum "luminance" value is 1.0 for white when red, green, and blue are at maximum (1.0) and the tristimulus values also result in the chromaticity of white being that of the $D65$ standard illuminant $(0.3127,0.3290)$.\\
+
+There is an additional step that will be treated as optional here depending on the desired outcome, that of gamma correction.  This is meant to linearize values before they are converted into tristimulus values.  Before applying equation \ref{eq:srgb_transformation} above, the red, green, and blue values are adjusted with:
+\begin{equation}
+    C_{linear}=\left\{\begin{array}{ll}
+        \frac{C_{srgb}}{12.92}&C_{srgb}\leq0.04045\\
+        \left(\frac{C_{srgb}+0.055}{1.055}\right)^{2.4}&C_{srgb}>0.04045
+    \end{array}\right.
+\end{equation}
+Applying this correction will provide a more accurate depiction of luminance in 3D, but will create an (arguably) unsightly discontinuity in 2D.
+\subsection{Three-Dimensional Color Spaces}
+The sRGB space, or any red-green-blue space, can be visualized as a cube in three-dimensions with each dimension corresponding to a primary color.  Figure \ref{fig:3d_srgb} shows the six exterior surfaces of the cube, here called saturation surfaces as at least one of red, green, or blue is equal to 0.0 or 1.0.  All possibly display colors are contained within the cube.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_12_3d_srgb_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_12_3d_srgb.svg}
+    \fi
+    \caption{Saturated surfaces of the sRGB color space cube.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue.  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue.  IMAGE LINK, CODE LINK}\label{fig:3d_srgb}
+\end{figure*}
 
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
 
