@@ -71,6 +71,13 @@ from maths.color_blind import (
     filter_image
 )
 from PIL import Image
+from maths.coloration import (
+    chromaticity_inside_gamut,
+    chromaticity_outside_gamut,
+    three_dimensional_surface,
+    visible_spectrum
+)
+from matplotlib.path import Path
 # endregion
 
 # region Test
@@ -581,7 +588,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([0.191888, 0.019219, 0.0]):
+        for index, value in enumerate([0.191904, 0.019201, 0.0]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = rgb_to_lms(
@@ -697,7 +704,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([-0.6431246874633334, 0.41480164505858064, 0.1957928622122068]):
+        for index, value in enumerate([-0.6448645881413642, 0.4152257465312875, 0.19580054151582818]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = lms_to_rgb(
@@ -824,7 +831,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([0.021495189999999997, 0.278438132, 0.8587517800000001]):
+        for index, value in enumerate([0.021494800000000064, 0.27843819999999997, 0.8587516000000002]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
@@ -940,7 +947,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([0.07900529274194415, 0.12944002280819375, 0.9781639113458372]):
+        for index, value in enumerate([0.07900535220430967, 0.12943985513480555, 0.9781641163754454]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
 
@@ -2614,6 +2621,996 @@ class TestMaths(TestCase):
         pixels = test_return.load()
         for index, value in enumerate([197, 59, 95]):
             self.assertEqual(pixels[0, 0][index], value)
+
+    # endregion
+
+    # region Test coloration.chromaticity_inside_gamut
+    def test_coloration_chromaticity_inside_gamut(self):
+
+        # Valid Arguments
+        valid_resolution = 2
+
+        # Test resolution Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                1 # Invalid value
+            )
+
+        # Test display Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                display = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                display = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                display = 'invalid' # Invalid value
+            )
+
+        # Test apply_gamma_correction Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                apply_gamma_correction = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                apply_gamma_correction = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_inside_gamut(
+                valid_resolution,
+                apply_gamma_correction = '0' # Invalid type
+            )
+
+        # Test Return
+        test_return = chromaticity_inside_gamut(
+            valid_resolution
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), 3 * (valid_resolution - 1) ** 2)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.15415426)
+        for index, value in enumerate([1.0, 0.5, 0.5]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_inside_gamut(
+            valid_resolution,
+            display = DISPLAY.CRT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), 3 * (valid_resolution - 1) ** 2)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.1639344262295082)
+        for index, value in enumerate([1.0, 0.5, 0.5]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_inside_gamut(
+            valid_resolution,
+            display = DISPLAY.EXTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), 3 * (valid_resolution - 1) ** 2)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.11766263571365522)
+        for index, value in enumerate([1.0, 0.5, 0.5]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_inside_gamut(
+            valid_resolution,
+            display = DISPLAY.INTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), 3 * (valid_resolution - 1) ** 2)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.17905651484639445)
+        for index, value in enumerate([1.0, 0.5, 0.5]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_inside_gamut(
+            valid_resolution,
+            apply_gamma_correction = True
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), 3 * (valid_resolution - 1) ** 2)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.15415426251691475)
+        for index, value in enumerate([1.0, 0.5, 0.5]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+
+    # endregion
+
+    # region Test coloration.chromaticity_outside_gamut
+    def test_coloration_chromaticity_outside_gamut(self):
+
+        # Valid Arguments
+        valid_resolution = 8
+
+        # Test resoluion Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                7 # Invalid value
+            )
+
+        # Test display Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                display = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                display = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                display = 'invalid' # Invalid value
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                display = DISPLAY.EXTERIOR.value # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            chromaticity_outside_gamut(
+                valid_resolution,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = chromaticity_outside_gamut(
+            valid_resolution
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.0070630245858163)
+        for index, value in enumerate([0.9281359971379827, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_outside_gamut(
+            valid_resolution,
+            display = DISPLAY.CRT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], -0.0006535691475588701)
+        for index, value in enumerate([1.0, 0.0, 0.8888348150060966]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_outside_gamut(
+            valid_resolution,
+            display = DISPLAY.INTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.007059681170090832)
+        for index, value in enumerate([0.5458367205573982, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_outside_gamut(
+            valid_resolution,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.0293807568633323)
+        for index, value in enumerate([0.9281359971379827, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_outside_gamut(
+            valid_resolution,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.02843155418863123)
+        for index, value in enumerate([0.9281359971379827, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = chromaticity_outside_gamut(
+            valid_resolution,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.021483741101885886)
+        for index, value in enumerate([0.9281359971379827, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+
+    # endregion
+
+    # region Test coloration.three_dimensional_surface
+    def test_coloration_three_dimensional_surface(self):
+
+        # Valid Arguments
+        valid_resolution = 2
+        valid_color_name = 'Red'
+        valid_color_value = 0.5
+
+        # Test resolution Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                0.0, # Invalid type
+                valid_color_name,
+                valid_color_value
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                '0', # Invalid type
+                valid_color_name,
+                valid_color_value
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                1, # Invalid value
+                valid_color_name,
+                valid_color_value
+            )
+
+        # Test color_name Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                0, # Invalid type
+                valid_color_value
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                0.0, # Invalid type
+                valid_color_value
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                'invalid', # Invalid value
+                valid_color_value
+            )
+
+        # Test color_value Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                2 # Invalid value
+            )
+
+        # Test plot_rgb Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                plot_rgb = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                plot_rgb = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                plot_rgb = '0' # Invalid type
+            )
+
+        # Test display Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                display = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                display = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                display = 'invalid' # Invalid value
+            )
+
+        # Test apply_gamma_correction Assertions
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                apply_gamma_correction = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                apply_gamma_correction = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            three_dimensional_surface(
+                valid_resolution,
+                valid_color_name,
+                valid_color_value,
+                apply_gamma_correction = '0' # Invalid type
+            )
+
+        # Test Return
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.6400744994567747)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value,
+            plot_rgb = True
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.5)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value,
+            display = DISPLAY.CRT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.6198910081743869)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value,
+            display = DISPLAY.EXTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.8971696192221543)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value,
+            display = DISPLAY.INTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.664891216033222)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+        test_return = three_dimensional_surface(
+            valid_resolution,
+            valid_color_name,
+            valid_color_value,
+            apply_gamma_correction = True
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        self.assertEqual(len(test_return[0]), 3)
+        for coordinate in test_return[0]:
+            self.assertIsInstance(coordinate, list)
+            self.assertEqual(len(coordinate), valid_resolution)
+            for row in coordinate:
+                self.assertIsInstance(row, list)
+                self.assertEqual(len(row), valid_resolution)
+                for value in row:
+                    self.assertIsInstance(value, float)
+        for row in test_return[1]:
+            self.assertIsInstance(row, list)
+            self.assertEqual(len(row), valid_resolution)
+            for color in row:
+                self.assertIsInstance(color, tuple)
+                self.assertEqual(len(color), 3)
+                for value in color:
+                    self.assertIsInstance(value, float)
+        self.assertAlmostEqual(test_return[0][0][0][0], 0.6400745112402435)
+        for index, value in enumerate([0.5, 0.0, 0.0]):
+            self.assertAlmostEqual(test_return[1][0][0][index], value)
+
+    # endregion
+
+    # region Test coloration.visible_spectrum
+    def test_coloration_visible_spectrum(self):
+
+        # Valid Arguments
+        valid_resolution = 8
+        valid_left = 0
+        valid_bottom = 0
+        valid_width = 1
+        valid_height = 1
+        valid_minimum_wavelength = 450
+        valid_maximum_wavelength = 650
+
+        # Test resolution Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                0.0, # Invalid type
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                '0', # Invalid type
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                7, # Invalid value
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+
+        # Test left Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                '0', # Invalid type
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+
+        # Test bottom Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                '0', # Invalid type
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+
+        # Test width Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                '0', # Invalid type
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                0, # Invalid value
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+
+        # Test height Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                '0', # Invalid type
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                0, # Invalid value
+                valid_minimum_wavelength,
+                valid_maximum_wavelength
+            )
+
+        # Test minimum_wavelength Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                '0', # Invalid type
+                valid_maximum_wavelength
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                200, # Invalid value
+                valid_maximum_wavelength
+            )
+
+        # Test maximum_wavelength Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                '0' # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                900 # Invalid value
+            )
+
+        # Test vertical Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                vertical = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                vertical = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                vertical = '0' # Invalid type
+            )
+
+        # Test display Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                display = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                display = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                display = 'invalid' # Invalid value
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                display = DISPLAY.EXTERIOR.value # Invalid value
+            )
+
+        # Test standard Assertions
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                standard = 0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                standard = 0.0 # Invalid type
+            )
+        with self.assertRaises(AssertionError):
+            visible_spectrum(
+                valid_resolution,
+                valid_left,
+                valid_bottom,
+                valid_width,
+                valid_height,
+                valid_minimum_wavelength,
+                valid_maximum_wavelength,
+                standard = 'invalid' # Invalid value
+            )
+
+        # Test Return
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.15901352093200458, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            vertical = True
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 0.125)
+        for index, value in enumerate([0.15901352093200458, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            display = DISPLAY.CRT.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.3439810095424095, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            display = DISPLAY.INTERIOR.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.09497445431379438, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            standard = STANDARD.CIE_170_2_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.06433732046188058, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            standard = STANDARD.CIE_170_2_2.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.06659355920595243, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
+        test_return = visible_spectrum(
+            valid_resolution,
+            valid_left,
+            valid_bottom,
+            valid_width,
+            valid_height,
+            valid_minimum_wavelength,
+            valid_maximum_wavelength,
+            standard = STANDARD.CIE_1964_10.value
+        )
+        self.assertIsInstance(test_return, tuple)
+        self.assertEqual(len(test_return), 2)
+        for return_value in test_return:
+            self.assertIsInstance(return_value, list)
+            self.assertEqual(len(return_value), valid_resolution)
+        self.assertIsInstance(test_return[0][0], Path)
+        self.assertAlmostEqual(test_return[0][0].vertices[1][1], 1.0)
+        for index, value in enumerate([0.08006314726047106, 0.0, 1.0]):
+            self.assertIsInstance(test_return[1][0][index], float)
+            self.assertAlmostEqual(test_return[1][0][index], value)
 
     # endregion
 

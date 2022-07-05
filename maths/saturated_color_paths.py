@@ -357,7 +357,7 @@ def visible_spectrum(
         list(
             clip(
                 float(interpolator(wavelength))
-                * float(normalized_Y_from_wavelength(wavelength)) **  power,
+                * float(normalized_Y_from_wavelength(wavelength)) ** power,
                 a_min = 0.0,
                 a_max = 1.0
             )

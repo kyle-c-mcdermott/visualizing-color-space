@@ -233,11 +233,8 @@ def xyz_to_xyy(
 
     # Validate Argumnets
     assert isinstance(X, float)
-    assert 0.0 <= X
     assert isinstance(Y, float)
-    assert 0.0 <= Y
     assert isinstance(Z, float)
-    assert 0.0 <= Z
     if display is None: display = DISPLAY.SRGB.value
     assert isinstance(display, str)
     assert any(display == valid.value for valid in DISPLAY)
@@ -251,6 +248,12 @@ def xyz_to_xyy(
         coefficients = RGB_TO_XYZ_CUSTOM_EXTERIOR
     else: # default sRGB
         coefficients = SRGB_TO_XYZ_2
+
+    # More Validation
+    if display != DISPLAY.EXTERIOR.value:
+        assert 0.0 <= X
+        assert 0.0 <= Y
+        assert 0.0 <= Z
 
     # Return
     return (

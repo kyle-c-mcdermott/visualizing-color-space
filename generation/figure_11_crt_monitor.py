@@ -3,7 +3,7 @@ Plotting the phosphor spectra and monitor color gamut.
 
 Caption: Red, green, and blue phosphor spectra measured from a CRT monitor.
 Above each spectral line is also shown the summed spectrum of white (dashed
-line).  The right panel plots the chromaticities (within the CIE 1931 2-degree
+line).  The right panel plots the chromaticities (within the CIE 170-2 10-degree
 standard) of the three phosphors and white; the triangle formed by the three
 primaries is the monitor's color gamut.  All colors that can be shown by
 combining the three phosphors at various intensities fall within the color gamut
@@ -48,6 +48,7 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # region Imports
 from maths.color_conversion import xyz_to_xyy
 from maths.color_temperature import tristimulus_from_spectrum
+from maths.chromaticity_conversion import STANDARD
 from maths.plotting_series import (
     phosphor_spectra,
     spectrum_locus_1931_2
@@ -58,7 +59,7 @@ from numpy import arange, transpose
 # endregion
 
 # region Plot Settings
-INVERTED = False
+INVERTED = True
 SIZE = (8, 4.5)
 FONT_SIZES = {
     'titles' : 14,
@@ -72,14 +73,15 @@ EXTENSION = 'svg'
 # region Estimate Chromaticities from Spectra
 phosphor_chromaticities = {
     color_name : xyz_to_xyy(
-        *tristimulus_from_spectrum( # Now using default CIE 1931
+        *tristimulus_from_spectrum(
             list(
                 (
                     datum['Wavelength'],
                     datum[color_name]
                 )
                 for datum in phosphor_spectra
-            )
+            ),
+            standard = STANDARD.CIE_170_2_10.value
         )
     )[0:2]
     for color_name in COLOR_NAMES
@@ -92,7 +94,8 @@ white_chromaticity = xyz_to_xyy(
                 sum(list(datum[color_name] for color_name in COLOR_NAMES))
             )
             for datum in phosphor_spectra
-        )
+        ),
+        standard = STANDARD.CIE_170_2_10.value
     )
 )[0:2]
 # endregion
@@ -106,7 +109,8 @@ phosphor_tristimulus = {
                 datum[color_name]
             )
             for datum in phosphor_spectra
-        )
+        ),
+        standard = STANDARD.CIE_170_2_10.value
     )
     for color_name in COLOR_NAMES
 }
