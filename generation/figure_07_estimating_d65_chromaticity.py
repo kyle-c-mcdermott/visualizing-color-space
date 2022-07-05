@@ -2,11 +2,12 @@
 Plotting the product of the color matching functions and the D65 spectrum and
 the resulting chromaticity coordinate.
 
-Caption: Illustration of the estimation of chromaticity from a spectrum.  The
+Caption: Illustration of the estimation of chromaticity from a spectrum. The
 three left panels show the products of the three color matching functions with
-the D65 spectrum.  The area shaded under each resulting curve is annotated
-within each panel by applying equation X.  The right panel shows the resulting
-chromaticity coordinate (x, y).
+the D65 spectrum. The area shaded under each resulting curve is annotated
+within each panel by applying equation X. The right panel shows the resulting
+chromaticity coordinate (x, y) for the CIE 170-2 10-degree space (slightly
+different from the typically used CIE 1931).
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -76,7 +77,7 @@ FILL_COLORS = (
     (
         (0.5, 0, 0.5), # X
         (0.75, 0.25, 0), # Y
-        (0, 0, 0.5)
+        (0, 0, 0.5) # Z
     )
     if INVERTED else (
         (1, 0.5, 1), # X

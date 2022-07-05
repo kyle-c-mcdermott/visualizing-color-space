@@ -442,6 +442,21 @@ The tristimulus values on the match and test sides line up reasonably well, thou
     \caption{Chromaticities of the experimental primaries and the $20,250cm^{-1}$ test light.  The green and blue primaries on the match side of the stimulus, and the test light and red primary on the test side of the stimulus, are mixed in proportions to find the chromaticity where the lines joining each pair intersect.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_mixing}
 \end{figure}
 \subsection{Three-Primary Systems for Color Displays}
+For various practical reasons color displays typically do not use primary lights with anything near zero-width spectra.  Below, spectral measurements of an old cathode-ray-tube (CRT) monitor are used to define the range of colors that can be viewed on it.  Then, in the more abstract realm, the sRGB standard is introduced which uses a set of artificial - though realistic - primaries defined by their tristimulus values (with no attempt here to determine what the underlying spectra might be).
+\subsubsection{Primary Chromaticities from Spectra}
+Figure \ref{fig:crt_monitor} shows the measured spectra of the red, green, and blue phosphors of a CRT monitor; note that above each is a curve showing the sum of all three spectra which corresponds to white.  Just as adding up tristimulus values (the integrated products of spectra and color matching functions) for the three primaries gives the tristimulus values for white, adding up the three spectra and estimating the tristimulus values once from that resulting spectrum should give the same result.\\
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_11_crt_monitor_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_11_crt_monitor.svg}
+    \fi
+    \caption{Red, green, and blue phosphor spectra measured from a CRT monitor.  Above each spectral line is also shown the summed spectrum of white (dashed line).  The right panel plots the chromaticities (within the CIE 1931 2$^\circ$ standard) of the three phosphors and white; the triangle formed by the three primaries is the monitor's color gamut.  All colors that can be shown by combining the three phosphors at various intensities fall within the color gamut triangle.  IMAGE LINK, CODE LINK}\label{fig:crt_monitor}
+\end{figure*}
+
+The chromaticity diagram in Figure \ref{fig:crt_monitor} plots the resulting chromaticities of the three CRT phosphors and the coordinate for white resulting from the addition of all three together at maximum intensity.  By changing the ratio of intensity of the three phosphors, any chromaticity within the triangle formed by the phosphor chromaticities can be realized.  This is the monitor's color gamut.
+\subsubsection{Conversion between Display RGB and Chromaticity}
+
 \twocolumn[{\section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}}]
 
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
