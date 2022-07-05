@@ -97,6 +97,31 @@ white_chromaticity = xyz_to_xyy(
 )[0:2]
 # endregion
 
+# region Estimate and Print Tristimulus Values for CRT Phosphors
+phosphor_tristimulus = {
+    color_name : tristimulus_from_spectrum(
+        list(
+            (
+                datum['Wavelength'],
+                datum[color_name]
+            )
+            for datum in phosphor_spectra
+        )
+    )
+    for color_name in COLOR_NAMES
+}
+print('\nCRT Phosphor Tristimulus Values:')
+for tristimulus_index in range(3):
+    print(
+        '{0:0.6f}, {1:0.6f}, {2:0.6f}'.format(
+            *list(
+                phosphor_tristimulus[color_name][tristimulus_index]
+                for color_name in COLOR_NAMES
+            )
+        )
+    )
+# endregion
+
 # region Initialize Figure
 figure = Figure(
     name = 'figure_11_crt_monitor{0}'.format(

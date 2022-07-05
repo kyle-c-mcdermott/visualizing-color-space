@@ -442,7 +442,7 @@ The tristimulus values on the match and test sides line up reasonably well, thou
     \caption{Chromaticities of the experimental primaries and the $20,250cm^{-1}$ test light.  The green and blue primaries on the match side of the stimulus, and the test light and red primary on the test side of the stimulus, are mixed in proportions to find the chromaticity where the lines joining each pair intersect.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_mixing}
 \end{figure}
 \subsection{Three-Primary Systems for Color Displays}
-For various practical reasons color displays typically do not use primary lights with anything near zero-width spectra.  Below, spectral measurements of an old cathode-ray-tube (CRT) monitor are used to define the range of colors that can be viewed on it.  Then, in the more abstract realm, the sRGB standard is introduced which uses a set of artificial - though realistic - primaries defined by their tristimulus values (with no attempt here to determine what the underlying spectra might be).
+For various practical reasons color displays typically do not use primary lights with anything near zero-width spectra.  Below, spectral measurements of an old cathode-ray-tube (CRT) monitor are used to define the range of colors that can be viewed on it.  Making certain simplifying assumptions, a linear transformation is constructed to allow any displayed color to be converted into chromaticity.
 \subsubsection{Primary Chromaticities from Spectra}
 Figure \ref{fig:crt_monitor} shows the measured spectra of the red, green, and blue phosphors of a CRT monitor; note that above each is a curve showing the sum of all three spectra which corresponds to white.  Just as adding up tristimulus values (the integrated products of spectra and color matching functions) for the three primaries gives the tristimulus values for white, adding up the three spectra and estimating the tristimulus values once from that resulting spectrum should give the same result.\\
 \begin{figure*}[h]
@@ -456,7 +456,62 @@ Figure \ref{fig:crt_monitor} shows the measured spectra of the red, green, and b
 
 The chromaticity diagram in Figure \ref{fig:crt_monitor} plots the resulting chromaticities of the three CRT phosphors and the coordinate for white resulting from the addition of all three together at maximum intensity.  By changing the ratio of intensity of the three phosphors, any chromaticity within the triangle formed by the phosphor chromaticities can be realized.  This is the monitor's color gamut.
 \subsubsection{Conversion between Display RGB and Chromaticity}
-
+If we assume that the shape of each phosphor spectrum remains the same as intensity increases and decreases, and that intensity increases and decreases in a linear fashion, we can express the tristimulus values resulting from any combination of red, green, and blue phosphor intensities ($R$, $G$, and $B$, respectively, each in the interval $[0,1]$) with the following linear combinations:
+\begin{equation}
+    \begin{aligned}
+        X_RR+X_GG+X_BB=X\\
+        Y_RR+Y_GG+Y_BB=Y\\
+        Z_RR+Z_GG+Z_BB=Z
+    \end{aligned}
+\end{equation}
+or as the linear transform:
+\begin{equation}
+    \begin{bmatrix}
+        X_R&X_G&X_B\\
+        Y_R&Y_G&Y_B\\
+        Z_R&Z_G&Z_B
+    \end{bmatrix}\begin{bmatrix}
+        R\\
+        G\\
+        B
+    \end{bmatrix}=\begin{bmatrix}
+        X\\
+        Y\\
+        Z
+    \end{bmatrix}
+\end{equation}
+Filling in the tristimulus values for the CRT phosphors gives:
+\begin{equation}
+    \begin{bmatrix}
+        0.010983&0.007651&0.006215\\
+        0.006113&0.016524&0.002662\\
+        0.000556&0.003175&0.032659
+    \end{bmatrix}\begin{bmatrix}
+        R\\
+        G\\
+        B
+    \end{bmatrix}=\begin{bmatrix}
+        X\\
+        Y\\
+        Z
+    \end{bmatrix}
+\end{equation}
+Once again, applying equation \ref{eq:chromaticity_from_tristimulus} allows then for conversion into chromaticity coordinates.  In reality, the phosphor spectra do not perfectly maintain their shape with changes in intensity, nor does intensity change in a perfectly linear fashion, and so measuring and correcting for such deviations is important for experimental settings where precise chromaticity and luminance are desired.
+\subsection{Links}
+\begin{itemize}
+    \item CRT MONITOR SPECTRA
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 9 LIGHT AND DARK SVG
+        \item FIGURE 10 LIGHT AND DARK SVG
+        \item FIGURE 11 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item DATA INGESTION OF CRT PHOSPHOR SPECTRA
+        \item FIGURE GENERATION FOR ALL FIGURES (9-11)
+    \end{itemize}
+\end{itemize}
 \twocolumn[{\section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}}]
 
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
