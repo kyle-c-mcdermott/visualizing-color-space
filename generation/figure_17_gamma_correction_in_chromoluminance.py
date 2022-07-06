@@ -1,10 +1,14 @@
 """
-Plot saturation surfaces in three-dimensions (with gamma-correction).
+Plot sRGB color gamut volume in chromoluminance space with and without gamma
+correction.
 
-Caption: Saturated surfaces transformed into (x,y,Y) chromoluminance space.  In
-the left panel, all colors contain at least one 0.0 for red, green, and/or blue
-(before transformation).  In the right panel, all colors contain at least one
-1.0 for red, green, and/or blue (before transformation).
+Caption: Saturated surfaces transformed into (x, y, Y) chromoluminance space
+with (left panel) and without (right panel) gamma correction applied.  With
+gamma correction the apparent brightness of pixels increases with luminance Y
+uniformly around the color gamut volume.  Without gamma correction the sides
+generally appear darker, yet the brightness is still high near the primary
+colors creating variation in apparent brightness around what should be a path of
+constant luminance.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -68,15 +72,15 @@ RESOLUTION = 16
 
 # region Initialize Figure
 figure = Figure(
-    name = 'figure_13_3d_chromoluminance{0}'.format(
+    name = 'figure_17_gamma_correction_in_chromoluminance{0}'.format(
         '_inverted' if INVERTED else ''
     ),
     size = SIZE,
     inverted = INVERTED
 )
 figure.set_fonts(**FONT_SIZES)
-low_panel = figure.add_panel(
-    name = 'low',
+with_panel = figure.add_panel(
+    name = 'with',
     title = '',
     position = (0.06, 0, 0.44, 1),
     three_dimensional = True,
@@ -87,9 +91,8 @@ low_panel = figure.add_panel(
     z_label = 'Y',
     z_lim = (-0.05, 1.05)
 )
-low_panel.view_init(0, -135)
-high_panel = figure.add_panel(
-    name = 'high',
+without_panel = figure.add_panel(
+    name = 'without',
     title = '',
     position = (0.55, 0, 0.44, 1),
     three_dimensional = True,
@@ -100,12 +103,8 @@ high_panel = figure.add_panel(
     z_label = 'Y',
     z_lim = (-0.05, 1.05)
 )
-figure.change_panel_orientation(
-    'high',
-    vertical_sign = +1,
-    left_axis = '-y'
-)
-for panel_name in figure.panels.keys():
+for panel_name, panel in figure.panels.items():
+    panel.view_init(0, -145)
     figure.change_panes(
         panel_name,
         x_pane_color = figure.grey_level(0.95),
@@ -146,20 +145,22 @@ for panel in figure.panels.values():
 
 # region Fill Colors
 for color_name in COLOR_NAMES:
-    for color_value, panel_name in [(0.0, 'low'), (1.0, 'high')]:
-        coordinates, colors = three_dimensional_surface(
-            RESOLUTION,
-            color_name,
-            color_value,
-            apply_gamma_correction = True
-        )
-        figure.panels[panel_name].plot_surface(
-            X = coordinates[0],
-            Y = coordinates[1],
-            Z = array(coordinates[2]),
-            facecolors = colors,
-            shade = False
-        )
+    for color_value in [0.0, 1.0]:
+        for apply_gamma_correction, panel_name in [(True, 'with'), (False, 'without')]:
+            if color_value == 1.0 and color_name == 'Red': continue # avoids clipping issue
+            coordinates, colors = three_dimensional_surface(
+                RESOLUTION,
+                color_name,
+                color_value,
+                apply_gamma_correction = apply_gamma_correction
+            )
+            figure.panels[panel_name].plot_surface(
+                X = coordinates[0],
+                Y = coordinates[1],
+                Z = array(coordinates[2]),
+                facecolors = colors,
+                shade = False
+            )
 # endregion
 
 # region Save Figure
