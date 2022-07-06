@@ -59,7 +59,7 @@ from numpy import arange, transpose
 # endregion
 
 # region Plot Settings
-INVERTED = True
+INVERTED = False
 SIZE = (8, 4.5)
 FONT_SIZES = {
     'titles' : 14,

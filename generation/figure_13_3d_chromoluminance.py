@@ -1,9 +1,10 @@
 """
-Plot the red-green-blue cube saturation surfaces in three-dimensions.
+Plot saturation surfaces in three-dimensions (with gamma-correction).
 
-Caption: Saturated surfaces of the sRGB color space cube.  In the left panel,
-all colors contain at least one 0.0 for red, green, and/or blue.  In the right
-panel, all colors contain at least one 1.0 for red, green, and/or blue.
+Caption: Saturated surfaces transformed into (x,y,Y) chromoluminance space.  In
+the left panel, all colors contain at least one 0.0 for red, green, and/or blue
+(before transformation).  In the right panel, all colors contain at least one
+1.0 for red, green, and/or blue (before transformation).
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -43,9 +44,13 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 
 # region Imports
 from figure.figure import Figure
+from maths.plotting_series import (
+    spectrum_locus_1931_2,
+    gamut_triangle_vertices_srgb
+)
 from maths.conversion_coefficients import COLOR_NAMES
+from numpy import transpose, array
 from maths.coloration import three_dimensional_surface
-from numpy import array
 # endregion
 
 # region Plot Settings
@@ -63,7 +68,7 @@ RESOLUTION = 16
 
 # region Initialize Figure
 figure = Figure(
-    name = 'figure_12_3d_srgb{0}'.format(
+    name = 'figure_13_3d_chromoluminance{0}'.format(
         '_inverted' if INVERTED else ''
     ),
     size = SIZE,
@@ -75,31 +80,32 @@ low_panel = figure.add_panel(
     title = '',
     position = (0.06, 0, 0.44, 1),
     three_dimensional = True,
-    x_label = 'Red',
+    x_label = 'x',
     x_lim = (-0.05, 1.05),
-    y_label = 'Green',
+    y_label = 'y',
     y_lim = (-0.05, 1.05),
-    z_label = 'Blue',
-    z_lim = (-0.05, 1.05),
+    z_label = 'Y',
+    z_lim = (-0.05, 1.05)
 )
+low_panel.view_init(0, -135)
 high_panel = figure.add_panel(
     name = 'high',
     title = '',
     position = (0.55, 0, 0.44, 1),
     three_dimensional = True,
-    x_label = 'Red',
+    x_label = 'x',
     x_lim = (-0.05, 1.05),
-    y_label = 'Green',
+    y_label = 'y',
     y_lim = (-0.05, 1.05),
-    z_label = 'Blue',
-    z_lim = (-0.05, 1.05),
+    z_label = 'Y',
+    z_lim = (-0.05, 1.05)
+)
+figure.change_panel_orientation(
+    'high',
+    vertical_sign = +1,
+    left_axis = '-y'
 )
 for panel_name in figure.panels.keys():
-    figure.change_panel_orientation(
-        panel_name,
-        vertical_sign = +1,
-        left_axis = '+y'
-    )
     figure.change_panes(
         panel_name,
         x_pane_color = figure.grey_level(0.95),
@@ -111,6 +117,33 @@ for panel_name in figure.panels.keys():
     )
 # endregion
 
+# region Reference Lines
+for panel in figure.panels.values():
+    panel.plot( # Defaults to z (or Y) = 0 plane
+        list(datum['x'] for datum in spectrum_locus_1931_2),
+        list(datum['y'] for datum in spectrum_locus_1931_2),
+        color = figure.grey_level(0.5)
+    )
+    panel.plot(
+        [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
+        [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
+        linestyle = ':',
+        color = figure.grey_level(0.5)
+    )
+    panel.plot(
+        *transpose(
+            list(
+                (
+                    gamut_triangle_vertices_srgb[COLOR_NAMES[index]]['x'],
+                    gamut_triangle_vertices_srgb[COLOR_NAMES[index]]['y']
+                )
+                for index in [0, 1, 2, 0]
+            )
+        ),
+        color = figure.grey_level(0.5)
+    )
+# endregion
+
 # region Fill Colors
 for color_name in COLOR_NAMES:
     for color_value, panel_name in [(0.0, 'low'), (1.0, 'high')]:
@@ -118,7 +151,7 @@ for color_name in COLOR_NAMES:
             RESOLUTION,
             color_name,
             color_value,
-            plot_rgb = True
+            apply_gamma_correction = True
         )
         figure.panels[panel_name].plot_surface(
             X = coordinates[0],

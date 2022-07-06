@@ -534,7 +534,7 @@ In the previous section we used the CIE 170-2 10$^\circ$ color matching function
 Note that the sum of the second row, the $Y$ values for red, green, and blue, is equal to 1.0.  The sRGB system is set up so that the maximum "luminance" value is 1.0 for white when red, green, and blue are at maximum (1.0) and the tristimulus values also result in the chromaticity of white being that of the $D65$ standard illuminant $(0.3127,0.3290)$.\\
 
 There is an additional step that will be treated as optional here depending on the desired outcome, that of gamma correction.  This is meant to linearize values before they are converted into tristimulus values.  Before applying equation \ref{eq:srgb_transformation} above, the red, green, and blue values are adjusted with:
-\begin{equation}
+\begin{equation}\label{eq:gamma_correction}
     C_{linear}=\left\{\begin{array}{ll}
         \frac{C_{srgb}}{12.92}&C_{srgb}\leq0.04045\\
         \left(\frac{C_{srgb}+0.055}{1.055}\right)^{2.4}&C_{srgb}>0.04045
@@ -542,7 +542,7 @@ There is an additional step that will be treated as optional here depending on t
 \end{equation}
 Applying this correction will provide a more accurate depiction of luminance in 3D, but will create an (arguably) unsightly discontinuity in 2D.
 \subsection{Three-Dimensional Color Spaces}
-The sRGB space, or any red-green-blue space, can be visualized as a cube in three-dimensions with each dimension corresponding to a primary color.  Figure \ref{fig:3d_srgb} shows the six exterior surfaces of the cube, here called saturation surfaces as at least one of red, green, or blue is equal to 0.0 or 1.0.  All possibly display colors are contained within the cube.
+The sRGB space, or any red-green-blue space, can be visualized as a cube in three-dimensions with each dimension corresponding to a primary color.  Figure \ref{fig:3d_srgb} shows the six exterior surfaces of the cube, here called saturation surfaces as at least one of red, green, or blue is equal to 0.0 or 1.0.  All possibly display colors are contained within the cube.\\
 \begin{figure*}[h]
     \ifinvert
         \includesvg[width=\textwidth]{../images/figure_12_3d_srgb_inverted.svg}
@@ -551,6 +551,20 @@ The sRGB space, or any red-green-blue space, can be visualized as a cube in thre
     \fi
     \caption{Saturated surfaces of the sRGB color space cube.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue.  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue.  IMAGE LINK, CODE LINK}\label{fig:3d_srgb}
 \end{figure*}
+
+To visualize chromoluminance (chromaticity and luminance), the colors in Figure \ref{fig:3d_srgb} are passed through gamma-correction (equation \ref{eq:gamma_correction}) and transformed to tristimulus values using equation \ref{eq:srgb_transformation}.  We hang on to $Y$ to represent luminance, and use equation \ref{eq:chromaticity_from_tristimulus} to get $(x,y)$ chromaticity coordinates.  The resulting transformation of the saturation surfaces in chromoluminance space is presented in Figure \ref{fig:3d_chromoluminance}.\\
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_13_3d_chromoluminance_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_13_3d_chromoluminance.svg}
+    \fi
+    \caption{Saturated surfaces transformed into $(x,y,Y)$ chromoluminance space.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue (before transformation).  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue (before transformation).  IMAGE LINK, CODE LINK}\label{fig:3d_chromoluminance}
+\end{figure*}
+
+The shape of the sRGB color gamut in three-dimensional chromoluminance space is far from a regular cube.  The six sides of the original cube in Figure \ref{fig:3d_srgb} maintain the same shared edges with one another, and the vertices still come to points at red, yellow, green, cyan, blue, pink, black, and white, but the shape of each side undergoes all manner of transformations.  One important feature to note is that the luminances $Y$ of the different primary colors (red, green, and blue) are different.  The right panel of Figure \ref{fig:3d_chromoluminance} shows the color gamut narrowing as one increases luminance which means the available range of chromaticities is constricting; this also happens at the bottom as one approaches black, but over a much shorter luminance range, and one must arbitrarily assign a chromaticity to black itself to deal with divide-by-zero issues with equation \ref{eq:chromaticity_from_tristimulus} when $X+Y+Z=0$.
+\subsection{Two-Dimensional, Top-Down Chromaticity}
+To begin adding color to our chromaticity diagrams, we can rotate the right panel in Figure \ref{fig:3d_chromoluminance} to give a top-down view (see Figure X), which shows an attractive range of highly saturated colors.  Remember that we are looking down at the top of an irregularly shaped volume with a peak at white - these colors do not represent a flat surface, even though we are rendering them in two dimensions.
 
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
 
