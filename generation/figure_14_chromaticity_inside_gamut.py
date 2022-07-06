@@ -1,13 +1,10 @@
 """
-Plotting color matching experiment primaries and selected test light
-chromaticities along with match/test chromaticity at the intersection of lines
-joining lights from the match and test sides of the stimulus.
+Plot chromaticity diagram coloring the interior of the display color gamut (with
+gamma-correction applied).
 
-Caption: Chromaticities of the experimental primaries and the 20,250 cm^-1 test
-light.  The green and blue primaries on the match side of the stimulus, and the
-test light and red primary on the test side of the stimulus, are mixed in
-proportions to find the chromaticity where the lines joining each pair
-intersect.
+Caption: Top-down view of the sRGB color gamut transformed into chromoluminance
+space (here two-dimensional chromaticity) which effectively fills the
+chromaticity color gamut with color.
 """
 
 # region (Ensuring Access to Directories and Modules)
@@ -48,7 +45,9 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # region Imports
 from figure.figure import Figure
 from numpy import arange
-from maths.plotting_series import spectrum_locus_170_2_10
+from maths.plotting_series import spectrum_locus_1931_2
+from maths.coloration import chromaticity_inside_gamut
+from matplotlib.collections import PathCollection
 # endregion
 
 # region Plot Settings
@@ -61,11 +60,12 @@ FONT_SIZES = {
     'legends' : 8
 }
 EXTENSION = 'svg'
+RESOLUTION = 16
 # endregion
 
 # region Initialize Figure
 figure = Figure(
-    name = 'figure_10_color_matching_experiment_mixing{0}'.format(
+    name = 'figure_14_chromaticity_inside_gamut{0}'.format(
         '_inverted' if INVERTED else ''
     ),
     size = SIZE,
@@ -109,73 +109,33 @@ panel.plot(
     zorder = 0
 )
 panel.plot(
-    list(datum['x'] for datum in spectrum_locus_170_2_10),
-    list(datum['y'] for datum in spectrum_locus_170_2_10),
+    list(datum['x'] for datum in spectrum_locus_1931_2),
+    list(datum['y'] for datum in spectrum_locus_1931_2),
     color = figure.grey_level(0.5),
     zorder = 2
 )
 panel.plot(
-    [spectrum_locus_170_2_10[0]['x'], spectrum_locus_170_2_10[-1]['x']],
-    [spectrum_locus_170_2_10[0]['y'], spectrum_locus_170_2_10[-1]['y']],
+    [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
+    [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     linestyle = ':',
     color = figure.grey_level(0.5),
     zorder = 1
 )
 # endregion
 
-# region Plot Lights with Lines Connecting to Matching Chromaticity
-match_chromaticity = (0.1705, 0.494)
-legend_handles = list()
-for chromaticity, color in [
-    ((0.713, 0.287), (0.8, 0, 0)), # Red
-    ((0.180, 0.799), (0, 0.8, 0)), # Green
-    ((0.154, 0.033), (0, 0, 0.8)), # Blue
-    ((0.007, 0.559), figure.grey_level(0.2)) # Test
-]:
-    legend_handles.append(
-        panel.plot(
-            *chromaticity,
-            linestyle = 'none',
-            marker = 'o',
-            markersize = 4,
-            markeredgecolor = 'none',
-            markerfacecolor = color,
-            zorder = 4
-        )[0]
-    )
-    panel.plot(
-        [chromaticity[0], match_chromaticity[0]],
-        [chromaticity[1], match_chromaticity[1]],
-        linestyle = '--',
-        color = color,
+# region Fill Colors
+paths, colors = chromaticity_inside_gamut(
+    RESOLUTION,
+    apply_gamma_correction = True
+)
+panel.add_collection(
+    PathCollection(
+        paths,
+        facecolors = colors,
+        edgecolors = colors,
+        linewidth = 0,
         zorder = 3
     )
-legend_handles.append(
-    panel.plot(
-        *match_chromaticity,
-        linestyle = 'none',
-        marker = 'o',
-        markersize = 4,
-        markerfacecolor = figure.grey_level(1),
-        markeredgecolor = figure.grey_level(0.2),
-        zorder = 4
-    )[0]
-)
-# endregion
-
-# region Plot Legend
-panel.legend(
-    legend_handles,
-    [
-        'Red Primary',
-        'Green Primary',
-        'Blue Primary',
-        'Test Light',
-        'Match'
-    ],
-    markerfirst = False,
-    loc = 'upper right',
-    facecolor = figure.grey_level(1)
 )
 # endregion
 

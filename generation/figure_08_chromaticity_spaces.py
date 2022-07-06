@@ -58,7 +58,7 @@ from numpy import arange
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4, 3.2)
+SIZE = (4, 4)
 FONT_SIZES = {
     'titles' : 14,
     'labels' : 12,

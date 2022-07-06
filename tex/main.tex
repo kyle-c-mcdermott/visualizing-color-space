@@ -564,7 +564,17 @@ To visualize chromoluminance (chromaticity and luminance), the colors in Figure 
 
 The shape of the sRGB color gamut in three-dimensional chromoluminance space is far from a regular cube.  The six sides of the original cube in Figure \ref{fig:3d_srgb} maintain the same shared edges with one another, and the vertices still come to points at red, yellow, green, cyan, blue, pink, black, and white, but the shape of each side undergoes all manner of transformations.  One important feature to note is that the luminances $Y$ of the different primary colors (red, green, and blue) are different.  The right panel of Figure \ref{fig:3d_chromoluminance} shows the color gamut narrowing as one increases luminance which means the available range of chromaticities is constricting; this also happens at the bottom as one approaches black, but over a much shorter luminance range, and one must arbitrarily assign a chromaticity to black itself to deal with divide-by-zero issues with equation \ref{eq:chromaticity_from_tristimulus} when $X+Y+Z=0$.
 \subsection{Two-Dimensional, Top-Down Chromaticity}
-To begin adding color to our chromaticity diagrams, we can rotate the right panel in Figure \ref{fig:3d_chromoluminance} to give a top-down view (see Figure X), which shows an attractive range of highly saturated colors.  Remember that we are looking down at the top of an irregularly shaped volume with a peak at white - these colors do not represent a flat surface, even though we are rendering them in two dimensions.
+To begin adding color to our chromaticity diagrams, we can rotate the right panel in Figure \ref{fig:3d_chromoluminance} to give a top-down view (see Figure \ref{fig:chromaticity_inside_gamut}), which shows an attractive range of highly saturated colors.  Remember that we are looking down at the top of an irregularly shaped volume with a peak at white - these colors do not represent a flat surface, even though we are rendering them in two dimensions.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_14_chromaticity_inside_gamut_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_14_chromaticity_inside_gamut.svg}
+    \fi
+    \caption{Top-down view of the sRGB color gamut transformed into chromoluminance space (here two-dimensional chromaticity) which effectively fills the chromaticity color gamut with color.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_inside_gamut}
+\end{figure}
+\subsubsection{Extending Color beyond the sRGB Color Gamut Triangle}
+Looking down at the sRGB color gamut, it appears that a given angle around white maintains constant hue (named color) while increasing in saturation (chromatic contrast) moving away from white in that direction.  This idea can be used to fill the area outside the triangle with color by simply finding the hue for a given angle around white and extending a wedge of constant, saturated color outward (see Figure X).
 
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
 
