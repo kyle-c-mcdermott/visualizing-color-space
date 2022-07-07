@@ -283,7 +283,7 @@ Of the three color matching functions $\bar{X}(\lambda)$ bears the least resembl
     1.939864\bar{L}(\lambda)-1.346644\bar{M}(\lambda)+0.430449\bar{S}(\lambda)=\bar{X}(\lambda)
 \end{equation}
 The resulting linear transformation is:
-\begin{equation}
+\begin{equation}\label{eq:lms_to_xyz_10}
     \begin{bmatrix}
         1.939864&-1.346644&0.430449\\
         0.692839&0.349676&0\\
@@ -701,8 +701,69 @@ Any chromaticity that is within a distance of $0.05$ from the Planckian locus in
     \caption{CIE 1960 $(u,v)$ chromaticity (zoomed in) showing isotherm lines for selected temperatures along the Planckian locus and standard illuminants $A$, $D65$, $E$, and $F3$.  IMAGE LINK, CODE LINK}\label{fig:isotherm_lines_zoom}
 \end{figure*}
 
-Figure X shows the same set of isotherm lines and standard illuminants in CIE 1931 $(x,y)$ chromaticity.  Note that the isotherm lines are not necessarily perpendicular and they do not have uniform length; therefore it is always necessary to estimate correlated color temperature within the CIE 1960 $(u,v)$ space in which it is defined even when using a different space for visualization.
+Figure \ref{fig:cie_1931_isotherm} shows the same set of isotherm lines and standard illuminants in CIE 1931 $(x,y)$ chromaticity.  Note that the isotherm lines are not necessarily perpendicular and they do not have uniform length; therefore it is always necessary to estimate correlated color temperature within the CIE 1960 $(u,v)$ space in which it is defined even when using a different space for visualization.
+\begin{figure}[h]
+    \ifinvert
+        \includesvg[width=\linewidth]{../images/figure_23_cie_1931_isotherm_inverted.svg}
+    \else
+        \includesvg[width=\linewidth]{../images/figure_23_cie_1931_isotherm.svg}
+    \fi
+    \caption{CIE 1931 $(x,y)$ chromaticity showing the same isotherm lines and standard illuminants as in Figure \ref{fig:isotherm_lines_zoom}.  Note that isotherm lines are not perpendicular to the Planckian locus and have varying lengths.  IMAGE LINK, CODE LINK}\label{fig:cie_1931_isotherm}
+\end{figure}
+\subsection{Links}
+\begin{itemize}
+    \item Wikipedia
+    \begin{itemize}
+        \item \href{https://en.wikipedia.org/wiki/Planckian_locus}{Planckian Locus}
+        \item \href{https://en.wikipedia.org/wiki/Standard_illuminant}{CIE Standard Illuminants}
+    \end{itemize}
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 20 LIGHT AND DARK SVG
+        \item FIGURE 21 LIGHT AND DARK SVG
+        \item FIGURE 22 LIGHT AND DARK SVG
+        \item FIGURE 23 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item FIGURE GENERATION FOR ALL FIGURES (20-23)
+    \end{itemize}
+\end{itemize}
 \twocolumn[{\section{Color-Blindness} \label{sec:color_blindndess}}]
+Between the color matching experimental data of \cite{stiles1959npl} and the color matching functions of the CIE standard we transformed the data into cone sensitivity (the cone fundamentals).  The various linear transformations (and their inversions) allow us to convert any display red/green/blue triplet into a triplet of cone activations.  Knowing that a person with a missing cone photoreceptor type would be insensitive to changes in the nominal activation of that cone type, we can arbitrarily change the activation value for that cone and convert back to display red/green/blue.  The old and new display colors would not be distinguishable to the color-blind person.
+\subsection{Confusion Lines & Copunctal Points}
+Earlier we presented equation \ref{eq:lms_to_xyz_10} to transform from cone fundamentals into color matching functions as part of our derivation of the CIE 170-2 10$^\circ$ standard.  Having switched to the CIE 1931 2$^\circ$ standard, we need a new transformation; starting in the opposite direction (\cite{smith1975spectral}):
+\begin{equation}
+    \begin{bmatrix}
+        0.15514&0.54312&-0.03286\\
+        -0.15514&0.45684&0.03286\\
+        0&0&0.00801
+    \end{bmatrix}\begin{bmatrix}
+        X\\
+        Y\\
+        Z
+    \end{bmatrix}=\begin{bmatrix}
+        L\\
+        M\\
+        S
+    \end{bmatrix}
+\end{equation}
+we can convert from color matching functions to cone fundamentals.  After manipulating one of the cone activations we can use the inverse transform to go back:
+\begin{equation}
+    \begin{bmatrix}
+        2.94481&-3.50098&26.44303\\
+        1.00004&1.00004&0\\
+        0&0&124.84395
+    \end{bmatrix}\begin{bmatrix}
+        L\\
+        M\\
+        S
+    \end{bmatrix}=\begin{bmatrix}
+        X\\
+        Y\\
+        Z
+    \end{bmatrix}
+\end{equation}
 \twocolumn[{\printbibliography}]
 
 \end{document}
