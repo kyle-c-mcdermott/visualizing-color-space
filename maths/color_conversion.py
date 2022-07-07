@@ -484,7 +484,7 @@ def xy_to_uv(
     assert isinstance(x, float)
     assert 0.0 <= x <= 1.0
     assert isinstance(y, float)
-    assert 0.0 < y <= 1.0
+    assert 0.0 <= y <= 1.0
 
     # Convert and Return
     return(

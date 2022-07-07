@@ -642,7 +642,7 @@ Figure \ref{fig:visible_spectrum_functions} plots the red, green, and blue value
     \end{itemize}
 \end{itemize}
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
-Many depictions of the CIE chromaticity diagram include annotations for the Planckian Locus.  This line represents the change in chromaticity of blackbody radiation of increasing temperature, starting red and passing through white towards blue (for a fun diversion see “effective temperature” and “Hertzsprung-Russell diagram”).  Here we will introduce a transformed CIE chromaticity diagram using coordinates $(u,v)$ (\cite{cie_1960}) as the formulation of correlated color temperature is based on that space.
+Many depictions of the CIE chromaticity diagram include annotations for the Planckian locus.  This line represents the change in chromaticity of blackbody radiation of increasing temperature, starting red and passing through white towards blue (for a fun diversion see “effective temperature” and “Hertzsprung-Russell diagram”).  Here we will introduce a transformed CIE chromaticity diagram using coordinates $(u,v)$ (\cite{cie_1960}) as the formulation of correlated color temperature is based on that space.
 \subsection{Spectral Radiance of Blackbody Radiation}
 To determine the chromaticity associated with a particular temperature we will apply the CIE 1931 2$^\circ$ color matching functions to blackbody radiation spectra defined by Planck’s Law (\href{https://en.wikipedia.org/wiki/Planckian_locus}{source}):
 \begin{equation}
@@ -669,7 +669,27 @@ and then apply equation \ref{eq:chromaticity_from_tristimulus} to get $(x,y)$ ch
     \fi
     \caption{Blackbody spectra for selected temperatures and their chromaticities plotted along the Planckian locus in CIE 1931 2$^\circ$ $(x,y)$ chromaticity space.  Note that the Planckian locus is not actually drawn out to infinity - it ends at $10^{10}K$ here - but chromaticity changes become infinitesimal as temperatures become infinite.  IMAGE LINK, CODE LINK}\label{fig:blackbody_spectra}
 \end{figure*}
-
+\subsection{Correlated Color Temperature}
+The above formulation allows us to determine chromaticity from temperature.  In order to derive temperature from color we will invoke geometry within the CIE 1960 $(u,v)$ chromaticity diagram.  There are various approximating equations to estimate color temperature, but the original method of determining correlated color temperature is geometric (\cite{kelly1963lines}).
+\subsubsection{Conversion between $(x,y)$ and $(u,v)$ Chromaticity Coordinates}
+The following conversions were offered by MacAdam (\cite{macadam1937projective}) to convert to/from the CIE 1960 "uniform color space" (work began in the 30s, but the standard apparently took a while to adopt):
+\begin{equation}
+    \begin{aligned}
+        u&=\frac{4x}{12y-2x+3}\\
+        v&=\frac{6y}{12y-2x+3}\\
+        x&=\frac{3u}{2u-8v+4}\\
+        y&=\frac{2v}{2u-8v+4}
+    \end{aligned}
+\end{equation}
+Various attempts to make a uniform color space aim to make unit step changes in any direction, from any point in the chromaticity diagram, of perceptually similar magnitude.  This is an interesting topic for another time, but it is part of the reason why new color spaces continue to appear over time.  Figure \ref{fig:two_chromaticity_spaces} shows both chromaticity spaces side-by-side.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_21_two_chromaticity_spaces_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_21_two_chromaticity_spaces.svg}
+    \fi
+    \caption{CIE 1931 $(x,y)$ (left) and CIE 1960 $(u,v)$ (right) chromaticity diagrams.  The sRGB color gamut triangle is present in both diagrams along with the Planckian locus.  IMAGE LINK, CODE LINK}\label{fig:two_chromaticity_spaces}
+\end{figure*}
 \twocolumn[{\section{Color-Blindness} \label{sec:color_blindndess}}]
 \twocolumn[{\printbibliography}]
 
