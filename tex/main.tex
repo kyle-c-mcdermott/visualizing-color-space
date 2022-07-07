@@ -690,6 +690,18 @@ Various attempts to make a uniform color space aim to make unit step changes in 
     \fi
     \caption{CIE 1931 $(x,y)$ (left) and CIE 1960 $(u,v)$ (right) chromaticity diagrams.  The sRGB color gamut triangle is present in both diagrams along with the Planckian locus.  IMAGE LINK, CODE LINK}\label{fig:two_chromaticity_spaces}
 \end{figure*}
+\subsubsection{Isotherm Lines}
+Any chromaticity that is within a distance of $0.05$ from the Planckian locus in the $(u,v)$ chromaticity diagram has a correlated color temperature equal to the temperature on the closest part of the Planckian locus.  This can be visualized by extending lines perpendicular from the Planckian locus out to that distance as shown in Figure \ref{fig:isotherm_lines_zoom}.  A selection of standard illuminants and their correlated color temperatures are plotted: illuminant $A$ represents a traditional incandescent / tungsten filament bulb, $D65$ is the clear day sky used as white in the sRGB standard, $E$ represents an equal-energy (i.e. horizontal) light spectrum and $F3$ (there are many $F$ illuminants) represents a white fluorescent bulb (\href{https://en.wikipedia.org/wiki/Standard_illuminant}{source}).\\
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_22_isotherm_lines_zoom_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_22_isotherm_lines_zoom.svg}
+    \fi
+    \caption{CIE 1960 $(u,v)$ chromaticity (zoomed in) showing isotherm lines for selected temperatures along the Planckian locus and standard illuminants $A$, $D65$, $E$, and $F3$.  IMAGE LINK, CODE LINK}\label{fig:isotherm_lines_zoom}
+\end{figure*}
+
+Figure X shows the same set of isotherm lines and standard illuminants in CIE 1931 $(x,y)$ chromaticity.  Note that the isotherm lines are not necessarily perpendicular and they do not have uniform length; therefore it is always necessary to estimate correlated color temperature within the CIE 1960 $(u,v)$ space in which it is defined even when using a different space for visualization.
 \twocolumn[{\section{Color-Blindness} \label{sec:color_blindndess}}]
 \twocolumn[{\printbibliography}]
 

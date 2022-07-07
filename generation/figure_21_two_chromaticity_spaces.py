@@ -231,7 +231,7 @@ xy_panel.add_collection(
         facecolors = colors,
         edgecolors = colors,
         linewidth = 0,
-        zorder = 0
+        zorder = 1
     )
 )
 uv_panel.add_collection(
@@ -248,7 +248,7 @@ uv_panel.add_collection(
         facecolors = colors,
         edgecolors = colors,
         linewidth = 0,
-        zorder = 0
+        zorder = 1
     )
 )
 # endregion
