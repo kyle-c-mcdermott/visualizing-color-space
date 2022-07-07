@@ -170,10 +170,10 @@ chromaticity_panel = figure.add_panel(
     name = 'chromaticity',
     title = '',
     position = (mid_point, 0, 1 - mid_point, 1),
-    x_label = 'x',
+    x_label = r'$x$',
     x_ticks = arange(0, 0.81, 0.1),
     x_lim = (-0.065, 0.865),
-    y_label = 'y',
+    y_label = r'$y$',
     y_ticks = arange(0, 0.81, 0.1),
     y_lim = (-0.065, 0.865)
 )

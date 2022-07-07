@@ -84,11 +84,11 @@ with_panel = figure.add_panel(
     title = '',
     position = (0.06, 0, 0.44, 1),
     three_dimensional = True,
-    x_label = 'x',
+    x_label = r'$x$',
     x_lim = (-0.05, 1.05),
-    y_label = 'y',
+    y_label = r'$y$',
     y_lim = (-0.05, 1.05),
-    z_label = 'Y',
+    z_label = r'$Y$',
     z_lim = (-0.05, 1.05)
 )
 without_panel = figure.add_panel(
@@ -96,11 +96,11 @@ without_panel = figure.add_panel(
     title = '',
     position = (0.55, 0, 0.44, 1),
     three_dimensional = True,
-    x_label = 'x',
+    x_label = r'$x$',
     x_lim = (-0.05, 1.05),
-    y_label = 'y',
+    y_label = r'$y$',
     y_lim = (-0.05, 1.05),
-    z_label = 'Y',
+    z_label = r'$Y$',
     z_lim = (-0.05, 1.05)
 )
 for panel_name, panel in figure.panels.items():

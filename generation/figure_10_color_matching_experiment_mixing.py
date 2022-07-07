@@ -75,10 +75,10 @@ figure.set_fonts(**FONT_SIZES)
 panel = figure.add_panel(
     name = 'main',
     title = '',
-    x_label = 'x',
+    x_label = r'$x$',
     x_ticks = arange(0, 0.81, 0.1),
     x_lim = (-0.065, 0.865),
-    y_label = 'y',
+    y_label = r'$y$',
     y_ticks = arange(0, 0.81, 0.1),
     y_lim = (-0.065, 0.865)
 )
