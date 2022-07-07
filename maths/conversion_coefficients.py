@@ -101,12 +101,12 @@ Judd (1951) and then Vos (1978) made revisions to CIE 1931 2-Degree CMFs
 Smith & Pokorny (1975) and then Wyszecki & Stiles (1982) modified the cone
 fundamentals accordingly
 """
-LMS_TO_XYZ_2 = (
-    (0.15514, 0.54312, -0.03286), # X_L, X_M, X_S
-    (-0.15514, 0.45684, 0.03286), # Y_L, Y_M, Y_S
-    (0.00000, 0.00000, 0.00801) # Z_L, Z_M, Z_S
+XYZ_TO_LMS_2 = (
+    (0.15514, 0.54312, -0.03286), # L_X, L_Y, L_Z
+    (-0.15514, 0.45684, 0.03286), # M_X, M_Y, M_Z
+    (0.00000, 0.00000, 0.00801) # S_X, S_Y, S_Z
 )
-XYZ_TO_LMS_2 = inv(LMS_TO_XYZ_2)
+LMS_TO_XYZ_2 = inv(XYZ_TO_LMS_2)
 # endregion
 
 # region Between Color Matching Functions (XYZ) and Display Colors (RGB)

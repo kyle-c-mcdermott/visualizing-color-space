@@ -820,7 +820,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([0.23513200000000004, 0.164852, 0.0032040000000000003]):
+        for index, value in enumerate([9.765784314690638, 0.6000240009600384, 49.93757802746567]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = lms_to_xyz(
@@ -936,7 +936,7 @@ class TestMaths(TestCase):
         )
         self.assertIsInstance(test_return, tuple)
         self.assertEqual(len(test_return), 3)
-        for index, value in enumerate([0.2388647821277039, 0.3000120004800192, 0.0]):
+        for index, value in enumerate([0.08534, 0.014656000000000002, 0.0]):
             self.assertIsInstance(test_return[index], float)
             self.assertAlmostEqual(test_return[index], value)
         test_return = xyz_to_lms(
