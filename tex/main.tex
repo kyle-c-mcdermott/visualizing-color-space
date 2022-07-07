@@ -74,8 +74,8 @@ Figure \ref{fig:experiment_raw} plots the 53 individual traces of observers' set
 The red, green, and blue primary settings can be reduced to two values to form a chromaticity coordinate in the experimental chromaticity space.  The chromaticity coordinates - as functions of wavelength $\lambda$ - $\bar{r}(\lambda)$ and $\bar{g}(\lambda)$ are given by:
 \begin{equation}
     \begin{aligned}
-        \bar{r}(\lambda)=\frac{\bar{R}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}\\
-        \bar{g}(\lambda)=\frac{\bar{G}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}
+        \bar{r}(\lambda)&=\frac{\bar{R}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}\\
+        \bar{g}(\lambda)&=\frac{\bar{G}(\lambda)}{\bar{R}(\lambda)+\bar{G}(\lambda)+\bar{B}(\lambda)}
     \end{aligned}
 \end{equation}
 Figure \ref{fig:experiment_chromaticity} plots the settings from Figure \ref{fig:experiment_raw} converted into this experimental chromaticity space.  Note that the individual variability among test wave-numbers between the green and blue primaries are relatively large; bear this in mind when presented with the different chromaticity diagrams of the CIE standards presented later (see Figure \ref{fig:chromaticity_spaces}).
@@ -110,9 +110,9 @@ In order to get from the color matching experimental data described above to the
 The cone fundamentals are expressed as linear combinations of the three (average) settings for the red, green, and blue primaries from the color matching experiment:
 \begin{equation}
     \begin{aligned}
-        L_R\bar{R}(\lambda)+L_G\bar{G}(\lambda)+L_B\bar{B}(\lambda)=\bar{L}(\lambda)\\
-        M_R\bar{R}(\lambda)+M_G\bar{G}(\lambda)+M_B\bar{B}(\lambda)=\bar{M}(\lambda)\\
-        S_R\bar{R}(\lambda)+S_G\bar{G}(\lambda)+S_B\bar{B}(\lambda)=\bar{S}(\lambda)
+        L_R\bar{R}(\lambda)+L_G\bar{G}(\lambda)+L_B\bar{B}(\lambda)&=\bar{L}(\lambda)\\
+        M_R\bar{R}(\lambda)+M_G\bar{G}(\lambda)+M_B\bar{B}(\lambda)&=\bar{M}(\lambda)\\
+        S_R\bar{R}(\lambda)+S_G\bar{G}(\lambda)+S_B\bar{B}(\lambda)&=\bar{S}(\lambda)
     \end{aligned}
 \end{equation}
 where $\bar{L}(\lambda)$, $\bar{M}(\lambda)$, and $\bar{S}(\lambda)$ are the sensitivities of the long-, medium-, and short-wavelength-sensitive cones, respectively.  The coefficients $L_R$, $L_G$, ..., $S_G$, and $S_B$ are to be determined experimentally.
@@ -136,9 +136,9 @@ The above linear combinations can be expressed as a linear transformation:
 At this stage there are nine coefficients to find, however there are two things that can reduce this number: first, we will assert that we don't need to find the absolute sensitivities of the different cone types - we only wish to get the shape of the functions, but will normalize them to get \textit{relative} sensitivity only - and second, we will assert that the short-wavelength-sensitive cones are completely insensitive to the red primary light used in the color matching experiment.  Arbitrarily choosing the coefficients for the blue primary light, we use them to define three normalization constants $k$ as:
 \begin{equation}\label{eq:cone_fundamental_normalization_constants_symbolic}
     \begin{aligned}
-        k_L=\frac{1}{L_B}\\
-        k_M=\frac{1}{M_B}\\
-        k_S=\frac{1}{S_B}
+        k_L&=\frac{1}{L_B}\\
+        k_M&=\frac{1}{M_B}\\
+        k_S&=\frac{1}{S_B}
     \end{aligned}
 \end{equation}
 the values of which will be determined later so as to independently make the maximum of each cone sensitivity equal to $1.0$.  Factoring these into the linear transformation gives:
@@ -241,9 +241,9 @@ The CIE color matching functions, and the resulting chromaticity diagram, do not
 The color matching functions can each be expressed as a linear combination of the three cone fundamentals:
 \begin{equation}
     \begin{aligned}
-        X_L\bar{L}(\lambda)+X_M\bar{M}(\lambda)+X_S\bar{S}(\lambda)=\bar{X}(\lambda)\\
-        Y_L\bar{L}(\lambda)+Y_M\bar{M}(\lambda)+Y_S\bar{S}(\lambda)=\bar{Y}(\lambda)\\
-        Z_L\bar{L}(\lambda)+Z_M\bar{M}(\lambda)+Z_S\bar{S}(\lambda)=\bar{Z}(\lambda)
+        X_L\bar{L}(\lambda)+X_M\bar{M}(\lambda)+X_S\bar{S}(\lambda)&=\bar{X}(\lambda)\\
+        Y_L\bar{L}(\lambda)+Y_M\bar{M}(\lambda)+Y_S\bar{S}(\lambda)&=\bar{Y}(\lambda)\\
+        Z_L\bar{L}(\lambda)+Z_M\bar{M}(\lambda)+Z_S\bar{S}(\lambda)&=\bar{Z}(\lambda)
     \end{aligned}
 \end{equation}
 where $\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$ are the color matching functions.  The letters don't correspond to color or cone type, and are thus arbitrarily chosen.  The coefficients $X_L$, $X_M$, ..., $Z_M$, and $Z_S$ need to be determined.  As before, we will express the above set linear of combinations as a linear transformation:
@@ -322,18 +322,18 @@ Figure \ref{fig:d65_spectrum} shows the spectrum for the CIE standard illuminant
 The tristimulus values are found by multiplying each color matching function by the spectrum of interest and integrating to find the area under the resulting curves:
 \begin{equation}\label{eq:tristimulus_from_spectrum}
     \begin{aligned}
-        X=\int\bar{R}(\lambda)\bar{X}(\lambda)d\lambda\\
-        Y=\int\bar{R}(\lambda)\bar{Y}(\lambda)d\lambda\\
-        Z=\int\bar{R}(\lambda)\bar{Z}(\lambda)d\lambda
+        X&=\int\bar{R}(\lambda)\bar{X}(\lambda)d\lambda\\
+        Y&=\int\bar{R}(\lambda)\bar{Y}(\lambda)d\lambda\\
+        Z&=\int\bar{R}(\lambda)\bar{Z}(\lambda)d\lambda
     \end{aligned}
 \end{equation}
 To convert to chromaticity coordinates:
 \begin{equation}\label{eq:chromaticity_from_tristimulus}
     \begin{aligned}
-        x=\frac{X}{X+Y+Z}\\
-        y=\frac{Y}{X+Y+Z}\\
-        z=\frac{Z}{X+Y+Z}\\
-        \therefore x+y+z=1
+        x&=\frac{X}{X+Y+Z}\\
+        y&=\frac{Y}{X+Y+Z}\\
+        z&=\frac{Z}{X+Y+Z}\\
+        \therefore 1&=x+y+z
     \end{aligned}
 \end{equation}
 Given the shared denominator for all three coordinates, any one can be found given the other two, so $z$ is typically left out of the discussion.  Figure \ref{fig:estimating_d65_chromaticity} illustrates the process of determining chromaticity from the $D65$ spectrum.
@@ -396,16 +396,16 @@ To determine the chromaticity of a mix of two or more light sources we simply ad
 The matching of mixed lights in the color matching experiment is easiest to arrange in a chromaticity diagram for the range of test colors between the green and blue primaries - where the green and blue settings are well above zero and contributing to the match side, and the red setting is well below zero and contributing to the test side - but the math is the same for any test light used in the experiment.  For this demonstration the test light with a wave-number of $20,250cm^{-1}$ is used, where the observers' averaged red, green, and blue settings are $\bar{R}(20,250cm^{-1})=-0.444$, $\bar{G}(20,250cm^{-1})=0.531$, and $\bar{B}(20,250cm^{-1})=0.144$, respectively.  The green and blue settings are positive and their tristimulus values are added together for the match side; the red setting is negative and its tristimulus values will be added to the test light's tristimulus values on the test side:
 \begin{equation}\label{eq:match_tristimulus}
     \begin{aligned}
-        \bar{G}(20,250cm^{-1})X_G+\bar{B}(20,250cm^{-1})X_B=X_{match}\\
-        \bar{G}(20,250cm^{-1})Y_G+\bar{B}(20,250cm^{-1})Y_B=Y_{match}\\
-        \bar{G}(20,250cm^{-1})Z_G+\bar{B}(20,250cm^{-1})Z_B=Z_{match}
+        \bar{G}(20,250cm^{-1})X_G+\bar{B}(20,250cm^{-1})X_B&=X_{match}\\
+        \bar{G}(20,250cm^{-1})Y_G+\bar{B}(20,250cm^{-1})Y_B&=Y_{match}\\
+        \bar{G}(20,250cm^{-1})Z_G+\bar{B}(20,250cm^{-1})Z_B&=Z_{match}
     \end{aligned}
 \end{equation}
 \begin{equation}\label{eq:test_tristimulus}
     \begin{aligned}
-        X_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})X_R=X_{test}\\
-        Y_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Y_R=Y_{test}\\
-        Z_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Z_R=Z_{test}
+        X_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})X_R&=X_{test}\\
+        Y_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Y_R&=Y_{test}\\
+        Z_{20,250cm^{-1}}-\bar{R}(20,250cm^{-1})Z_R&=Z_{test}
     \end{aligned}
 \end{equation}
 where $X_R$, $Y_R$, and $Z_R$ are the tristimulus values for the red primary, $X_G$, $Y_G$, and $Z_G$ are the tristimulus values for the green primary, $X_B$, $Y_B$, and $Z_B$ are the tristimulus values for the blue primary, and $X_{20,250cm^{-1}}$, $Y_{20,250cm^{-1}}$, and $Z_{20,250cm^{-1}}$ are the tristimulus values for the test light.  To get the tristimulus values for the three primaries and the test light we simply go to those wave-numbers/wavelengths on each of the color matching functions; we are treating these as ideal, monochromatic light sources and so we can forego the multiplication and integration steps implied by equation \ref{eq:tristimulus_from_spectrum} and just use the values of $\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$.  Figure \ref{fig:color_matching_experiment_tristimulus} annotates the tristimulus values for the primary lights and the selected test light.
@@ -420,16 +420,16 @@ where $X_R$, $Y_R$, and $Z_R$ are the tristimulus values for the red primary, $X
 Factoring the tristimulus values into equations \ref{eq:match_tristimulus} and \ref{eq:test_tristimulus} we can solve for both sides of the experimental stimulus:
 \begin{equation}
     \begin{aligned}
-        (0.531)0.192+(0.144)0.405=X_{match}=0.160\\
-        (0.531)0.850+(0.144)0.087=Y_{match}=0.464\\
-        (0.531)0.022+(0.144)2.130=Z_{match}=0.318
+        (0.531)0.192+(0.144)0.405&=X_{match}=0.160\\
+        (0.531)0.850+(0.144)0.087&=Y_{match}=0.464\\
+        (0.531)0.022+(0.144)2.130&=Z_{match}=0.318
     \end{aligned}
 \end{equation}
 \begin{equation}
     \begin{aligned}
-        0.005-(-0.444)0.347=X_{test}=0.159\\
-        0.400-(-0.444)0.140=Y_{test}=0.462\\
-        0.313-(-0.444)0.000=Z_{test}=0.310
+        0.005-(-0.444)0.347&=X_{test}=0.159\\
+        0.400-(-0.444)0.140&=Y_{test}=0.462\\
+        0.313-(-0.444)0.000&=Z_{test}=0.310
     \end{aligned}
 \end{equation}
 The tristimulus values on the match and test sides line up reasonably well, though not perfectly due to rounding at various steps (including the tabulated color matching functions).  Using the tristimulus values for the primaries and the selected test light we can get their chromaticities using equation \ref{eq:chromaticity_from_tristimulus}: Red = $(0.713,0.287)$, Green = $(0.180,0.799)$, Blue = $(0.154,0.033)$ and for the $20,250cm^{-1}$ test light we get $(0.007,0.559)$.  The match and test chromaticities come to $(0.170,0.492)$ and $(0.171,0.496)$, respectively - again, reasonably similar.  Plotting all of these on a chromaticity diagram (see Figure X) demonstrates that the mixing of two lights results in a chromaticity falling along a straight line between them, and in the case of the color matching experiment the resulting stimulus chromaticity is the point where the lines connecting the two lights contributing to either side of the stimulus intersect with one another.
@@ -459,9 +459,9 @@ The chromaticity diagram in Figure \ref{fig:crt_monitor} plots the resulting chr
 If we assume that the shape of each phosphor spectrum remains the same as intensity increases and decreases, and that intensity increases and decreases in a linear fashion, we can express the tristimulus values resulting from any combination of red, green, and blue phosphor intensities ($R$, $G$, and $B$, respectively, each in the interval $[0,1]$) with the following linear combinations:
 \begin{equation}
     \begin{aligned}
-        X_RR+X_GG+X_BB=X\\
-        Y_RR+Y_GG+Y_BB=Y\\
-        Z_RR+Z_GG+Z_BB=Z
+        X_RR+X_GG+X_BB&=X\\
+        Y_RR+Y_GG+Y_BB&=Y\\
+        Z_RR+Z_GG+Z_BB&=Z
     \end{aligned}
 \end{equation}
 or as the linear transform:
@@ -623,8 +623,52 @@ Figure \ref{fig:visible_spectrum_functions} plots the red, green, and blue value
     \fi
     \caption{Visible spectrum bands and the corresponding red, green, and blue values as functions of wavelengths.  The saturated spectrum is the same as that presented in Figure \ref{fig:visible_spectrum_locus} (with the more extreme wavelengths cropped out).  The smoothed spectrum was constructed with an arbitrary method that preserves the hue angle for each wavelength but otherwise smooths out the resulting functions for red, green, and blue (note that green and blue cross at the same cyan wavelength, and green and red cross at the same yellow wavelength, for both series).  IMAGE LINK, CODE LINK}\label{fig:visible_spectrum_functions}
 \end{figure*}
-
+\begin{itemize}
+    \item \href{https://en.wikipedia.org/wiki/SRGB}{sRGB Wikipedia Article}
+    \item Figure Images
+    \begin{itemize}
+        \item FIGURE 12 LIGHT AND DARK SVG
+        \item FIGURE 13 LIGHT AND DARK SVG
+        \item FIGURE 14 LIGHT AND DARK SVG
+        \item FIGURE 15 LIGHT AND DARK SVG
+        \item FIGURE 16 LIGHT AND DARK SVG
+        \item FIGURE 17 LIGHT AND DARK SVG
+        \item FIGURE 18 LIGHT AND DARK SVG
+        \item FIGURE 19 LIGHT AND DARK SVG
+    \end{itemize}
+    \item GitHub Scripts
+    \begin{itemize}
+        \item FIGURE GENERATION FOR ALL FIGURES (12-19)
+    \end{itemize}
+\end{itemize}
 \twocolumn[{\section{Color Temperature} \label{sec:color_temperature}}]
+Many depictions of the CIE chromaticity diagram include annotations for the Planckian Locus.  This line represents the change in chromaticity of blackbody radiation of increasing temperature, starting red and passing through white towards blue (for a fun diversion see “effective temperature” and “Hertzsprung-Russell diagram”).  Here we will introduce a transformed CIE chromaticity diagram using coordinates $(u,v)$ (\cite{cie_1960}) as the formulation of correlated color temperature is based on that space.
+\subsection{Spectral Radiance of Blackbody Radiation}
+To determine the chromaticity associated with a particular temperature we will apply the CIE 1931 2$^\circ$ color matching functions to blackbody radiation spectra defined by Planck’s Law (\href{https://en.wikipedia.org/wiki/Planckian_locus}{source}):
+\begin{equation}
+    \begin{aligned}
+        M(\lambda,T)&=\frac{c_1}{\lambda^5}\frac{1}{e^{\frac{c_2}{\lambda T}}-1}\\
+        c_1&=2\pi hc^2\\
+        c_2&=\frac{hc}{k}
+    \end{aligned}
+\end{equation}
+where $M$ is the spectral radiance as a function of wavelength $\lambda$ and temperature $T$.  $h$, $c$, and $k$ are Planck's constant, the speed of light, and Boltzmann's constant, respectively.  Just as we did with the CRT monitor spectra, we'll integrate the product of each color matching function with the blackbody radiation spectrum for a given temperature:
+\begin{equation}
+    \begin{aligned}
+        X(T)&=\int M(\lambda,T)\bar{X}(\lambda)d\lambda\\
+        Y(T)&=\int M(\lambda,T)\bar{Y}(\lambda)d\lambda\\
+        Z(T)&=\int M(\lambda,T)\bar{Z}(\lambda)d\lambda
+    \end{aligned}
+\end{equation}
+and then apply equation \ref{eq:chromaticity_from_tristimulus} to get $(x,y)$ chromaticity.  Figure \ref{fig:blackbody_spectra} shows a selection of blackbody spectra and their corresponding chromaticity coordinates annotated along the Planckian locus.  While low temperatures fall off the chromaticity diagram beyond red (a thing ought to be at least "red hot" to be visible) the highest temperatures do not venture very far into blue territory, approaching asymptotically towards $\approx(0.2400, 0.2340)$.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_20_blackbody_spectra_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_20_blackbody_spectra.svg}
+    \fi
+    \caption{Blackbody spectra for selected temperatures and their chromaticities plotted along the Planckian locus in CIE 1931 2$^\circ$ $(x,y)$ chromaticity space.  Note that the Planckian locus is not actually drawn out to infinity - it ends at $10^{10}K$ here - but chromaticity changes become infinitesimal as temperatures become infinite.  IMAGE LINK, CODE LINK}\label{fig:blackbody_spectra}
+\end{figure*}
 
 \twocolumn[{\section{Color-Blindness} \label{sec:color_blindndess}}]
 \twocolumn[{\printbibliography}]
