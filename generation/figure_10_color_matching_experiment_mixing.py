@@ -111,12 +111,14 @@ panel.plot(
 panel.plot(
     list(datum['x'] for datum in spectrum_locus_170_2_10),
     list(datum['y'] for datum in spectrum_locus_170_2_10),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.5),
     zorder = 2
 )
 panel.plot(
     [spectrum_locus_170_2_10[0]['x'], spectrum_locus_170_2_10[-1]['x']],
     [spectrum_locus_170_2_10[0]['y'], spectrum_locus_170_2_10[-1]['y']],
+    solid_capstyle = 'round',
     linestyle = ':',
     color = figure.grey_level(0.5),
     zorder = 1
@@ -146,6 +148,7 @@ for chromaticity, color in [
     panel.plot(
         [chromaticity[0], match_chromaticity[0]],
         [chromaticity[1], match_chromaticity[1]],
+        solid_capstyle = 'round',
         linestyle = '--',
         color = color,
         zorder = 3

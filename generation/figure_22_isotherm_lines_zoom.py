@@ -1,5 +1,6 @@
 """
-CIE 1960 (u, v) chromaticity zoomed in on Planckian locus with isotherm lines.
+CIE 1960 (u, v) chromaticity zoomed in on Planckian locus with isotherm lines
+and standard illuminants.
 
 Caption: CIE 1960 (u, v) chromaticity (zoomed in) showing isotherm lines for
 selected temperatures along the Planckian locus and standard illuminants A, D65,
@@ -121,7 +122,7 @@ panel.set_aspect(
 # region Reference Lines
 panel.plot(
     *transpose(list(xy_to_uv(x, y) for x, y in [(0.0, 1.0), (1.0, 0.0)])),
-    linestyle = '--',
+    linestyle = ':',
     color = figure.grey_level(0.75),
     zorder = 1
 )
@@ -132,7 +133,7 @@ panel.plot(
             for datum in spectrum_locus_1931_2
         )
     ),
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(0.5),
     zorder = 2
 )
 panel.plot(
@@ -142,7 +143,7 @@ panel.plot(
             xy_to_uv(spectrum_locus_1931_2[-1]['x'], spectrum_locus_1931_2[-1]['y'])
         ]
     ),
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(0.5),
     linestyle = ':',
     zorder = 2
 )
@@ -200,6 +201,7 @@ panel.plot(
             for chromaticity in pl_chromaticities
         )
     ),
+    solid_capstyle = 'round',
     color = 3 * [0.25],
     zorder = 3
 )
@@ -223,6 +225,7 @@ for temperature in TEMPERATURES:
     endpoints = isotherm_endpoints_from_temperature(temperature)
     panel.plot(
         *transpose(endpoints),
+        solid_capstyle = 'round',
         color = 3 * [0.25],
         zorder = 4
     )
@@ -243,7 +246,7 @@ for temperature in TEMPERATURES:
     )
 # endregion
 
-# region Standard Illuminants (5)
+# region Standard Illuminants
 legend_handles = list()
 for illuminant_name, illuminant_chromaticity in ILLUMINANTS_CHROMATICITY.items():
     color = xyz_to_rgb(

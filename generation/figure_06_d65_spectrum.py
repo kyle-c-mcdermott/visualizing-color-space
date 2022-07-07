@@ -94,6 +94,7 @@ legend_handles.append(
             datum['Energy']
             for datum in d65_spectrum
         ),
+        solid_capstyle = 'round',
         color = figure.grey_level(0),
         zorder = 1
     )[0]

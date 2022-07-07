@@ -122,11 +122,13 @@ for panel in figure.panels.values():
     panel.plot( # Defaults to z (or Y) = 0 plane
         list(datum['x'] for datum in spectrum_locus_1931_2),
         list(datum['y'] for datum in spectrum_locus_1931_2),
+        solid_capstyle = 'round',
         color = figure.grey_level(0.5)
     )
     panel.plot(
         [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
         [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
+        solid_capstyle = 'round',
         linestyle = ':',
         color = figure.grey_level(0.5)
     )

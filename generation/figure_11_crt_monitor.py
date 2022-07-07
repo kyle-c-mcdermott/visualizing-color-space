@@ -207,12 +207,14 @@ chromaticity_panel.plot(
 chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.5),
     zorder = 3
 )
 chromaticity_panel.plot(
     [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
+    solid_capstyle = 'round',
     linestyle = ':',
     color = figure.grey_level(0.5),
     zorder = 2

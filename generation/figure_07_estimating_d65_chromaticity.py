@@ -230,12 +230,14 @@ for tristimulus_index, tristimulus_name in enumerate(TRISTIMULUS_NAMES):
 chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_170_2_10),
     list(datum['y'] for datum in spectrum_locus_170_2_10),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.5),
     zorder = 3
 )
 chromaticity_panel.plot(
     [spectrum_locus_170_2_10[0]['x'], spectrum_locus_170_2_10[-1]['x']],
     [spectrum_locus_170_2_10[0]['y'], spectrum_locus_170_2_10[-1]['y']],
+    solid_capstyle = 'round',
     linestyle = ':',
     color = figure.grey_level(0.5),
     zorder = 2

@@ -146,19 +146,20 @@ for panel in figure.panels.values():
 xy_panel.plot(
     [0, 1],
     [1, 0],
-    linestyle = '--',
+    linestyle = ':',
     color = figure.grey_level(0.75),
     zorder = 1
 )
 uv_panel.plot(
     *transpose(list(xy_to_uv(x, y) for x, y in [(0.0, 1.0), (1.0, 0.0)])),
-    linestyle = '--',
+    linestyle = ':',
     color = figure.grey_level(0.75),
     zorder = 1
 )
 xy_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.25),
     zorder = 3
 )
@@ -169,12 +170,14 @@ uv_panel.plot(
             for datum in spectrum_locus_1931_2
         )
     ),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.25),
     zorder = 3
 )
 xy_panel.plot(
     [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
+    solid_capstyle = 'round',
     color = figure.grey_level(0.25),
     linestyle = ':',
     zorder = 2
@@ -186,6 +189,7 @@ uv_panel.plot(
             xy_to_uv(spectrum_locus_1931_2[-1]['x'], spectrum_locus_1931_2[-1]['y'])
         ]
     ),
+    solid_capstyle = 'round',
     color = figure.grey_level(0.25),
     linestyle = ':',
     zorder = 2
@@ -324,6 +328,7 @@ uv_panel.plot(
 pl_temperatures, pl_chromaticities = generate_temperature_series()
 xy_panel.plot(
     *transpose(pl_chromaticities),
+    solid_capstyle = 'round',
     color = 3 * [0.25],
     zorder = 3
 )
@@ -347,6 +352,7 @@ uv_panel.plot(
             for chromaticity in pl_chromaticities
         )
     ),
+    solid_capstyle = 'round',
     color = 3 * [0.25],
     zorder = 3
 )
