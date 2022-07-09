@@ -769,7 +769,7 @@ we can convert from color matching functions to cone fundamentals.  After manipu
         Z
     \end{bmatrix}
 \end{equation}
-As an explicit example, Table \ref{table:varying_l_cone_activation} provides the cone activation and display color values the result from arbitrarily manipulating the long-wavelength-sensitive cone activation value.  A person who lacks long-wavelength-sensitive cones should not see any chromaticity difference among the colors presented in the last column of the table (through they may detect differences in luminance).
+As an explicit example, Table \ref{table:varying_l_cone_activation} provides the cone activation and display color values that result from arbitrarily manipulating the long-wavelength-sensitive cone activation value.  A person who lacks long-wavelength-sensitive cones should not see any chromaticity difference among the colors presented in the last column of the table (through they may detect differences in luminance).
 \begin{table}[h]
     \begin{tabular}{c|c|c|c|c|c|c}
         \hline
@@ -783,5 +783,16 @@ As an explicit example, Table \ref{table:varying_l_cone_activation} provides the
     \end{tabular}
     \caption{Varying the long-wavelength-sensitive cone activation ($L$ column) while holding the others constant and its effects on display color.}\label{table:varying_l_cone_activation}
 \end{table}
+Plotting the chromaticity of the colors in Table \ref{table:varying_l_cone_activation} (see Figure X) shows that they all fall in a straight line, however they do vary also in luminance and there the path is slightly curved.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_24_single_protan_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_24_single_protan.svg}
+    \fi
+    \caption{The colors from Table \ref{table:varying_l_cone_activation} are plotted in chromaticity space (left) and chromoluminance space (right).  While the changes in long-wavelength-sensitive cone activation result in a straight line path in chromaticity, there are also changes in luminance that follow a slightly curved path.  IMAGE LINK, CODE LINK}\label{fig:single_protan}
+\end{figure*}
+
+
 \twocolumn[{\printbibliography}]
 \end{document}
