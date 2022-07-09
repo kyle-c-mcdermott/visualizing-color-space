@@ -804,7 +804,15 @@ Such lines drawn in chromaticity space where the activation of one cone type var
     \caption{Multiple protanope (missing long-wavelength-sensitive cone) confusion lines plotted in chromaticity (left) and chromoluminance (right).  The point where the chromaticity lines intersect - the copunctal point - is annotated in the left panel.  Note that in chromoluminance space the confusion line paths approach infinite luminance asymptotically as chromaticity goes toward the copunctal point.  IMAGE LINK, CODE LINK}\label{fig:multiple_protan}
 \end{figure*}
 
-In chromaticity space, the point where all confusion lines intersect (which invariably falls outside of the spectrum locus and the range of real spectra) is called the copunctal point.  Note that the luminances of the confusion paths in chromoluminance space approach infinity - an artifact of only modifying the cone activation of one cone type and not adjusting the other cones to maintain reasonable (let alone constant) luminance.  Using only the straight-line confusion lines in chromaticity space, and simply using previous methods to find the corresponding \textit{saturated} display color, Figure X shows selected confusion lines for each of the cone types.
+In chromaticity space, the point where all confusion lines intersect (which invariably falls outside of the spectrum locus and the range of real spectra) is called the copunctal point.  Note that the luminances of the confusion paths in chromoluminance space approach infinity - an artifact of only modifying the cone activation of one cone type and not adjusting the other cones to maintain reasonable (let alone constant) luminance.  Using only the straight-line confusion lines in chromaticity space, and simply using previous methods to find the corresponding \textit{saturated} display color, Figure \ref{fig:copunctal_points} shows selected confusion lines for each of the cone types.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_26_copunctal_points_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_26_copunctal_points.svg}
+    \fi
+    \caption{Select confusion lines converging on annotated copunctal points for (from left-to-right) the long-, medium-, and short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  Horizontal bands of color each show a range of saturated colors whose chromaticities would be indistinguishable to someone missing that cone (though being saturated colors, luminance variation would be detectable).  IMAGE LINK, CODE LINK}\label{fig:copunctal_points}
+\end{figure*}
 
 \twocolumn[{\printbibliography}]
 \end{document}

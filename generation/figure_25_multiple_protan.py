@@ -47,8 +47,8 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 
 # region Imports
 from maths.color_conversion import (
-    xyz_to_lms,
     rgb_to_xyz,
+    xyz_to_lms,
     xyz_to_xyy,
     lms_to_xyz
 )
