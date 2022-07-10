@@ -47,11 +47,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 
 # region Imports
 from maths.conversion_coefficients import CONE_NAMES, COLOR_NAMES
+from PIL import Image
 from maths.color_blind import get_unique_colors
 from maths.color_conversion import xyz_to_xyy, rgb_to_xyz
 from figure.figure import Figure
 from numpy import arange, transpose
-from PIL import Image
 from maths.plotting_series import (
     spectrum_locus_1931_2,
     gamut_triangle_vertices_srgb
@@ -67,7 +67,7 @@ FONT_SIZES = {
     'titles' : 14,
     'labels' : 12,
     'ticks' : 10,
-    'legends' : 7
+    'legends' : 8
 }
 EXTENSION = 'svg'
 RESOLUTION = 16

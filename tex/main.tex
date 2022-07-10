@@ -837,7 +837,16 @@ The spread of the distribution of chromaticities can be varied to make the figur
     \fi
     \caption{Color-blind test stimuli with decreasing contrast from left-to-right.  The distributions of chromaticities in the sample stimuli are taken from (from top-to-bottom) long-, medium-, and short-wavelength-sensitive confusion lines.  These stimuli are not calibrated - the reader should not take an ability or inability to perform the associated discrimination task here as an indication of whether or not they may be color-blind.  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli_contrast}
 \end{figure*}
-
+\subsection{Color-Blind Filtered Images}
+It is common to illustrate the "effects" of color-blindness by filtering colorful images so as to remove chromatic contrast along confusion lines for a given missing cone type.  Figure \ref{fig:color_blind_filter_photograph} shows an example of such filtering (photograph \href{https://pixabay.com/photos/flower-field-flowers-field-trees-250016/}{source}).
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_29_color_blind_filter_photograph_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_29_color_blind_filter_photograph.svg}
+    \fi
+    \caption{A colorful photograph filtered to remove chromatic differences to which an observer with a missing cone type would not be sensitive.  From left-to-right are the original image, a protanope filtered image, a deuteranope filtered image, and a tritanope filtered image.  Below each image is a chromaticity diagram showing the distribution of chromaticities in the image.  Note that the distributions of filtered images have an arc shape - the center around which the distribution arcs is the corresponding copunctal point for the missing cone type.  IMAGE LINK, CODE LINK}\label{fig:color_blind_filter_photograph}
+\end{figure*}
 
 
 \twocolumn[{\printbibliography}]
