@@ -838,7 +838,7 @@ The spread of the distribution of chromaticities can be varied to make the figur
     \caption{Color-blind test stimuli with decreasing contrast from left-to-right.  The distributions of chromaticities in the sample stimuli are taken from (from top-to-bottom) long-, medium-, and short-wavelength-sensitive confusion lines.  These stimuli are not calibrated - the reader should not take an ability or inability to perform the associated discrimination task here as an indication of whether or not they may be color-blind.  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli_contrast}
 \end{figure*}
 \subsection{Color-Blind Filtered Images}
-It is common to illustrate the "effects" of color-blindness by filtering colorful images so as to remove chromatic contrast along confusion lines for a given missing cone type.  Figure \ref{fig:color_blind_filter_photograph} shows an example of such filtering (photograph \href{https://pixabay.com/photos/flower-field-flowers-field-trees-250016/}{source}).
+It is common to illustrate the "effects" of color-blindness by filtering colorful images so as to remove chromatic contrast along confusion lines for a given missing cone type.  Figure \ref{fig:color_blind_filter_photograph} shows an example of such filtering (photograph \href{https://pixabay.com/photos/flower-field-flowers-field-trees-250016/}{source}).\\
 \begin{figure*}[h]
     \ifinvert
         \includesvg[width=\textwidth]{../images/figure_29_color_blind_filter_photograph_inverted.svg}
@@ -848,6 +848,14 @@ It is common to illustrate the "effects" of color-blindness by filtering colorfu
     \caption{A colorful photograph filtered to remove chromatic differences to which an observer with a missing cone type would not be sensitive.  From left-to-right are the original image, a protanope filtered image, a deuteranope filtered image, and a tritanope filtered image.  Below each image is a chromaticity diagram showing the distribution of chromaticities in the image.  Note that the distributions of filtered images have an arc shape - the center around which the distribution arcs is the corresponding copunctal point for the missing cone type.  IMAGE LINK, CODE LINK}\label{fig:color_blind_filter_photograph}
 \end{figure*}
 
-
+There are some arbitrary choices made in the method for filtering illustrated in Figure \ref{fig:color_blind_filter_photograph}.  First, the filtering was accomplished by setting the chromatic distance from each associated copunctal point to be constant (hence the arc shaped lines along which the resulting chromaticities fall).  Second, that constant distance was chosen based on the average chromaticity of the original image - it could have just as easily been based on distance to the white point, here D65.  The result of these two arbitrary choices is that all of the images have more closely the same average chromaticity, but more importantly the two colors visible in each of the filtered images are purple/greenish-yellow, blue/yellow and pinkish-red/greenish-cyan for the three cone types.  This does not mean that color-blind people see these particular hues.  Figure \ref{fig:color_blind_filter_stimulus} shows the same filtering applied to one of the color-blind test stimuli.
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_30_color_blind_filter_stimulus_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_30_color_blind_filter_stimulus.svg}
+    \fi
+    \caption{A color-blind test stimulus (protanope) filtered to remove chromatic differences to which an observer with a missing cone type would not be sensitive.  From left-to-right are the original image, a protanope filtered image, a deuteranope filtered image, and a tritanope filtered image.  Below each image is a chromaticity diagram showing the distribution of chromaticities in the image.  Note that in the second image from the left (filtered to mimic the chromatic discriminability of a protanope) the "C" figure is invisible (the distribution is a more-or-less uniform point).  IMAGE LINK, CODE LINK}\label{fig:color_blind_filter_stimulus}
+\end{figure*}
 \twocolumn[{\printbibliography}]
 \end{document}
