@@ -1,0 +1,4 @@
+Stiles & Burch (1959) dataset page:
+http://www.cvrl.org/stilesburch10_ind.htm
+Dataset spreadsheet:
+http://www.cvrl.org/database/data/sb_individual/SB10_corrected_indiv_CMFs.xls

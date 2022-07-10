@@ -1,0 +1,4 @@
+Tabulated color matching functions for CIE 1931 2-degree downloaded from:
+http://www.cvrl.org/cie.htm
+Under "Colour matching functions", "CIE 1931 2-deg, XYZ CMFs" using the second,
+"/W" (solid line indiciating fine resolution as opposed to dotted line) button

@@ -1,0 +1,5 @@
+Tabulated mean data found here (see Stiles & Burch (1959) 10-deg, RGB CMFs -
+use E/F button to download sbrgb10f.csv):
+http://www.cvrl.org/stilesburch10_ind.htm
+Description page:
+http://www.cvrl.org/database/text/cmfs/sbrgb10.htm
