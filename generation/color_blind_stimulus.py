@@ -60,7 +60,7 @@ STIMULUS_GAP_DIRECTIONS = {
     'Down' : -pi / 2,
     'Left' : pi
 }
-STIMULUS_GAP_NAME = 'Left'
+STIMULUS_GAP_NAME = 'Right'
 STIMULUS_GAP_DIRECTION = STIMULUS_GAP_DIRECTIONS[STIMULUS_GAP_NAME]
 STIMULUS_GAP_WIDTH = pi / 6 # Radians
 MIDDLE_COLORS = {
@@ -71,9 +71,9 @@ MIDDLE_COLORS = {
 }
 MIDDLE_COLOR_NAME = 'Grey'
 MIDDLE_COLOR = MIDDLE_COLORS[MIDDLE_COLOR_NAME]
-CONE_TYPE = CONE.MEDIUM.value
+CONE_TYPE = CONE.LONG.value
 STIMULUS_CHROMATIC_SIGN = +1 # +/-1, will flip colors of foreground and background
-CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.6) # Proportion of maximum distance, within gamut, on either side of distribution
+CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.5) # Proportion of maximum distance, within gamut, on either side of distribution
 MAXIMUM_ALLOWED_LUMINANCE = 0.4
 LUMINANCE_SATURATION_PROPORTION_BOUNDS = (0.75, 0.95) # Proportion (of saturation) range for luminance variation
 FIGURE_BACKGROUNDS = {
@@ -88,8 +88,11 @@ FIGURE_TITLE = 'Color-Blind Stimulus - {0}-Cone Variation around {1} pointing {2
     STIMULUS_GAP_NAME,
     FIGURE_BACKGROUND_NAME
 )
-FIGURE_SIZE = (9, 9)
-EXTENSION = 'svg'
+
+# FIGURE_TITLE = 'figure_27_l_stimulus'
+
+FIGURE_SIZE = (2, 2)
+EXTENSION = 'png'
 # endregion
 
 # region Determine Properties of Circles

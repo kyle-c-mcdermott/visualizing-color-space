@@ -804,7 +804,7 @@ Such lines drawn in chromaticity space where the activation of one cone type var
     \caption{Multiple protanope (missing long-wavelength-sensitive cone) confusion lines plotted in chromaticity (left) and chromoluminance (right).  The point where the chromaticity lines intersect - the copunctal point - is annotated in the left panel.  Note that in chromoluminance space the confusion line paths approach infinite luminance asymptotically as chromaticity goes toward the copunctal point.  IMAGE LINK, CODE LINK}\label{fig:multiple_protan}
 \end{figure*}
 
-In chromaticity space, the point where all confusion lines intersect (which invariably falls outside of the spectrum locus and the range of real spectra) is called the copunctal point.  Note that the luminances of the confusion paths in chromoluminance space approach infinity - an artifact of only modifying the cone activation of one cone type and not adjusting the other cones to maintain reasonable (let alone constant) luminance.  Using only the straight-line confusion lines in chromaticity space, and simply using previous methods to find the corresponding \textit{saturated} display color, Figure \ref{fig:copunctal_points} shows selected confusion lines for each of the cone types.
+In chromaticity space the point where all confusion lines intersect (which invariably falls outside of the spectrum locus and the range of real spectra) is called the copunctal point.  Note that the luminances of the confusion paths in chromoluminance space approach infinity - an artifact of only modifying the cone activation of one cone type and not adjusting the other cones to maintain reasonable (let alone constant) luminance.  Using only the straight-line confusion lines in chromaticity space, and simply using previous methods to find the corresponding \textit{saturated} display color, Figure \ref{fig:copunctal_points} shows selected confusion lines for each of the cone types.
 \begin{figure*}[h]
     \ifinvert
         \includesvg[width=\textwidth]{../images/figure_26_copunctal_points_inverted.svg}
@@ -813,6 +813,19 @@ In chromaticity space, the point where all confusion lines intersect (which inva
     \fi
     \caption{Select confusion lines converging on annotated copunctal points for (from left-to-right) the long-, medium-, and short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  Horizontal bands of color each show a range of saturated colors whose chromaticities would be indistinguishable to someone missing that cone (though being saturated colors, luminance variation would be detectable).  IMAGE LINK, CODE LINK}\label{fig:copunctal_points}
 \end{figure*}
+\subsection{Color-Blind Test Stimuli}
+Confusion lines pertain only to the discrimination of chromaticity and do not consider whether there are correlated luminances changes with chromaticity.  In fact, because our sensitivity to luminance differences is much better than our sensitivity to chromaticity changes, it is rather difficult to create visual stimuli that vary in chromaticity but are uniform in luminance (due to individual variability, stimuli must be adjusted to the individual observer \textit{and} their state of visual adaptation).  However, if an observer's task is to use chromaticity to identify the nature of some aspect of the stimulus, we can confound the ability to use luminance cues by causing luminance to vary randomly.  If there is no systematic correlation between chromaticity and luminance, then luminance information is useless for the task.\\
 
+Figure \ref{fig:color_blind_stimuli} shows some example color-blind test stimuli.  The task would be for an observer to indicate whether the open gap in the embedded "C" is pointing up, right, down, or left.  The distribution of luminance among the constituent circles is random.  The distribution of chromaticity is bound to a confusion line for a particular cone type - so a person missing that cone type should see a field of uniform chromaticity and be unable to correctly identify the direction of the gap.\\
+\begin{figure*}[h]
+    \ifinvert
+        \includesvg[width=\textwidth]{../images/figure_27_color_blind_stimuli_inverted.svg}
+    \else
+        \includesvg[width=\textwidth]{../images/figure_27_color_blind_stimuli.svg}
+    \fi
+    \caption{Example color-blind test stimuli for (from left-to-right) missing long-, medium-, or short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  The object is to indicate the direction of the gap in the embedded "C" shape.  Below each stimulus is a chromaticity diagram showing the distribution of chromaticities in the stimulus (black fuzzy lines crossing the white point).  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli}
+\end{figure*}
+
+Beneath each test stimulus in Figure \ref{fig:color_blind_stimuli} is a chromaticity diagram showing the distribution of chromaticities present.  In this case all chromaticity distributions are taken from a confusion line passing through the white point, and the figure (the "C") chromaticities are taken from one side of white and the background chromaticities are taken from the opposite side of white.  In principle any confusion line will work for the purposes of such a color-blind test, and the two sides of the distribution need not be different hues, but it is easier to visualize in the way it is presented here.
 \twocolumn[{\printbibliography}]
 \end{document}
