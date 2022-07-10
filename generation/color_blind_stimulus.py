@@ -60,7 +60,7 @@ STIMULUS_GAP_DIRECTIONS = {
     'Down' : -pi / 2,
     'Left' : pi
 }
-STIMULUS_GAP_NAME = 'Right'
+STIMULUS_GAP_NAME = 'Down'
 STIMULUS_GAP_DIRECTION = STIMULUS_GAP_DIRECTIONS[STIMULUS_GAP_NAME]
 STIMULUS_GAP_WIDTH = pi / 6 # Radians
 MIDDLE_COLORS = {
@@ -71,7 +71,7 @@ MIDDLE_COLORS = {
 }
 MIDDLE_COLOR_NAME = 'Grey'
 MIDDLE_COLOR = MIDDLE_COLORS[MIDDLE_COLOR_NAME]
-CONE_TYPE = CONE.LONG.value
+CONE_TYPE = CONE.SHORT.value
 STIMULUS_CHROMATIC_SIGN = +1 # +/-1, will flip colors of foreground and background
 CHROMATIC_DISTANCE_PROPORTION_BOUNDS = (0.0, 0.5) # Proportion of maximum distance, within gamut, on either side of distribution
 MAXIMUM_ALLOWED_LUMINANCE = 0.4
@@ -88,9 +88,6 @@ FIGURE_TITLE = 'Color-Blind Stimulus - {0}-Cone Variation around {1} pointing {2
     STIMULUS_GAP_NAME,
     FIGURE_BACKGROUND_NAME
 )
-
-# FIGURE_TITLE = 'figure_27_l_stimulus'
-
 FIGURE_SIZE = (2, 2)
 EXTENSION = 'png'
 # endregion
