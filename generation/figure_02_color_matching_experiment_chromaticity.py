@@ -43,7 +43,13 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    COLUMN_WIDTH,
+    FONT_SIZES,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL
+)
 from figure.figure import Figure
+from numpy import arange
 from maths.plotting_series import (
     color_matching_experiment_individual_settings,
     color_matching_experiment_mean_settings
@@ -53,14 +59,11 @@ from maths.conversion_coefficients import COLOR_NAMES
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4, 3.2) # Squaring the axes can create empty white/black space, adjusted height down incrementally until fit was good
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    COLUMN_WIDTH,
+    2.9 # Adjusted down until plot area width was forced in
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Initialize Figure
@@ -76,7 +79,9 @@ panel = figure.add_panel(
     name = 'main',
     title = '',
     x_label = r'$r$',
-    y_label = r'$g$'
+    x_ticks = arange(-6, 1.1, 1),
+    y_label = r'$g$',
+    y_ticks = arange(0, 5.1, 1)
 )
 panel.set_aspect(
     aspect = 'equal', # Make horizontal and vertical axes the same scale
@@ -88,25 +93,25 @@ panel.set_aspect(
 panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 panel.axhline(
     y = 1,
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 panel.axvline(
     x = 1,
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 # endregion

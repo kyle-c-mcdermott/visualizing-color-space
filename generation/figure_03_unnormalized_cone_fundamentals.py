@@ -45,6 +45,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL, WAVE_NUMBER_LABEL,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL
+)
 from maths.plotting_series import color_matching_experiment_mean_settings
 from maths.color_conversion import rgb_to_lms
 from maths.conversion_coefficients import (
@@ -58,14 +64,11 @@ from figure.figure import Figure
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Transform Mean Settings into Unnormalized Cone Fundamentals
@@ -114,7 +117,7 @@ figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = wavelength_bounds,
     x_margin = 0.0,
     x_ticks = wavelength_ticks,
@@ -123,13 +126,13 @@ back_panel = figure.add_panel(
 front_panel = figure.add_panel(
     name = 'front',
     title = '',
-    x_label = r'Wave-Number ($cm^{-1}$)',
+    x_label = WAVE_NUMBER_LABEL,
     x_lim = wavelength_bounds,
     x_margin = 0.0,
     x_ticks = list((10.0 ** 7.0) / x_tick for x_tick in wave_number_ticks),
     x_tick_labels = list(
         '{0:,}'.format(wave_number_tick)
-        if index / 2 == int(index / 2) and wave_number_tick != 24000
+        if index / 2 == int(index / 2) and wave_number_tick not in [22000, 24000]
         else ''
         for index, wave_number_tick in enumerate(wave_number_ticks)
     )
@@ -143,13 +146,13 @@ front_panel.xaxis.tick_top()
 back_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 back_panel.axhline(
     y = 1,
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 for color_index, color_wave_number in enumerate(EXPERIMENT_PRIMARIES):

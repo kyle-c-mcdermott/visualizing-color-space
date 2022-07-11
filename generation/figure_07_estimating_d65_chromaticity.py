@@ -46,6 +46,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL, SL_GREY_LEVEL
+)
 from maths.plotting_series import (
     d65_spectrum,
     color_matching_functions_170_2_10,
@@ -60,14 +66,11 @@ from numpy import arange, transpose, ptp
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 LINE_COLORS = (
     (0.8, 0, 0.8), # X
     (0.8, 0.5, 0), # Y
@@ -138,12 +141,12 @@ figure = Figure(
     inverted = INVERTED
 )
 figure.set_fonts(**FONT_SIZES)
-mid_point = 0.435
+mid_point = 0.55
 x_panel = figure.add_panel(
     name = 'X',
     title = '',
     position = (0, 2 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Product',
@@ -153,7 +156,7 @@ y_panel = figure.add_panel(
     name = 'Y',
     title = '',
     position = (0, 1 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Product',
@@ -163,7 +166,7 @@ z_panel = figure.add_panel(
     name = 'Z',
     title = '',
     position = (0, 0 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Product',
@@ -191,20 +194,20 @@ for panel in figure.panels.values():
     panel.axhline(
         y = 0,
         linewidth = 2,
-        color = figure.grey_level(0.25),
+        color = figure.grey_level(AXES_GREY_LEVEL),
         zorder = 1
     )
 chromaticity_panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 # endregion
@@ -231,7 +234,7 @@ chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_170_2_10),
     list(datum['y'] for datum in spectrum_locus_170_2_10),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 3
 )
 chromaticity_panel.plot(
@@ -239,7 +242,7 @@ chromaticity_panel.plot(
     [spectrum_locus_170_2_10[0]['y'], spectrum_locus_170_2_10[-1]['y']],
     solid_capstyle = 'round',
     linestyle = ':',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 2
 )
 chromaticity_panel.plot(
@@ -303,7 +306,9 @@ chromaticity_panel.annotate(
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,
