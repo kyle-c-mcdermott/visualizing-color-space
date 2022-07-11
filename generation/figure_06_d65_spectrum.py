@@ -40,20 +40,23 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    COLUMN_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL,
+    AXES_GREY_LEVEL
+)
 from figure.figure import Figure
 from maths.plotting_series import d65_spectrum
 # endregion
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4, 3)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    COLUMN_WIDTH,
+    TEXT_HEIGHT / 4
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Initialize Figure
@@ -68,7 +71,7 @@ figure.set_fonts(**FONT_SIZES)
 panel = figure.add_panel(
     name = 'main',
     title = '',
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     y_label = 'Energy'
 )
 # endregion
@@ -77,7 +80,7 @@ panel = figure.add_panel(
 panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 # endregion

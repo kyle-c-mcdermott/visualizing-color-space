@@ -43,6 +43,10 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES
+)
 from figure.figure import Figure
 from maths.plotting_series import (
     spectrum_locus_1931_2,
@@ -55,14 +59,11 @@ from maths.coloration import three_dimensional_surface
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 3.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    3
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 

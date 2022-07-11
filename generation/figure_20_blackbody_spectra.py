@@ -44,6 +44,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL
+)
 from maths.plotting_series import (
     spectrum_locus_1931_2,
     color_matching_functions_1931_2
@@ -65,14 +71,11 @@ from matplotlib.collections import PathCollection
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 TEMPERATURES = [2000, 3000, 4000, 5000, 7000, 10000, 20000]
 # endregion
@@ -104,12 +107,12 @@ figure = Figure(
     inverted = INVERTED
 )
 figure.set_fonts(**FONT_SIZES)
-mid_point = 0.5
+mid_point = 0.55
 spectra_panel = figure.add_panel(
     name = 'spectra',
     title = '',
     position = (0, 0, mid_point, 1),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (
         WAVELENGTH_TICKS[0],
         WAVELENGTH_TICKS[-1]
@@ -146,40 +149,40 @@ spectra_panel.set_yscale('log')
 spectra_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 chromaticity_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 3
 )
 chromaticity_panel.plot(
     [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     linestyle = ':',
     zorder = 2
 )
@@ -235,7 +238,7 @@ chromaticity_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -247,7 +250,7 @@ chromaticity_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 1
     )
 )
@@ -268,9 +271,9 @@ figure.annotate_coordinates(
     omit_endpoints = True,
     distance_proportion = 0.0075,
     show_ticks = True,
-    font_size = figure.font_sizes['legends'],
+    font_size = figure.font_sizes['legends'] - 2,
     font_color = figure.grey_level(0),
-    tick_color = figure.grey_level(0.25),
+    tick_color = figure.grey_level(AXES_GREY_LEVEL),
     z_order = 4
 )
 # endregion
@@ -301,7 +304,7 @@ for temperature, appearance in selected_temperatures.items():
         xycoords = 'data',
         horizontalalignment = 'right',
         verticalalignment = 'bottom',
-        fontsize = figure.font_sizes['legends'],
+        fontsize = figure.font_sizes['legends'] - 2,
         color = 3 * [0.25],
         zorder = 6
     )
@@ -321,7 +324,9 @@ chromaticity_panel.annotate(
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

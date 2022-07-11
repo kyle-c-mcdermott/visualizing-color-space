@@ -50,6 +50,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVE_NUMBER_LABEL, WAVELENGTH_LABEL,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL
+)
 from maths.plotting_series import (
     color_matching_experiment_mean_settings,
     color_matching_experiment_individual_settings
@@ -64,14 +70,11 @@ from maths.conversion_coefficients import (
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Horizontal Axes Settings (Derived from Data)
@@ -96,7 +99,7 @@ figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
-    x_label = r'Wave-Number ($cm^{-1}$)',
+    x_label = WAVE_NUMBER_LABEL,
     x_lim = wave_number_bounds,
     x_margin = 0.0,
     x_ticks = wave_number_ticks,
@@ -118,7 +121,7 @@ back_panel = figure.add_panel(
 front_panel = figure.add_panel(
     name = 'front',
     title = '',
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = wave_number_bounds,
     x_margin = 0.0,
     x_ticks = list((10.0 ** 7.0) / x_tick for x_tick in wavelength_ticks),
@@ -133,13 +136,13 @@ front_panel.xaxis.tick_top()
 back_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 2
 )
 back_panel.axhline(
     y = 1,
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 2
 )
 for color_index, color_wave_number in enumerate(EXPERIMENT_PRIMARIES):

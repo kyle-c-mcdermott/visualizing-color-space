@@ -46,6 +46,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL, SL_GREY_LEVEL
+)
 from maths.color_conversion import xyz_to_xyy
 from maths.color_temperature import tristimulus_from_spectrum
 from maths.chromaticity_conversion import STANDARD
@@ -60,14 +66,11 @@ from numpy import arange, transpose
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Estimate Chromaticities from Spectra
@@ -135,12 +138,12 @@ figure = Figure(
     inverted = INVERTED
 )
 figure.set_fonts(**FONT_SIZES)
-mid_point = 0.439
+mid_point = 0.55
 red_panel = figure.add_panel(
     name = 'Red',
     title = '',
     position = (0, 2 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Radiance',
@@ -150,7 +153,7 @@ green_panel = figure.add_panel(
     name = 'Green',
     title = '',
     position = (0, 1 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Radiance',
@@ -160,7 +163,7 @@ blue_panel = figure.add_panel(
     name = 'Blue',
     title = '',
     position = (0, 0 / 3, mid_point, 1 / 3),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (375, 725),
     x_margin = 0.0,
     y_label = 'Radiance',
@@ -188,27 +191,27 @@ for panel in figure.panels.values():
     panel.axhline(
         y = 0,
         linewidth = 2,
-        color = figure.grey_level(0.25),
+        color = figure.grey_level(AXES_GREY_LEVEL),
         zorder = 1
     )
 chromaticity_panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 3
 )
 chromaticity_panel.plot(
@@ -216,7 +219,7 @@ chromaticity_panel.plot(
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     solid_capstyle = 'round',
     linestyle = ':',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 2
 )
 # endregion
@@ -345,7 +348,9 @@ chromaticity_panel.legend(
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

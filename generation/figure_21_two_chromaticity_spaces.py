@@ -43,6 +43,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES,
+    DOTTED_GREY_LEVEL, AXES_GREY_LEVEL, SL_GREY_LEVEL
+)
 from maths.plotting_series import (
     spectrum_locus_1931_2,
     gamut_triangle_vertices_srgb
@@ -62,14 +67,11 @@ from maths.color_temperature import generate_temperature_series
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    3.45
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -134,33 +136,33 @@ for panel in figure.panels.values():
     panel.axhline(
         y = 0,
         linewidth = 2,
-        color = figure.grey_level(0.75),
+        color = figure.grey_level(DOTTED_GREY_LEVEL),
         zorder = 1
     )
     panel.axvline(
         x = 0,
         linewidth = 2,
-        color = figure.grey_level(0.75),
+        color = figure.grey_level(DOTTED_GREY_LEVEL),
         zorder = 1
     )
 xy_panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 uv_panel.plot(
     *transpose(list(xy_to_uv(x, y) for x, y in [(0.0, 1.0), (1.0, 0.0)])),
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 xy_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 3
 )
 uv_panel.plot(
@@ -171,14 +173,14 @@ uv_panel.plot(
         )
     ),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 3
 )
 xy_panel.plot(
     [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     linestyle = ':',
     zorder = 2
 )
@@ -190,7 +192,7 @@ uv_panel.plot(
         ]
     ),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     linestyle = ':',
     zorder = 2
 )
@@ -205,7 +207,7 @@ xy_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -222,7 +224,7 @@ uv_panel.add_collection(
         ),
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -234,7 +236,7 @@ xy_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 1
     )
 )
@@ -251,7 +253,7 @@ uv_panel.add_collection(
         ),
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 1
     )
 )
@@ -272,9 +274,9 @@ figure.annotate_coordinates(
     omit_endpoints = True,
     distance_proportion = 0.0075,
     show_ticks = True,
-    font_size = figure.font_sizes['legends'],
+    font_size = figure.font_sizes['legends'] - 2,
     font_color = figure.grey_level(0),
-    tick_color = figure.grey_level(0.25),
+    tick_color = figure.grey_level(AXES_GREY_LEVEL),
     z_order = 4
 )
 figure.annotate_coordinates(
@@ -288,9 +290,9 @@ figure.annotate_coordinates(
     omit_endpoints = True,
     distance_proportion = 0.0075,
     show_ticks = True,
-    font_size = figure.font_sizes['legends'],
+    font_size = figure.font_sizes['legends'] - 2,
     font_color = figure.grey_level(0),
-    tick_color = figure.grey_level(0.25),
+    tick_color = figure.grey_level(AXES_GREY_LEVEL),
     z_order = 4
 )
 # endregion
@@ -306,7 +308,7 @@ xy_panel.plot(
             for index in [0, 1, 2, 0]
         )
     ),
-    color = 3 * [0.5],
+    color = 3 * [SL_GREY_LEVEL],
     zorder = 2
 )
 uv_panel.plot(
@@ -319,7 +321,7 @@ uv_panel.plot(
             for index in [0, 1, 2, 0]
         )
     ),
-    color = 3 * [0.5],
+    color = 3 * [SL_GREY_LEVEL],
     zorder = 2
 )
 # endregion
@@ -372,7 +374,9 @@ uv_panel.annotate(
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

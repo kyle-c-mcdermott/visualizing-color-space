@@ -45,6 +45,10 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES
+)
 from maths.conversion_coefficients import CONE_NAMES
 from PIL import Image
 from figure.figure import Figure
@@ -52,14 +56,11 @@ from figure.figure import Figure
 
 # region Plot Settings
 INVERTED = False
-SIZE = (5.3, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    5
+)
+EXTENSION = 'pdf'
 # endregion
 
 # region Load Images
@@ -118,7 +119,9 @@ for cone_name in CONE_NAMES:
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

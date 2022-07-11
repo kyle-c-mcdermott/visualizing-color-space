@@ -43,6 +43,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    COLUMN_WIDTH,
+    FONT_SIZES,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL
+)
 from maths.chromaticity_conversion import STANDARD, xyz_to_xyy
 from maths.color_temperature import tristimulus_from_spectrum
 from maths.plotting_series import (
@@ -58,14 +63,11 @@ from numpy import arange
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    COLUMN_WIDTH,
+    3.45
+)
+EXTENSION = 'pdf'
 COLORS = {
     STANDARD.CIE_170_2_10.value : (0.2, 0.2, 0.8),
     STANDARD.CIE_170_2_2.value : (0.2, 0.8, 0.2),
@@ -133,20 +135,20 @@ panel.set_aspect(
 panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 # endregion

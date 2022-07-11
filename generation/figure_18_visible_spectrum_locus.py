@@ -46,6 +46,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    COLUMN_WIDTH,
+    FONT_SIZES,
+    WAVELENGTH_LABEL,
+    DOTTED_GREY_LEVEL, AXES_GREY_LEVEL
+)
 from maths.plotting_series import spectrum_locus_1931_2
 from numpy import arange, ptp
 from maths.coloration import (
@@ -59,14 +65,11 @@ from matplotlib.collections import PathCollection
 
 # region Plot Settings
 INVERTED = False
-SIZE = (6.5, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    COLUMN_WIDTH,
+    5
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -133,11 +136,11 @@ figure = Figure(
     inverted = INVERTED
 )
 figure.set_fonts(**FONT_SIZES)
-mid_point = 0.65
+mid_point = 0.3
 chromaticity_panel = figure.add_panel(
     name = 'chromaticity',
     title = '',
-    position = (0, 0, mid_point, 1),
+    position = (0, mid_point, 1, 1 - mid_point),
     x_label = r'$x$',
     x_ticks = arange(0, 0.81, 0.1),
     x_lim = (-0.065, 0.865),
@@ -152,80 +155,83 @@ chromaticity_panel.set_aspect(
 spectrum_panel_back = figure.add_panel(
     name = 'spectrum_back',
     title = '',
-    position = (mid_point, 0, 1 - mid_point, 1),
-    x_lim = (0, 1),
-    x_margin = 0.0,
-    x_ticks = [],
-    y_label = r'Wavelength $\lambda$ ($nm$)',
-    y_lim = (
+    position = (0, 0, 1, mid_point),
+    x_label = WAVELENGTH_LABEL,
+    x_lim = (
         WAVELENGTH_TICKS[0],
         WAVELENGTH_TICKS[-1]
     ),
-    y_margin = 0.0,
-    y_ticks = WAVELENGTH_TICKS[1:-1],
-    y_tick_labels = list(
+    x_margin = 0.0,
+    x_ticks = WAVELENGTH_TICKS[1:-1],
+    x_tick_labels = list(
         wavelength_tick
         if int(wavelength_tick / 25) == wavelength_tick / 25
         else ''
         for wavelength_tick in WAVELENGTH_TICKS[1:-1]
-    )
+    ),
+    y_lim = (0, 1),
+    y_margin = 0.0,
+    y_ticks = [],
 )
 spectrum_panel_front = figure.add_panel(
     name = 'spectrum_front',
     title = '',
-    position = (mid_point, 0, 1 - mid_point, 1),
-    y_lim = (
+    position = (0, 0, 1, mid_point),
+    x_lim = (
         WAVELENGTH_TICKS[0],
         WAVELENGTH_TICKS[-1]
     ),
-    y_margin = 0.0,
-    y_ticks = list(best_wavelength[0] for best_wavelength in best_wavelengths.values()),
-    y_tick_labels = list(
-        '{0} ({1:0.0f}{2})'.format(
+    x_margin = 0.0,
+    x_ticks = list(best_wavelength[0] for best_wavelength in best_wavelengths.values()),
+    x_tick_labels = list(
+        '{0}\n({1:0.0f}{2}){3}'.format(
             color_name,
             best_wavelength[0],
-            r'$nm$'
+            r'$nm$',
+            ''
+            if index / 2 == int(index / 2)
+            else '\n\n'
         )
-        for color_name, best_wavelength in best_wavelengths.items()
+        for index, (color_name, best_wavelength) in enumerate(best_wavelengths.items())
     )
 )
-spectrum_panel_front.sharex(spectrum_panel_back)
-spectrum_panel_front.yaxis.set_label_position('right')
-spectrum_panel_front.yaxis.tick_right()
+spectrum_panel_front.sharey(spectrum_panel_back)
+spectrum_panel_front.xaxis.set_label_position('top')
+spectrum_panel_front.xaxis.tick_top()
 # endregion
 
 # region Reference Lines
 chromaticity_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 chromaticity_panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 3
 )
 chromaticity_panel.plot(
     [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     solid_capstyle = 'round',
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     linestyle = ':',
     zorder = 2
 )
@@ -240,7 +246,7 @@ chromaticity_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -252,26 +258,25 @@ chromaticity_panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 1
     )
 )
 paths, colors = visible_spectrum(
     RESOLUTION * 6,
+    WAVELENGTH_TICKS[0],
     0,
-    WAVELENGTH_TICKS[0],
-    1,
     int(ptp(WAVELENGTH_TICKS)),
+    1,
     WAVELENGTH_TICKS[0],
-    WAVELENGTH_TICKS[-1],
-    vertical = True
+    WAVELENGTH_TICKS[-1]
 )
 spectrum_panel_back.add_collection(
     PathCollection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -292,15 +297,17 @@ figure.annotate_coordinates(
     omit_endpoints = True,
     distance_proportion = 0.0075,
     show_ticks = True,
-    font_size = figure.font_sizes['legends'],
+    font_size = figure.font_sizes['legends'] - 2,
     font_color = figure.grey_level(0),
-    tick_color = figure.grey_level(0.25),
+    tick_color = figure.grey_level(AXES_GREY_LEVEL),
     z_order = 4
 )
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,
