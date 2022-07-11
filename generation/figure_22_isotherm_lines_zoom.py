@@ -43,6 +43,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES,
+    DOTTED_GREY_LEVEL, SL_GREY_LEVEL
+)
 from figure.figure import Figure
 from numpy import arange, transpose
 from maths.color_conversion import xy_to_uv, xyz_to_rgb, xyy_to_xyz
@@ -62,14 +67,11 @@ from maths.color_temperature import (
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    3.8
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 TEMPERATURES = [2000, 3000, 4000, 5000, 7000, 10000, 20000]
 # endregion
@@ -123,7 +125,7 @@ panel.set_aspect(
 panel.plot(
     *transpose(list(xy_to_uv(x, y) for x, y in [(0.0, 1.0), (1.0, 0.0)])),
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 1
 )
 panel.plot(
@@ -133,7 +135,7 @@ panel.plot(
             for datum in spectrum_locus_1931_2
         )
     ),
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 2
 )
 panel.plot(
@@ -143,7 +145,7 @@ panel.plot(
             xy_to_uv(spectrum_locus_1931_2[-1]['x'], spectrum_locus_1931_2[-1]['y'])
         ]
     ),
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     linestyle = ':',
     zorder = 2
 )
@@ -166,7 +168,7 @@ panel.add_collection(
         ),
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 0
     )
 )
@@ -186,7 +188,7 @@ panel.add_collection(
         ),
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 1
     )
 )

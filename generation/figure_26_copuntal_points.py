@@ -46,6 +46,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL, SL_GREY_LEVEL
+)
 from maths.plotting_series import gamut_triangle_vertices_srgb
 from maths.color_conversion import (
     rgb_to_xyz,
@@ -70,14 +75,11 @@ from matplotlib.collections import PathCollection
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 2.65)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    2.4
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -323,27 +325,27 @@ for panel in figure.panels.values():
     panel.axhline(
         y = 0,
         linewidth = 2,
-        color = figure.grey_level(0.25),
+        color = figure.grey_level(AXES_GREY_LEVEL),
         zorder = 0
     )
     panel.axvline(
         x = 0,
         linewidth = 2,
-        color = figure.grey_level(0.25),
+        color = figure.grey_level(AXES_GREY_LEVEL),
         zorder = 0
     )
     panel.plot(
         [0, 1],
         [1, 0],
         linestyle = ':',
-        color = figure.grey_level(0.75),
+        color = figure.grey_level(DOTTED_GREY_LEVEL),
         zorder = 0
     )
     panel.plot(
         list(datum['x'] for datum in spectrum_locus_1931_2),
         list(datum['y'] for datum in spectrum_locus_1931_2),
         solid_capstyle = 'round',
-        color = figure.grey_level(0.5),
+        color = figure.grey_level(SL_GREY_LEVEL),
         zorder = 2
     )
     panel.plot(
@@ -351,7 +353,7 @@ for panel in figure.panels.values():
         [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
         linestyle = ':',
         solid_capstyle = 'round',
-        color = figure.grey_level(0.5),
+        color = figure.grey_level(SL_GREY_LEVEL),
         zorder = 1
     )
     panel.plot(
@@ -364,7 +366,7 @@ for panel in figure.panels.values():
                 for index in [0, 1, 2, 0]
             )
         ),
-        color = figure.grey_level(0.75),
+        color = figure.grey_level(DOTTED_GREY_LEVEL),
         zorder = 3
     )
 # endregion
@@ -377,7 +379,7 @@ for cone_name, cone_color_bands in cones_color_bands.items():
             paths,
             facecolors = colors,
             edgecolors = colors,
-            linewidth = 0,
+            linewidth = 0.1,
             zorder = 1
         )
     )
@@ -387,7 +389,7 @@ for cone_name, cone_color_bands in cones_color_bands.items():
                 cone_color_band[0],
                 facecolors = cone_color_band[1],
                 edgecolors = cone_color_band[1],
-                linewidth = 0,
+                linewidth = 0.1,
                 zorder = 0
             )
         )
@@ -414,7 +416,7 @@ for cone_name, cone_intersections in cones_intersections.items():
 
 # region Annotate Copunctal Points
 for cone_name, h_offset, v_offset, h_align, v_align in [
-    ('Long', -0.02, -0.04, 'center', 'top'),
+    ('Long', -0.04, -0.06, 'center', 'top'),
     ('Medium', 0.0, 0.0, 'right', 'center'),
     ('Short', 0.0, -0.01, 'center', 'top')
 ]:
@@ -442,7 +444,9 @@ for cone_name, h_offset, v_offset, h_align, v_align in [
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

@@ -810,11 +810,11 @@ Figure \ref{fig:visible_spectrum_functions} plots the red, green, and blue value
 
 \end{multicols}
 
-\iffalse
-
 % ================ SECTION 5 ================
 
 \section{Color Temperature} \label{sec:color_temperature}
+
+\begin{multicols}{2}
 
 Many depictions of the CIE chromaticity diagram include annotations for the Planckian locus.  This line represents the change in chromaticity of blackbody radiation of increasing temperature, starting red and passing through white towards blue (for a fun diversion see “effective temperature” and “Hertzsprung-Russell diagram”).  Here we will introduce a transformed CIE chromaticity diagram using coordinates $(u,v)$ (\cite{cie_1960}) as the formulation of correlated color temperature is based on that space.
 
@@ -842,14 +842,14 @@ where $M$ is the spectral radiance as a function of wavelength $\lambda$ and tem
 
 and then apply Equation \ref{eq:chromaticity_from_tristimulus} to get $(x,y)$ chromaticity.  Figure \ref{fig:blackbody_spectra} shows a selection of blackbody spectra and their corresponding chromaticity coordinates annotated along the Planckian locus.  While low temperatures fall off the chromaticity diagram beyond red (a thing ought to be at least "red hot" to be visible) the highest temperatures do not venture very far into blue territory, approaching asymptotically towards $\approx(0.2400, 0.2340)$.
 
-\begin{figure} % Figure 20
+\begin{figure*} % Figure 20
     \ifinvert
-        \includesvg{../images/figure_20_blackbody_spectra_inverted.svg}
+        \includegraphics{../images/figure_20_blackbody_spectra_inverted.pdf}
     \else
-        \includesvg{../images/figure_20_blackbody_spectra.svg}
+        \includegraphics{../images/figure_20_blackbody_spectra.pdf}
     \fi
     \caption{Blackbody spectra for selected temperatures and their chromaticities plotted along the Planckian locus in CIE 1931 2$^\circ$ $(x,y)$ chromaticity space.  Note that the Planckian locus is not actually drawn out to infinity - it ends at $10^{10}K$ here - but chromaticity changes become infinitesimal as temperatures become infinite.  IMAGE LINK, CODE LINK}\label{fig:blackbody_spectra}
-\end{figure}
+\end{figure*}
 
 \subsection{Correlated Color Temperature} % 5.2
 
@@ -870,38 +870,38 @@ The following conversions were offered by MacAdam (\cite{macadam1937projective})
 
 Various attempts to make a uniform color space aim to make unit step changes in any direction, from any point in the chromaticity diagram, of perceptually similar magnitude.  This is an interesting topic for another time, but it is part of the reason why new color spaces continue to appear over time.  Figure \ref{fig:two_chromaticity_spaces} shows both chromaticity spaces side-by-side.
 
-\begin{figure} % Figure 21
+\begin{figure*} % Figure 21
     \ifinvert
-        \includesvg{../images/figure_21_two_chromaticity_spaces_inverted.svg}
+        \includegraphics{../images/figure_21_two_chromaticity_spaces_inverted.pdf}
     \else
-        \includesvg{../images/figure_21_two_chromaticity_spaces.svg}
+        \includegraphics{../images/figure_21_two_chromaticity_spaces.pdf}
     \fi
     \caption{CIE 1931 $(x,y)$ (left) and CIE 1960 $(u,v)$ (right) chromaticity diagrams.  The sRGB color gamut triangle is present in both diagrams along with the Planckian locus.  IMAGE LINK, CODE LINK}\label{fig:two_chromaticity_spaces}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Isotherm Lines} % 5.2.2
 
 Any chromaticity that is within a distance of $0.05$ from the Planckian locus in the $(u,v)$ chromaticity diagram has a correlated color temperature equal to the temperature on the closest part of the Planckian locus.  This can be visualized by extending lines perpendicular from the Planckian locus out to that distance as shown in Figure \ref{fig:isotherm_lines_zoom}.  A selection of standard illuminants and their correlated color temperatures are plotted: illuminant $A$ represents a traditional incandescent / tungsten filament bulb, $D65$ is the clear day sky used as white in the sRGB standard, $E$ represents an equal-energy (i.e. horizontal) light spectrum and $F3$ (there are many $F$ illuminants) represents a white fluorescent bulb (\href{https://en.wikipedia.org/wiki/Standard_illuminant}{source}).
 
-\begin{figure} % Figure 22
+\begin{figure*} % Figure 22
     \ifinvert
-        \includesvg{../images/figure_22_isotherm_lines_zoom_inverted.svg}
+        \includegraphics{../images/figure_22_isotherm_lines_zoom_inverted.pdf}
     \else
-        \includesvg{../images/figure_22_isotherm_lines_zoom.svg}
+        \includegraphics{../images/figure_22_isotherm_lines_zoom.pdf}
     \fi
     \caption{CIE 1960 $(u,v)$ chromaticity (zoomed in) showing isotherm lines for selected temperatures along the Planckian locus and standard illuminants $A$, $D65$, $E$, and $F3$.  IMAGE LINK, CODE LINK}\label{fig:isotherm_lines_zoom}
-\end{figure}
+\end{figure*}
+
+\begin{halffigure} % Figure 23
+    \ifinvert
+        \includegraphics{../images/figure_23_cie_1931_isotherm_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_23_cie_1931_isotherm.pdf}
+    \fi
+    \captionof{figure}{CIE 1931 $(x,y)$ chromaticity showing the same isotherm lines and standard illuminants as in Figure \ref{fig:isotherm_lines_zoom}.  Note that isotherm lines are not perpendicular to the Planckian locus and have varying lengths.  IMAGE LINK, CODE LINK}\label{fig:cie_1931_isotherm}
+\end{halffigure}
 
 Figure \ref{fig:cie_1931_isotherm} shows the same set of isotherm lines and standard illuminants in CIE 1931 $(x,y)$ chromaticity.  Note that the isotherm lines are not necessarily perpendicular and they do not have uniform length; therefore it is always necessary to estimate correlated color temperature within the CIE 1960 $(u,v)$ space in which it is defined even when using a different space for visualization.
-
-\begin{figure} % Figure 23
-    \ifinvert
-        \includesvg{../images/figure_23_cie_1931_isotherm_inverted.svg}
-    \else
-        \includesvg{../images/figure_23_cie_1931_isotherm.svg}
-    \fi
-    \caption{CIE 1931 $(x,y)$ chromaticity showing the same isotherm lines and standard illuminants as in Figure \ref{fig:isotherm_lines_zoom}.  Note that isotherm lines are not perpendicular to the Planckian locus and have varying lengths.  IMAGE LINK, CODE LINK}\label{fig:cie_1931_isotherm}
-\end{figure}
 
 \subsection{Links} % 5.3
 
@@ -924,9 +924,49 @@ Figure \ref{fig:cie_1931_isotherm} shows the same set of isotherm lines and stan
     \end{itemize}
 \end{itemize}
 
+\end{multicols}
+
 % ================ SECTION 6 ================
 
+\begin{figure*} % Figure 24
+    \ifinvert
+        \includegraphics{../images/figure_24_single_protan_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_24_single_protan.pdf}
+    \fi
+    \caption{The colors from Table \ref{table:varying_l_cone_activation} are plotted in chromaticity space (left) and chromoluminance space (right).  While the changes in long-wavelength-sensitive cone activation result in a straight line path in chromaticity, there are also changes in luminance that follow a slightly curved path.  IMAGE LINK, CODE LINK}\label{fig:single_protan}
+\end{figure*}
+
 \section{Color-Blindness} \label{sec:color_blindndess}
+
+\begin{multicols}{2}
+
+\begin{figure*} % Figure 25
+    \ifinvert
+        \includegraphics{../images/figure_25_multiple_protan_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_25_multiple_protan.pdf}
+    \fi
+    \caption{Multiple protanope (missing long-wavelength-sensitive cone) confusion lines plotted in chromaticity (left) and chromoluminance (right).  The point where the chromaticity lines intersect - the copunctal point - is annotated in the left panel.  Note that in chromoluminance space the confusion line paths approach infinite luminance asymptotically as chromaticity goes toward the copunctal point.  IMAGE LINK, CODE LINK}\label{fig:multiple_protan}
+\end{figure*}
+
+\begin{figure*} % Figure 26
+    \ifinvert
+        \includegraphics{../images/figure_26_copunctal_points_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_26_copunctal_points.pdf}
+    \fi
+    \caption{Select confusion lines converging on annotated copunctal points for (from left-to-right) the long-, medium-, and short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  Horizontal bands of color each show a range of saturated colors whose chromaticities would be indistinguishable to someone missing that cone (though being saturated colors, luminance variation would be detectable).  IMAGE LINK, CODE LINK}\label{fig:copunctal_points}
+\end{figure*}
+
+\begin{figure*} % Figure 27
+    \ifinvert
+        \includegraphics{../images/figure_27_color_blind_stimuli_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_27_color_blind_stimuli.pdf}
+    \fi
+    \caption{Example color-blind test stimuli for (from left-to-right) missing long-, medium-, or short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  The object is to indicate the direction of the gap in the embedded "C" shape.  Below each stimulus is a chromaticity diagram showing the distribution of chromaticities in the stimulus (black fuzzy lines crossing the white point).  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli}
+\end{figure*}
 
 Between the color matching experimental data of \cite{stiles1959npl} and the color matching functions of the CIE standard we transformed the data into cone sensitivity (the cone fundamentals).  The various linear transformations (and their inversions) allow us to convert any display red/green/blue triplet into a triplet of cone activations.  Knowing that a person with a missing cone photoreceptor type would be insensitive to changes in the nominal activation of that cone type, we can arbitrarily change the activation value for that cone and convert back to display red/green/blue.  The old and new display colors would not be distinguishable to the color-blind person.
 
@@ -970,7 +1010,7 @@ we can convert from color matching functions to cone fundamentals.  After manipu
 
 As an explicit example, Table \ref{table:varying_l_cone_activation} provides the cone activation and display color values that result from arbitrarily manipulating the long-wavelength-sensitive cone activation value.  A person who lacks long-wavelength-sensitive cones should not see any chromaticity difference among the colors presented in the last column of the table (through they may detect differences in luminance).
 
-\begin{table} % Table 1
+\begin{halffigure} % Table 1
     \begin{tabular}{c|c|c|c|c|c|c}
         \hline
         $L$ & $M$ & $S$ & $R$ & $G$ & $B$\\
@@ -981,41 +1021,14 @@ As an explicit example, Table \ref{table:varying_l_cone_activation} provides the
         0.3520 & 0.1726 & 0.0044 & 0.6966 & 0.4760 & 0.4990 & \cellcolor{l4}\\
         0.3765 & 0.1726 & 0.0044 & 0.8932 & 0.4520 & 0.4980 & \cellcolor{l5}
     \end{tabular}
-    \caption{Varying the long-wavelength-sensitive cone activation ($L$ column) while holding the others constant and its effects on display color.}\label{table:varying_l_cone_activation}
-\end{table}
+    \captionof{table}{Varying the long-wavelength-sensitive cone activation ($L$ column) while holding the others constant and its effects on display color.}\label{table:varying_l_cone_activation}
+\end{halffigure}
 
 Plotting the chromaticity of the colors in Table \ref{table:varying_l_cone_activation} (see Figure \ref{fig:single_protan}) shows that they all fall in a straight line, however they do vary also in luminance and there the path is slightly curved.
 
-\begin{figure} % Figure 24
-    \ifinvert
-        \includesvg{../images/figure_24_single_protan_inverted.svg}
-    \else
-        \includesvg{../images/figure_24_single_protan.svg}
-    \fi
-    \caption{The colors from Table \ref{table:varying_l_cone_activation} are plotted in chromaticity space (left) and chromoluminance space (right).  While the changes in long-wavelength-sensitive cone activation result in a straight line path in chromaticity, there are also changes in luminance that follow a slightly curved path.  IMAGE LINK, CODE LINK}\label{fig:single_protan}
-\end{figure}
-
 Such lines drawn in chromaticity space where the activation of one cone type varies while the other two are fixed are called confusion lines for the cone type being varied.  A person who does not posses that cone type will not be able to discriminate chromaticity along any such line (but, again, there may be luminance changes to which they would still be sensitive).  Figure \ref{fig:multiple_protan} shows multiple, extended confusion lines for the long-wavelength-sensitive cones.
 
-\begin{figure} % Figure 25
-    \ifinvert
-        \includesvg{../images/figure_25_multiple_protan_inverted.svg}
-    \else
-        \includesvg{../images/figure_25_multiple_protan.svg}
-    \fi
-    \caption{Multiple protanope (missing long-wavelength-sensitive cone) confusion lines plotted in chromaticity (left) and chromoluminance (right).  The point where the chromaticity lines intersect - the copunctal point - is annotated in the left panel.  Note that in chromoluminance space the confusion line paths approach infinite luminance asymptotically as chromaticity goes toward the copunctal point.  IMAGE LINK, CODE LINK}\label{fig:multiple_protan}
-\end{figure}
-
 In chromaticity space the point where all confusion lines intersect (which invariably falls outside of the spectrum locus and the range of real spectra) is called the copunctal point.  Note that the luminances of the confusion paths in chromoluminance space approach infinity - an artifact of only modifying the cone activation of one cone type and not adjusting the other cones to maintain reasonable (let alone constant) luminance.  Using only the straight-line confusion lines in chromaticity space, and simply using previous methods to find the corresponding \textit{saturated} display color, Figure \ref{fig:copunctal_points} shows selected confusion lines for each of the cone types.
-
-\begin{figure} % Figure 26
-    \ifinvert
-        \includesvg{../images/figure_26_copunctal_points_inverted.svg}
-    \else
-        \includesvg{../images/figure_26_copunctal_points.svg}
-    \fi
-    \caption{Select confusion lines converging on annotated copunctal points for (from left-to-right) the long-, medium-, and short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  Horizontal bands of color each show a range of saturated colors whose chromaticities would be indistinguishable to someone missing that cone (though being saturated colors, luminance variation would be detectable).  IMAGE LINK, CODE LINK}\label{fig:copunctal_points}
-\end{figure}
 
 \subsection{Color-Blind Test Stimuli} % 6.2
 
@@ -1023,51 +1036,42 @@ Confusion lines pertain only to the discrimination of chromaticity and do not co
 
 Figure \ref{fig:color_blind_stimuli} shows some example color-blind test stimuli.  The task would be for an observer to indicate whether the open gap in the embedded "C" is pointing up, right, down, or left.  The distribution of luminance among the constituent circles is random.  The distribution of chromaticity is bound to a confusion line for a particular cone type - so a person missing that cone type should see a field of uniform chromaticity and be unable to correctly identify the direction of the gap.
 
-\begin{figure} % Figure 27
-    \ifinvert
-        \includesvg{../images/figure_27_color_blind_stimuli_inverted.svg}
-    \else
-        \includesvg{../images/figure_27_color_blind_stimuli.svg}
-    \fi
-    \caption{Example color-blind test stimuli for (from left-to-right) missing long-, medium-, or short-wavelength sensitive cones (protanope, deuteranope, and tritanope, respectively).  The object is to indicate the direction of the gap in the embedded "C" shape.  Below each stimulus is a chromaticity diagram showing the distribution of chromaticities in the stimulus (black fuzzy lines crossing the white point).  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli}
-\end{figure}
-
 Beneath each test stimulus in Figure \ref{fig:color_blind_stimuli} is a chromaticity diagram showing the distribution of chromaticities present.  In this case all chromaticity distributions are taken from a confusion line passing through the white point, and the figure (the "C") chromaticities are taken from one side of white and the background chromaticities are taken from the opposite side of white.  In principle any confusion line will work for the purposes of such a color-blind test, and the two sides of the distribution need not be different hues, but it is easier to visualize in the way it is presented here.
 
 The spread of the distribution of chromaticities can be varied to make the figure more or less difficult to discriminate. Finding the threshold beyond which an observer can no longer perform the task provides a measure of their sensitivity and a basis for judging whether one has a normal or below-normal sensitivity.  Figure \ref{fig:color_blind_stimuli_contrast} shows example color-blind stimuli of decreasing chromatic contrast from left-to-right.
 
-\begin{figure} % Figure 28
+\begin{figure*} % Figure 28
     \ifinvert
-        \includesvg{../images/figure_28_color_blind_stimuli_contrast_inverted.svg}
+        \includegraphics{../images/figure_28_color_blind_stimuli_contrast_inverted.pdf}
     \else
-        \includesvg{../images/figure_28_color_blind_stimuli_contrast.svg}
+        \includegraphics{../images/figure_28_color_blind_stimuli_contrast.pdf}
     \fi
     \caption{Color-blind test stimuli with decreasing contrast from left-to-right.  The distributions of chromaticities in the sample stimuli are taken from (from top-to-bottom) long-, medium-, and short-wavelength-sensitive confusion lines.  These stimuli are not calibrated - the reader should not take an ability or inability to perform the associated discrimination task here as an indication of whether or not they may be color-blind.  IMAGE LINK, CODE LINK}\label{fig:color_blind_stimuli_contrast}
-\end{figure}
+\end{figure*}
 
 \subsection{Color-Blind Filtered Images} % 6.3
 
 It is common to illustrate the "effects" of color-blindness by filtering colorful images so as to remove chromatic contrast along confusion lines for a given missing cone type.  Figure \ref{fig:color_blind_filter_photograph} shows an example of such filtering (photograph \href{https://pixabay.com/photos/flower-field-flowers-field-trees-250016/}{source}).
 
-\begin{figure} % Figure 29
+\begin{figure*} % Figure 29
     \ifinvert
-        \includesvg{../images/figure_29_color_blind_filter_photograph_inverted.svg}
+        \includegraphics{../images/figure_29_color_blind_filter_photograph_inverted.pdf}
     \else
-        \includesvg{../images/figure_29_color_blind_filter_photograph.svg}
+        \includegraphics{../images/figure_29_color_blind_filter_photograph.pdf}
     \fi
     \caption{A colorful photograph filtered to remove chromatic differences to which an observer with a missing cone type would not be sensitive.  From left-to-right are the original image, a protanope filtered image, a deuteranope filtered image, and a tritanope filtered image.  Below each image is a chromaticity diagram showing the distribution of chromaticities in the image.  Note that the distributions of filtered images have an arc shape - the center around which the distribution arcs is the corresponding copunctal point for the missing cone type.  IMAGE LINK, CODE LINK}\label{fig:color_blind_filter_photograph}
-\end{figure}
+\end{figure*}
 
 There are some arbitrary choices made in the method for filtering illustrated in Figure \ref{fig:color_blind_filter_photograph}.  First, the filtering was accomplished by setting the chromatic distance from each associated copunctal point to be constant (hence the arc shaped lines along which the resulting chromaticities fall).  Second, that constant distance was chosen based on the average chromaticity of the original image - it could have just as easily been based on distance to the white point, here D65.  The result of these two arbitrary choices is that all of the images have more closely the same average chromaticity, but more importantly the two colors visible in each of the filtered images are purple/greenish-yellow, blue/yellow and pinkish-red/greenish-cyan for the three cone types.  This does not mean that color-blind people see these particular hues.  Figure \ref{fig:color_blind_filter_stimulus} shows the same filtering applied to one of the color-blind test stimuli.
 
-\begin{figure} % Figure 30
+\begin{figure*} % Figure 30
     \ifinvert
-        \includesvg{../images/figure_30_color_blind_filter_stimulus_inverted.svg}
+        \includegraphics{../images/figure_30_color_blind_filter_stimulus_inverted.pdf}
     \else
-        \includesvg{../images/figure_30_color_blind_filter_stimulus.svg}
+        \includegraphics{../images/figure_30_color_blind_filter_stimulus.pdf}
     \fi
     \caption{A color-blind test stimulus (protanope) filtered to remove chromatic differences to which an observer with a missing cone type would not be sensitive.  From left-to-right are the original image, a protanope filtered image, a deuteranope filtered image, and a tritanope filtered image.  Below each image is a chromaticity diagram showing the distribution of chromaticities in the image.  Note that in the second image from the left (filtered to mimic the chromatic discriminability of a protanope) the "C" figure is invisible (the distribution is a more-or-less uniform point).  IMAGE LINK, CODE LINK}\label{fig:color_blind_filter_stimulus}
-\end{figure}
+\end{figure*}
 
 \subsection{Links} % 6.4
 
@@ -1089,7 +1093,7 @@ There are some arbitrary choices made in the method for filtering illustrated in
     \end{itemize}
 \end{itemize}
 
-\fi
+\end{multicols}
 
 % ================ REFERENCES ================
 
