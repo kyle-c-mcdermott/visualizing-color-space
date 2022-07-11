@@ -48,6 +48,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL
+)
 from numpy import arange, ptp, arctan2, exp, log, linspace, cos, sin
 from maths.coloration import visible_spectrum
 from maths.color_conversion import (
@@ -62,14 +67,11 @@ from matplotlib.collections import PathCollection
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 7
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 RESOLUTION = 64
 # endregion
 
@@ -170,7 +172,7 @@ spectra_panel = figure.add_panel(
     name = 'spectra',
     title = '',
     position = (0, mid_point, 1, 1 - mid_point),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (
         WAVELENGTH_TICKS[0],
         WAVELENGTH_TICKS[-1]
@@ -193,7 +195,7 @@ functions_panel = figure.add_panel(
     name = 'functions',
     title = '',
     position = (0, 0, 1, mid_point),
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = (
         WAVELENGTH_TICKS[0],
         WAVELENGTH_TICKS[-1]
@@ -216,7 +218,7 @@ spectra_panel.add_collection(
         spectrum_paths,
         facecolors = spectrum_colors,
         edgecolors = spectrum_colors,
-        linewidth = 0
+        linewidth = 0.1
     )
 )
 spectra_panel.add_collection(
@@ -224,7 +226,7 @@ spectra_panel.add_collection(
         smoothed_paths,
         facecolors = smoothed_colors,
         edgecolors = smoothed_colors,
-        linewidth = 0
+        linewidth = 0.1
     )
 )
 # endregion
@@ -270,7 +272,9 @@ functions_panel.legend(
 # endregion
 
 # region Save Figure
-figure.update()
+figure.update(
+    buffer = 2
+)
 figure.save(
     path = 'images',
     name = figure.name,

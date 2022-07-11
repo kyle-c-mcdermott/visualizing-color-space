@@ -43,6 +43,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    COLUMN_WIDTH,
+    FONT_SIZES,
+    AXES_GREY_LEVEL, DOTTED_GREY_LEVEL, SL_GREY_LEVEL
+)
 from figure.figure import Figure
 from numpy import arange
 from maths.plotting_series import spectrum_locus_1931_2
@@ -52,14 +57,11 @@ from matplotlib.collections import PathCollection
 
 # region Plot Settings
 INVERTED = False
-SIZE = (4, 4)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    COLUMN_WIDTH,
+    3.45
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -92,27 +94,27 @@ panel.set_aspect(
 panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 panel.axvline(
     x = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 0
 )
 panel.plot(
     [0, 1],
     [1, 0],
     linestyle = ':',
-    color = figure.grey_level(0.75),
+    color = figure.grey_level(DOTTED_GREY_LEVEL),
     zorder = 0
 )
 panel.plot(
     list(datum['x'] for datum in spectrum_locus_1931_2),
     list(datum['y'] for datum in spectrum_locus_1931_2),
     solid_capstyle = 'round',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 2
 )
 panel.plot(
@@ -120,7 +122,7 @@ panel.plot(
     [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
     solid_capstyle = 'round',
     linestyle = ':',
-    color = figure.grey_level(0.5),
+    color = figure.grey_level(SL_GREY_LEVEL),
     zorder = 1
 )
 # endregion
@@ -135,7 +137,7 @@ panel.add_collection(
         paths,
         facecolors = colors,
         edgecolors = colors,
-        linewidth = 0,
+        linewidth = 0.1,
         zorder = 3
     )
 )

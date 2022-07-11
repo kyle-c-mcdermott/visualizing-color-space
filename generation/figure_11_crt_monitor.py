@@ -65,7 +65,7 @@ from numpy import arange, transpose
 # endregion
 
 # region Plot Settings
-INVERTED = True
+INVERTED = False
 SIZE = (
     TEXT_WIDTH,
     TEXT_HEIGHT / 3

@@ -646,11 +646,29 @@ Once again, applying Equation \ref{eq:chromaticity_from_tristimulus} allows then
 
 \end{multicols}
 
-\iffalse
-
 % ================ SECTION 4 ================
 
 \section{Chromaticity Diagram Coloration} \label{sec:chromaticity_coloration}
+
+\begin{multicols}{2}
+
+\begin{figure*} % Figure 12
+    \ifinvert
+        \includegraphics{../images/figure_12_3d_srgb_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_12_3d_srgb.pdf}
+    \fi
+    \caption{Saturated surfaces of the sRGB color space cube.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue.  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue.  IMAGE LINK, CODE LINK}\label{fig:3d_srgb}
+\end{figure*}
+
+\begin{figure*} % Figure 13
+    \ifinvert
+        \includegraphics{../images/figure_13_3d_chromoluminance_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_13_3d_chromoluminance.pdf}
+    \fi
+    \caption{Saturated surfaces transformed into $(x,y,Y)$ chromoluminance space.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue (before transformation).  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue (before transformation).  IMAGE LINK, CODE LINK}\label{fig:3d_chromoluminance}
+\end{figure*}
 
 There is no way to create a figure of the CIE $(x,y)$ chromaticity diagram where the interior of the spectrum locus is filled with accurate colors short of a complicated optical setup, and then it could only be viewed correctly in person - any pictures taken of the result would become false copies due to the limitations of the camera and the display on which the image is viewed.  Therefore, because compromises need to be made, we are free to choose how exactly we fill the space with color and there can’t be an objectively correct way to do so.  The area within the display gamut triangle is a bit more straightforward, so we’ll start there, and then expand the colors to fill the rest of the spectrum locus area.
 
@@ -691,25 +709,7 @@ Applying this correction will provide a more accurate depiction of luminance in 
 
 The sRGB space, or any red-green-blue space, can be visualized as a cube in three-dimensions with each dimension corresponding to a primary color.  Figure \ref{fig:3d_srgb} shows the six exterior surfaces of the cube, here called saturation surfaces as at least one of red, green, or blue is equal to 0.0 or 1.0.  All possibly display colors are contained within the cube.
 
-\begin{figure} % Figure 12
-    \ifinvert
-        \includesvg{../images/figure_12_3d_srgb_inverted.svg}
-    \else
-        \includesvg{../images/figure_12_3d_srgb.svg}
-    \fi
-    \caption{Saturated surfaces of the sRGB color space cube.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue.  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue.  IMAGE LINK, CODE LINK}\label{fig:3d_srgb}
-\end{figure}
-
 To visualize chromoluminance (chromaticity and luminance), the colors in Figure \ref{fig:3d_srgb} are passed through gamma-correction (Equation \ref{eq:gamma_correction}) and transformed to tristimulus values using Equation \ref{eq:srgb_transformation}.  We hang on to $Y$ to represent luminance, and use Equation \ref{eq:chromaticity_from_tristimulus} to get $(x,y)$ chromaticity coordinates.  The resulting transformation of the saturation surfaces in chromoluminance space is presented in Figure \ref{fig:3d_chromoluminance}.
-
-\begin{figure} % Figure 13
-    \ifinvert
-        \includesvg{../images/figure_13_3d_chromoluminance_inverted.svg}
-    \else
-        \includesvg{../images/figure_13_3d_chromoluminance.svg}
-    \fi
-    \caption{Saturated surfaces transformed into $(x,y,Y)$ chromoluminance space.  In the left panel, all colors contain at least one 0.0 for red, green, and/or blue (before transformation).  In the right panel, all colors contain at least one 1.0 for red, green, and/or blue (before transformation).  IMAGE LINK, CODE LINK}\label{fig:3d_chromoluminance}
-\end{figure}
 
 The shape of the sRGB color gamut in three-dimensional chromoluminance space is far from a regular cube.  The six sides of the original cube in Figure \ref{fig:3d_srgb} maintain the same shared edges with one another, and the vertices still come to points at red, yellow, green, cyan, blue, pink, black, and white, but the shape of each side undergoes all manner of transformations.  One important feature to note is that the luminances $Y$ of the different primary colors (red, green, and blue) are different.  The right panel of Figure \ref{fig:3d_chromoluminance} shows the color gamut narrowing as one increases luminance which means the available range of chromaticities is constricting; this also happens at the bottom as one approaches black, but over a much shorter luminance range, and one must arbitrarily assign a chromaticity to black itself to deal with divide-by-zero issues with Equation \ref{eq:chromaticity_from_tristimulus} when $X+Y+Z=0$.
 
@@ -717,75 +717,75 @@ The shape of the sRGB color gamut in three-dimensional chromoluminance space is 
 
 To begin adding color to our chromaticity diagrams, we can rotate the right panel in Figure \ref{fig:3d_chromoluminance} to give a top-down view (see Figure \ref{fig:chromaticity_inside_gamut}), which shows an attractive range of highly saturated colors.  Remember that we are looking down at the top of an irregularly shaped volume with a peak at white - these colors do not represent a flat surface, even though we are rendering them in two dimensions.
 
-\begin{figure} % Figure 14
+\begin{halffigure} % Figure 14
     \ifinvert
-        \includesvg{../images/figure_14_chromaticity_inside_gamut_inverted.svg}
+        \includegraphics{../images/figure_14_chromaticity_inside_gamut_inverted.pdf}
     \else
-        \includesvg{../images/figure_14_chromaticity_inside_gamut.svg}
+        \includegraphics{../images/figure_14_chromaticity_inside_gamut.pdf}
     \fi
-    \caption{Top-down view of the sRGB color gamut transformed into chromoluminance space (here two-dimensional chromaticity) which effectively fills the chromaticity color gamut with color.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_inside_gamut}
-\end{figure}
+    \captionof{figure}{Top-down view of the sRGB color gamut transformed into chromoluminance space (here two-dimensional chromaticity) which effectively fills the chromaticity color gamut with color.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_inside_gamut}
+\end{halffigure}
 
 \subsubsection{Extending Color beyond the sRGB Color Gamut Triangle} % 4.3.1
 
 Looking down at the sRGB color gamut, it appears that a given angle around white maintains constant hue (named color) while increasing in saturation (chromatic contrast) moving away from white in that direction.  This idea can be used to fill the area outside the triangle with color by simply finding the hue for a given angle around white and extending a wedge of constant, saturated color outward (see Figure \ref{fig:chromaticity_outside_gamut}).
 
-\begin{figure} % Figure 15
+\begin{figure*} % Figure 15
     \ifinvert
-        \includesvg{../images/figure_15_chromaticity_outside_gamut_inverted.svg}
+        \includegraphics{../images/figure_15_chromaticity_outside_gamut_inverted.pdf}
     \else
-        \includesvg{../images/figure_15_chromaticity_outside_gamut.svg}
+        \includegraphics{../images/figure_15_chromaticity_outside_gamut.pdf}
     \fi
     \caption{Filling in colors outside of the color gamut triangle (but within the CIE 1931 2$^\circ$ spectrum locus).  The method applied does not vary in color saturation (see left panel where the central point is not white), but the top-down view of high-saturation surfaces can be placed on top (see right panel).  Note that the colors within the triangle in the right panel are less saturated than the colored region outside the triangle creating a discontinuity (i.e. the triangle edges are apparent).  IMAGE LINK, CODE LINK}\label{fig:chromaticity_outside_gamut}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Effects of Gamma Correction} % 4.3.2
 
+\begin{halffigure} % Figure 16
+    \ifinvert
+        \includegraphics{../images/figure_16_chromaticity_without_gamma_correction_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_16_chromaticity_without_gamma_correction.pdf}
+    \fi
+    \captionof{figure}{Color-filled chromaticity diagram with no gamma correction applied when coloring in the region inside the sRGB color gamut triangle.  Note that the edges of the color gamut triangle are no longer apparent.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_without_gamma_correction}
+\end{halffigure}
+
 The discontinuity seen in Figure \ref{fig:chromaticity_outside_gamut} can be solved by \textit{not} applying gamma correction (see Figure \ref{fig:chromaticity_without_gamma_correction}) when filling in the colors inside the color gamut triangle (the method for coloring the rest of the diagram is not impacted by gamma correction either way).  This makes for an arguably more attractive diagram (and will be used for the remainder of this document), however Figure \ref{fig:gamma_correction_in_chromoluminance} demonstrates why applying gamma correction is the more technically correct approach (at least in three dimensions).  Note that when applying gamma correction (left panel of Figure \ref{fig:gamma_correction_in_chromoluminance}) the brightness of the colored pixels increases with increasing luminance $Y$, however without gamma correction (right panel) the apparent brightness is not consistent for a given luminance (see how the bright blue point of the blue primary is surrounded by darker pixels that are supposed to have the same luminance).  The edge tracing from one primary color to the next (red to yellow to green to cyan to blue to pink and back to red) is the same with or without gamma correction, so technically there is no discontinuity in the right panel of Figure \ref{fig:chromaticity_outside_gamut}, but you would have to zoom in closely to see a smooth gradient of saturation near the triangle edges.
 
-\begin{figure} % Figure 16
+\begin{figure*} % Figure 17
     \ifinvert
-        \includesvg{../images/figure_16_chromaticity_without_gamma_correction_inverted.svg}
+        \includegraphics{../images/figure_17_gamma_correction_in_chromoluminance_inverted.pdf}
     \else
-        \includesvg{../images/figure_16_chromaticity_without_gamma_correction.svg}
-    \fi
-    \caption{Color-filled chromaticity diagram with no gamma correction applied when coloring in the region inside the sRGB color gamut triangle.  Note that the edges of the color gamut triangle are no longer apparent.  IMAGE LINK, CODE LINK}\label{fig:chromaticity_without_gamma_correction}
-\end{figure}
-
-\begin{figure} % Figure 17
-    \ifinvert
-        \includesvg{../images/figure_17_gamma_correction_in_chromoluminance_inverted.svg}
-    \else
-        \includesvg{../images/figure_17_gamma_correction_in_chromoluminance.svg}
+        \includegraphics{../images/figure_17_gamma_correction_in_chromoluminance.pdf}
     \fi
     \caption{Saturated surfaces transformed into $(x,y,Y)$ chromoluminance space with (left panel) and without (right panel) gamma correction applied.  With gamma correction the apparent brightness of pixels increases with luminance $Y$ uniformly around the color gamut volume.  Without gamma correction the sides generally appear darker, yet the brightness is still high near the primary colors creating variation in apparent brightness around what should be a path of constant luminance.  IMAGE LINK, CODE LINK}\label{fig:gamma_correction_in_chromoluminance}
-\end{figure}
+\end{figure*}
 
 \subsection{The Visible Spectrum} % 4.4
 
 Creating a band of colors that represents the visible spectrum, effectively finding red, green, and blue values as a function of wavelength, is a simple matter of taking our color-filled chromaticity diagram and grabbing the colors from along the spectrum locus curve.  Figure \ref{fig:visible_spectrum_locus} shows what this looks like based on how we've added color to the chromaticity diagram.  Along the spectrum locus (indeed everywhere outside of the color gamut triangle) all colors have at least one 0.0 and one 1.0 for red, green, and/or blue which results in saturated colors and relatively narrow transitions through cyan and yellow.
 
-\begin{figure} % Figure 18
-    \ifinvert
-        \includesvg{../images/figure_18_visible_spectrum_locus_inverted.svg}
-    \else
-        \includesvg{../images/figure_18_visible_spectrum_locus.svg}
-    \fi
-    \caption{Color-filled chromaticity diagram with annotated wavelengths.  The vertical strip to the right shows the colors along the spectrum locus.  Named colors are annotated along with the closest whole wavelength match; these are the points where the saturated colors have only 0 or 1 in them (e.g. $(1,0,1)$ for yellow).  IMAGE LINK, CODE LINK}\label{fig:visible_spectrum_locus}
-\end{figure}
-
 The wavelengths indicated for red, yellow, green, cyan, and blue are based here on the combination of the chromaticities of the sRGB primaries and their positions relative to the CIE 1931 2$^\circ$ spectrum locus.  Rotating a primary clockwise or counter-clockwise around the white point ($D65$ here) would increase or decrease the wavelength for that primary, respectively.  Additionally, the intermediate colors cyan, pink, and yellow are by our formulations necessarily 180$^\circ$ of hue angle away from red, green, and blue, respectively; therefore the wavelengths of red and cyan are not independent, nor are the wavelengths of blue and yellow.  Changing the white point would also impact the wavelengths of the named colors.  It is difficult to know what the proper wavelengths of the named colors are - any photograph of a spectrum of light that you view on a display is going to be influenced by both camera and display.  The wavelengths annotated in Figure \ref{fig:visible_spectrum_locus} are close enough to those found searching online, but if one wanted to customize their visible spectrum image a careful choosing of primary and white chromaticities could be undertaken.
 
 Figure \ref{fig:visible_spectrum_functions} plots the red, green, and blue values as a function of wavelength based on the method described above.  Note that one of the three component colors is at minimum (0.0) and one is at maximum (1.0) throughout the whole range.  These saturated colors represent just one possible method that stays true to the hue angle for each wavelength.  Figure \ref{fig:visible_spectrum_functions} also shows a spectrum where the chromatic contrast and luminance profiles have been smoothed (in this case following Gaussian curves as functions of wavelength - not shown) resulting in red, green, and blue values that flow more continuously without sharp bends.
 
-\begin{figure} % Figure 19
+\begin{halffigure} % Figure 18
     \ifinvert
-        \includesvg{../images/figure_19_visible_spectrum_functions_inverted.svg}
+        \includegraphics{../images/figure_18_visible_spectrum_locus_inverted.pdf}
     \else
-        \includesvg{../images/figure_19_visible_spectrum_functions.svg}
+        \includegraphics{../images/figure_18_visible_spectrum_locus.pdf}
+    \fi
+    \captionof{figure}{Color-filled chromaticity diagram with annotated wavelengths.  The vertical strip to the right shows the colors along the spectrum locus.  Named colors are annotated along with the closest whole wavelength match; these are the points where the saturated colors have only 0 or 1 in them (e.g. $(1,0,1)$ for yellow).  IMAGE LINK, CODE LINK}\label{fig:visible_spectrum_locus}
+\end{halffigure}
+
+\begin{figure*} % Figure 19
+    \ifinvert
+        \includegraphics{../images/figure_19_visible_spectrum_functions_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_19_visible_spectrum_functions.pdf}
     \fi
     \caption{Visible spectrum bands and the corresponding red, green, and blue values as functions of wavelengths.  The saturated spectrum is the same as that presented in Figure \ref{fig:visible_spectrum_locus} (with the more extreme wavelengths cropped out).  The smoothed spectrum was constructed with an arbitrary method that preserves the hue angle for each wavelength but otherwise smooths out the resulting functions for red, green, and blue (note that green and blue cross at the same cyan wavelength, and green and red cross at the same yellow wavelength, for both series).  IMAGE LINK, CODE LINK}\label{fig:visible_spectrum_functions}
-\end{figure}
+\end{figure*}
 
 \subsection{Links} % 4.5
 
@@ -807,6 +807,10 @@ Figure \ref{fig:visible_spectrum_functions} plots the red, green, and blue value
         \item FIGURE GENERATION FOR ALL FIGURES (12-19)
     \end{itemize}
 \end{itemize}
+
+\end{multicols}
+
+\iffalse
 
 % ================ SECTION 5 ================
 

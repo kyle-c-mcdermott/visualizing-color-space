@@ -47,6 +47,11 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES,
+    SL_GREY_LEVEL
+)
 from figure.figure import Figure
 from maths.plotting_series import (
     spectrum_locus_1931_2,
@@ -59,14 +64,11 @@ from maths.coloration import three_dimensional_surface
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 3.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    3
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -122,14 +124,14 @@ for panel in figure.panels.values():
         list(datum['x'] for datum in spectrum_locus_1931_2),
         list(datum['y'] for datum in spectrum_locus_1931_2),
         solid_capstyle = 'round',
-        color = figure.grey_level(0.5)
+        color = figure.grey_level(SL_GREY_LEVEL)
     )
     panel.plot(
         [spectrum_locus_1931_2[0]['x'], spectrum_locus_1931_2[-1]['x']],
         [spectrum_locus_1931_2[0]['y'], spectrum_locus_1931_2[-1]['y']],
         solid_capstyle = 'round',
         linestyle = ':',
-        color = figure.grey_level(0.5)
+        color = figure.grey_level(SL_GREY_LEVEL)
     )
     panel.plot(
         *transpose(
@@ -141,7 +143,7 @@ for panel in figure.panels.values():
                 for index in [0, 1, 2, 0]
             )
         ),
-        color = figure.grey_level(0.5)
+        color = figure.grey_level(SL_GREY_LEVEL)
     )
 # endregion
 

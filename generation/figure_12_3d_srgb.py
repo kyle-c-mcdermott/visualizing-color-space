@@ -42,6 +42,10 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH,
+    FONT_SIZES
+)
 from figure.figure import Figure
 from maths.conversion_coefficients import COLOR_NAMES
 from maths.coloration import three_dimensional_surface
@@ -50,14 +54,11 @@ from numpy import array
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 3.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    2.7
+)
+EXTENSION = 'pdf'
 RESOLUTION = 16
 # endregion
 
@@ -73,7 +74,7 @@ figure.set_fonts(**FONT_SIZES)
 low_panel = figure.add_panel(
     name = 'low',
     title = '',
-    position = (0.06, 0, 0.44, 1),
+    position = (0.1, 0, 0.4, 1),
     three_dimensional = True,
     x_label = 'Red',
     x_lim = (-0.05, 1.05),
@@ -85,7 +86,7 @@ low_panel = figure.add_panel(
 high_panel = figure.add_panel(
     name = 'high',
     title = '',
-    position = (0.55, 0, 0.44, 1),
+    position = (0.6, 0, 0.4, 1),
     three_dimensional = True,
     x_label = 'Red',
     x_lim = (-0.05, 1.05),
