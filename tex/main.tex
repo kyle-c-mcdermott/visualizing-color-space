@@ -490,11 +490,20 @@ The differences among the CIE standards are slight, owing to updates and correct
 
 \end{multicols}
 
-\iffalse
-
 % ================ SECTION 3 ================
 
+\begin{figure*} % Figure 9
+    \ifinvert
+        \includegraphics{../images/figure_09_color_matching_experiment_tristimulus_inverted.pdf}
+    \else
+        \includegraphics{../images/figure_09_color_matching_experiment_tristimulus.pdf}
+    \fi
+    \caption{CIE 170-2 10$^\circ$ color matching functions with the tristimulus values of the experiment primaries and the $20,250cm^{-1}$ test light annotated along the curves.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_tristimulus}
+\end{figure*}
+
 \section{Color Mixing} \label{sec:color_mixing}
+
+\begin{multicols}{2}
 
 To determine the chromaticity of a mix of two or more light sources we simply add up their tristimulus values ($X$, $Y$, and $Z$) and then apply Equation \ref{eq:chromaticity_from_tristimulus}.  This is demonstrated below first with the color matching experiment mean settings used to match the experiment primaries on the match side with the test light (and sometimes an experimental primary) on the test side.  Next are two demonstrations using the tristimulus values of color displays.
 
@@ -520,16 +529,7 @@ The matching of mixed lights in the color matching experiment is easiest to arra
 
 where $X_R$, $Y_R$, and $Z_R$ are the tristimulus values for the red primary, $X_G$, $Y_G$, and $Z_G$ are the tristimulus values for the green primary, $X_B$, $Y_B$, and $Z_B$ are the tristimulus values for the blue primary, and $X_{20,250cm^{-1}}$, $Y_{20,250cm^{-1}}$, and $Z_{20,250cm^{-1}}$ are the tristimulus values for the test light.  To get the tristimulus values for the three primaries and the test light we simply go to those wave-numbers/wavelengths on each of the color matching functions; we are treating these as ideal, monochromatic light sources and so we can forego the multiplication and integration steps implied by Equation \ref{eq:tristimulus_from_spectrum} and just use the values of $\bar{X}(\lambda)$, $\bar{Y}(\lambda)$, and $\bar{Z}(\lambda)$.  Figure \ref{fig:color_matching_experiment_tristimulus} annotates the tristimulus values for the primary lights and the selected test light.
 
-\begin{figure} % Figure 9
-    \ifinvert
-        \includesvg{../images/figure_09_color_matching_experiment_tristimulus_inverted.svg}
-    \else
-        \includesvg{../images/figure_09_color_matching_experiment_tristimulus.svg}
-    \fi
-    \caption{CIE 170-2 10$^\circ$ color matching functions with the tristimulus values of the experiment primaries and the $20,250cm^{-1}$ test light annotated along the curves.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_tristimulus}
-\end{figure}
-
-Factoring the tristimulus values into equations \ref{eq:match_tristimulus} and \ref{eq:test_tristimulus} we can solve for both sides of the experimental stimulus:
+Factoring the tristimulus values into Equations \ref{eq:match_tristimulus} and \ref{eq:test_tristimulus} we can solve for both sides of the experimental stimulus:
 
 \begin{equation} % Equation 20
     \begin{aligned}
@@ -547,16 +547,16 @@ Factoring the tristimulus values into equations \ref{eq:match_tristimulus} and \
     \end{aligned}
 \end{equation}
 
-The tristimulus values on the match and test sides line up reasonably well, though not perfectly due to rounding at various steps (including the tabulated color matching functions).  Using the tristimulus values for the primaries and the selected test light we can get their chromaticities using Equation \ref{eq:chromaticity_from_tristimulus}: Red = $(0.713,0.287)$, Green = $(0.180,0.799)$, Blue = $(0.154,0.033)$ and for the $20,250cm^{-1}$ test light we get $(0.007,0.559)$.  The match and test chromaticities come to $(0.170,0.492)$ and $(0.171,0.496)$, respectively - again, reasonably similar.  Plotting all of these on a chromaticity diagram (see Figure X) demonstrates that the mixing of two lights results in a chromaticity falling along a straight line between them, and in the case of the color matching experiment the resulting stimulus chromaticity is the point where the lines connecting the two lights contributing to either side of the stimulus intersect with one another.
+The tristimulus values on the match and test sides line up reasonably well, though not perfectly due to rounding at various steps (including the tabulated color matching functions).  Using the tristimulus values for the primaries and the selected test light we can get their chromaticities using Equation \ref{eq:chromaticity_from_tristimulus}: Red = $(0.713,0.287)$, Green = $(0.180,0.799)$, Blue = $(0.154,0.033)$ and for the $20,250cm^{-1}$ test light we get $(0.007,0.559)$.  The match and test chromaticities come to $(0.170,0.492)$ and $(0.171,0.496)$, respectively - again, reasonably similar.  Plotting all of these on a chromaticity diagram (see Figure \ref{fig:color_matching_experiment_mixing}) demonstrates that the mixing of two lights results in a chromaticity falling along a straight line between them, and in the case of the color matching experiment the resulting stimulus chromaticity is the point where the lines connecting the two lights contributing to either side of the stimulus intersect with one another.
 
-\begin{figure} % Figure 10
+\begin{halffigure} % Figure 10
     \ifinvert
-        \includesvg{../images/figure_10_color_matching_experiment_mixing_inverted.svg}
+        \includegraphics{../images/figure_10_color_matching_experiment_mixing_inverted.pdf}
     \else
-        \includesvg{../images/figure_10_color_matching_experiment_mixing.svg}
+        \includegraphics{../images/figure_10_color_matching_experiment_mixing.pdf}
     \fi
-    \caption{Chromaticities of the experimental primaries and the $20,250cm^{-1}$ test light.  The green and blue primaries on the match side of the stimulus, and the test light and red primary on the test side of the stimulus, are mixed in proportions to find the chromaticity where the lines joining each pair intersect.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_mixing}
-\end{figure}
+    \captionof{figure}{Chromaticities of the experimental primaries and the $20,250cm^{-1}$ test light.  The green and blue primaries on the match side of the stimulus, and the test light and red primary on the test side of the stimulus, are mixed in proportions to find the chromaticity where the lines joining each pair intersect.  IMAGE LINK, CODE LINK}\label{fig:color_matching_experiment_mixing}
+\end{halffigure}
 
 \subsection{Three-Primary Systems for Color Displays} % 3.2
 
@@ -566,14 +566,14 @@ For various practical reasons color displays typically do not use primary lights
 
 Figure \ref{fig:crt_monitor} shows the measured spectra of the red, green, and blue phosphors of a CRT monitor; note that above each is a curve showing the sum of all three spectra which corresponds to white.  Just as adding up tristimulus values (the integrated products of spectra and color matching functions) for the three primaries gives the tristimulus values for white, adding up the three spectra and estimating the tristimulus values once from that resulting spectrum should give the same result.
 
-\begin{figure} % Figure 11
+\begin{figure*} % Figure 11
     \ifinvert
-        \includesvg{../images/figure_11_crt_monitor_inverted.svg}
+        \includegraphics{../images/figure_11_crt_monitor_inverted.pdf}
     \else
-        \includesvg{../images/figure_11_crt_monitor.svg}
+        \includegraphics{../images/figure_11_crt_monitor.pdf}
     \fi
     \caption{Red, green, and blue phosphor spectra measured from a CRT monitor.  Above each spectral line is also shown the summed spectrum of white (dashed line).  The right panel plots the chromaticities (within the CIE 170-2 10$^\circ$ standard) of the three phosphors and white; the triangle formed by the three primaries is the monitor's color gamut.  All colors that can be shown by combining the three phosphors at various intensities fall within the color gamut triangle.  IMAGE LINK, CODE LINK}\label{fig:crt_monitor}
-\end{figure}
+\end{figure*}
 
 The chromaticity diagram in Figure \ref{fig:crt_monitor} plots the resulting chromaticities of the three CRT phosphors and the coordinate for white resulting from the addition of all three together at maximum intensity.  By changing the ratio of intensity of the three phosphors, any chromaticity within the triangle formed by the phosphor chromaticities can be realized.  This is the monitor's color gamut.
 
@@ -643,6 +643,10 @@ Once again, applying Equation \ref{eq:chromaticity_from_tristimulus} allows then
         \item FIGURE GENERATION FOR ALL FIGURES (9-11)
     \end{itemize}
 \end{itemize}
+
+\end{multicols}
+
+\iffalse
 
 % ================ SECTION 4 ================
 

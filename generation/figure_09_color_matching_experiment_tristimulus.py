@@ -43,6 +43,12 @@ rc('axes', unicode_minus = False) # Fixes negative values in axes ticks
 # endregion
 
 # region Imports
+from generation.constants import (
+    TEXT_WIDTH, TEXT_HEIGHT,
+    FONT_SIZES,
+    WAVELENGTH_LABEL, WAVE_NUMBER_LABEL,
+    AXES_GREY_LEVEL
+)
 from scipy.interpolate import interp1d
 from maths.plotting_series import color_matching_functions_170_2_10
 from maths.conversion_coefficients import (
@@ -56,14 +62,11 @@ from figure.figure import Figure
 
 # region Plot Settings
 INVERTED = False
-SIZE = (8, 4.5)
-FONT_SIZES = {
-    'titles' : 14,
-    'labels' : 12,
-    'ticks' : 10,
-    'legends' : 8
-}
-EXTENSION = 'svg'
+SIZE = (
+    TEXT_WIDTH,
+    TEXT_HEIGHT / 3
+)
+EXTENSION = 'pdf'
 LINE_COLORS = (
     (0.8, 0, 0.8), # X
     (0.8, 0.5, 0), # Y
@@ -133,7 +136,7 @@ figure.set_fonts(**FONT_SIZES)
 back_panel = figure.add_panel(
     name = 'back',
     title = '',
-    x_label = r'Wavelength $\lambda$ ($nm$)',
+    x_label = WAVELENGTH_LABEL,
     x_lim = wavelength_bounds,
     x_margin = 0.0,
     x_ticks = wavelength_ticks,
@@ -142,7 +145,7 @@ back_panel = figure.add_panel(
 front_panel = figure.add_panel(
     name = 'front',
     title = '',
-    x_label = r'Wave-Number ($cm^{-1}$)',
+    x_label = WAVE_NUMBER_LABEL,
     x_lim = wavelength_bounds,
     x_ticks = wave_number_ticks,
     x_tick_labels = wave_number_tick_labels
@@ -156,7 +159,7 @@ front_panel.xaxis.tick_top()
 back_panel.axhline(
     y = 0,
     linewidth = 2,
-    color = figure.grey_level(0.25),
+    color = figure.grey_level(AXES_GREY_LEVEL),
     zorder = 1
 )
 for primary_index, primary_wave_number in enumerate(EXPERIMENT_PRIMARIES):
@@ -258,9 +261,9 @@ for color_index, color_name in enumerate(COLOR_NAMES):
             zorder = 4
         )
 annotation_text = {
-    'X' : r'$X_{20,250cm^{-1}}$',
-    'Y' : r'$Y_{20,250cm^{-1}}$',
-    'Z' : r'$Z_{20,250cm^{-1}}$'
+    'X' : (r'$X_{20,250cm^{-1}}$', -1, 'right'),
+    'Y' : (r'$Y_{20,250cm^{-1}}$', -1, 'right'),
+    'Z' : (r'$Z_{20,250cm^{-1}}$', +1, 'left')
 }
 for tristimulus_name in TRISTIMULUS_NAMES:
     back_panel.plot(
@@ -274,15 +277,15 @@ for tristimulus_name in TRISTIMULUS_NAMES:
         zorder = 3
     )
     back_panel.annotate(
-        text = annotation_text[tristimulus_name],
+        text = annotation_text[tristimulus_name][0],
         xy = (
             (10.0 ** 7.0) / TEST_WAVE_NUMBER
-            - 2,
+            + 2 * annotation_text[tristimulus_name][1],
             test_tristimulus_values[tristimulus_name]
             + 0.01
         ),
         xycoords = 'data',
-        horizontalalignment = 'right',
+        horizontalalignment = annotation_text[tristimulus_name][2],
         verticalalignment = 'bottom',
         fontsize = figure.font_sizes['legends'],
         color = figure.grey_level(0),
