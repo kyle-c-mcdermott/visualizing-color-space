@@ -2,7 +2,8 @@
 Generate values for table illustrating changes in color with arbitrary
 manipulations of l-cone activation.
 
-Caption:
+Caption: Varying the long-wavelength-sensitive cone activation (L column) while
+holding the others constant and its effects on display color.
 """
 
 # region (Ensuring Access to Directories and Modules)

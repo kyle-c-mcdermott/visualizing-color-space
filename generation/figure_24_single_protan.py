@@ -72,7 +72,7 @@ SIZE = (
     TEXT_HEIGHT / 3
 )
 EXTENSION = 'pdf'
-RESOLUTION = 64
+RESOLUTION = 64 # for 3D reference curves only
 # endregion
 
 # region Generate Plotting Series
