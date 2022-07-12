@@ -2,10 +2,6 @@
 Various values intended to be used by all figures.
 """
 
-# region Imports
-
-# endregion
-
 # region Constants Derived from LaTeX Document
 """
 % Given thinned margins:
@@ -45,5 +41,4 @@ WAVELENGTH_LABEL = r'Wavelength $\lambda$ ($nm$)'
 AXES_GREY_LEVEL = 0.25
 DOTTED_GREY_LEVEL = 0.75
 SL_GREY_LEVEL = 0.5
-
 # endregion

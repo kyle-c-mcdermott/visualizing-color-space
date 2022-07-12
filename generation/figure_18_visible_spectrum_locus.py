@@ -3,11 +3,7 @@ A filled-color chromaticity diagram with annotated wavelengths along the
 spectrum locus and a vertical band showing the visible spectrum colors derived
 from the colors in the chromaticity diagram.
 
-Caption: Color-filled chromaticity diagram with annotated wavelengths.  The
-vertical strip to the right shows the colors along the spectrum locus.  Named
-colors are annotated along with the closest whole wavelength match; these are
-the points where the saturated colors have only 0 or 1 in them (e.g. (1, 0, 1)
-for yellow).
+Caption: Color-filled chromaticity diagram and spectrum band.
 """
 
 # region (Ensuring Access to Directories and Modules)

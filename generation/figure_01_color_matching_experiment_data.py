@@ -10,8 +10,8 @@ instead added to the "test" side of the stimulus along with the test light.
 Where horizontal and vertical dotted lines cross, no settings were recorded
 (note there is zero individual variability at these points); instead it was
 presumed that each primary would exactly match itself in isolation.  Note that
-the step size between test lights is larger below 16,000 cm^-1 and above 21,500
-cm^-1.
+the step size between test lights (dots) is larger below 16,000 cm^-1 and above
+21,500 cm^-1.
 """
 
 # region (Ensuring Access to Directories and Modules)

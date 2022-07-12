@@ -3,8 +3,8 @@ Plot chromaticity diagram coloring the interior of the display color gamut (with
 gamma-correction applied).
 
 Caption: Top-down view of the sRGB color gamut transformed into chromoluminance
-space (here two-dimensional chromaticity) which effectively fills the
-chromaticity color gamut with color.
+space (here two-dimensional chromaticity) which effectively fills the display
+color gamut with color.
 """
 
 # region (Ensuring Access to Directories and Modules)

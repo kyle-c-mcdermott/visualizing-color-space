@@ -3,7 +3,7 @@ Plot chromaticity diagram fully colored in without gamma correction.
 
 Caption: Color-filled chromaticity diagram with no gamma correction applied when
 coloring in the region inside the sRGB color gamut triangle.  Note that the
-edges of the color gamut triangle are no longer apparent.
+edges of the color gamut triangle are far less apparent.
 """
 
 # region (Ensuring Access to Directories and Modules)
