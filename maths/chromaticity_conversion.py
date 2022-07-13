@@ -56,9 +56,9 @@ class CENTER(Enum):
     MEDIUM = 'medium'
     SHORT = 'short'
 COPUNCTAL_POINTS = { # Approximated from own calculations
-    'long' : (0.746, 0.254),
-    'medium' : (1.400, -0.400),
-    'short' : (0.175, 0.000)
+    CENTER.LONG.value : (0.746, 0.254),
+    CENTER.MEDIUM.value : (1.400, -0.400),
+    CENTER.SHORT.value : (0.175, 0.000)
 }
 # endregion
 
