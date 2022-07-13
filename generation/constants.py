@@ -4,6 +4,7 @@ Various values intended to be used by all figures.
 
 # region Constants Derived from LaTeX Document
 """
+(pipes used instead of slashes)
 % Given thinned margins:
 |usepackage[margin=1.75cm]{geometry}
 % and (temprorarily) using layouts package to print measurements:
@@ -11,13 +12,17 @@ Various values intended to be used by all figures.
 % and using the multicol package:
 |usepackage{multicol}
 
+|printinunitsof{in}|prntlen{|paperwidth} % leads to PAPER_WIDTH below
+|printinunitsof{in}|prntlen{|paperheight} % leads to PAPER_HEIGHT below
 |printinunitsof{in}|prntlen{|textwidth} % leads to TEXT_WIDTH below
-|printinunitsof{in}|prntlen{|textheight} # leads to TEXT_HEIGHT below
+|printinunitsof{in}|prntlen{|textheight} % leads to TEXT_HEIGHT below
 
 |begin{multicols}{2}
 |printinunitsof{in}|prntlen{|linewidth} % leads to COLUMN_WIDTH below
 |end{multicols}
 """
+PAPER_WIDTH = 8.50166 # in inches
+PAPER_HEIGHT = 11.00215 # in inches
 TEXT_WIDTH = 7.12344 # in inches
 TEXT_HEIGHT = 9.62393 # in inches
 COLUMN_WIDTH = 3.49252 # in inches
